@@ -38,5 +38,12 @@ Route::prefix('admin')->group(function () {
     Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update']);
     Route::resource('bloodTypes', BloodTypeController::class);
     Route::resource('specialities', SpecialityController::class);
-    Route::resource('doctores', DoctorController::class)->only(['index', 'show', 'edit', 'update']);
+    Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy']);
+});
+
+Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
+
+Route::get('/prueba', function () {
+    $schedule = \App\Models\Schedule::all();    
+    dd($schedule);
 });

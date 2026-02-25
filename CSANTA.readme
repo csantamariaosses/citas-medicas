@@ -1,0 +1,52 @@
+Crear repositorio en Github:
+https://github.com/csantamariaosses/citas-medicas
+
+
+Clave SSH para github:
+1. Verificar claves existentes:
+   ls -al ~/.ssh
+
+2. Generar una nueva ssh key:
+   ssh-keygen -t ed25519 -C "cssantam@gmail.com"
+   se crea el archivo en ~/.ssh/ed25519
+   cambiar el nombre ed25519 a citas-medicas
+
+   Copiar la clave publica al portapapeles:
+   Para linux:
+   xclip -sel clip < ~/.ssh/citas-medicas.pub
+
+3. Agregar clave publica a github:
+   En settings/SSH and GPG keys
+   New SSH
+   Poner un nombre a la clave en title
+   Pegar en el espacio para la clave
+   el texto de la clave publica copiada en el paso 2
+   Presionar Add SSH Key.
+
+4. Agregar la clave SSH al agente SSH.
+   Verificar que el agente esta en ejecucion:
+
+   eval "$(ssh-agent -s)"
+   ssh-add ~/.ssh/citas-medicas
+
+   En el archivo ~/.ssh/config agregar lo siguiente:
+   Host github.com
+     AddKeysToAgent yes
+     UseKeychain yes
+     IdentityFile ~/.ssh/id_ed25519
+
+5. Probar la conexion:
+   
+   ssh -T git@github.com
+   
+   Si sale algun error de usekeychain:
+   modificar config a:
+
+	   AddKeysToAgent yes
+	   IdentityFile ~/.ssh/citas-medicas
+	   IgnoreUnknown UseKeychain
+
+
+
+
+   

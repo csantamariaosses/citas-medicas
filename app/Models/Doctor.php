@@ -26,4 +26,11 @@ class Doctor extends Model
     public function role(){
         return $this->user()->role()->pluck('name')->first();
     }
+
+
+    // Relación uno a muchgos con Schedule
+    public function schedules(){
+        return $this->hasMany(Schedule::class); 
+    }
+    
 }

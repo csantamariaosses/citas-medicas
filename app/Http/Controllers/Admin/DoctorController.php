@@ -85,9 +85,10 @@ class DoctorController extends Controller
     {
         //
         $doctor = Doctor::findOrFail( $id );
+        $roles = Role::all();
         $specialities = Speciality::all();
 
-        return view('admin.doctores.edit', compact('doctor', 'id', 'specialities'));
+        return view('admin.doctores.edit', compact('doctor', 'id', 'specialities', 'roles'));
     }
 
     /**
@@ -101,15 +102,19 @@ class DoctorController extends Controller
             'email' => 'required|string|email|max:255',
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'role' => 'required|exists:roles,id',
             'speciality' => 'required|exists:specialities,id',
             'medical_license_number' => 'nullable|string|max:100',
             'biography' => 'nullable|string',
         ]);
+
+        //dd(Role::find($request->input('role'))->name);
         // Info Doctor
         $doctor = Doctor::findOrFail( $id );
         $doctor->speciality_id = $request->speciality;
         $doctor->medical_license_number = ($request->medical_license_number? $request->medical_license_number : '' );
         $doctor->biography = $request->biography;
+        $doctor->active = $request->active ? true : false;  
         $doctor->save();
 
         // Info User
@@ -118,10 +123,13 @@ class DoctorController extends Controller
         $user->email = $request->email;
         $user->address = $request->address;
         $user->phone = $request->phone;
+        $roleName = Role::find($request->input('role'))->name;
+        $user->syncRoles($roleName);
         $user->save();
         
         $doctores = Doctor::all();
         return view('admin.doctores.index', compact('doctores'));
+        
 
     }
 
@@ -133,4 +141,11 @@ class DoctorController extends Controller
         //
         return redirect()->route('doctores.index');
     }
+
+    public function schedules( $id )
+    {
+        //
+        $doctor = Doctor::findOrFail( $id );
+        return view('admin.doctores.schedule', compact('doctor'));
+    }   
 }

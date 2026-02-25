@@ -23,6 +23,7 @@
               <th>Email</th>
               <th>Dirección</th>
               <th>Telefono</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -36,6 +37,7 @@
               <td>{{ $doctor->user->email }}</td>  
               <td>{{ $doctor->user->address }}</td>  
               <td>{{ $doctor->user->phone }}</td>
+              <td>{{ $doctor->active ? 'Activo' : 'Inactivo' }}</td>
               <td>
                 <a href="{{ route('doctores.show', $doctor->id) }}" class="btn btn-primary">Ver</a>
                 <a href="{{ route('doctores.edit', $doctor->id) }}" class="btn btn-primary">Editar::</a>
@@ -48,6 +50,7 @@
                   <input type="hidden" name="id" value="{{ $doctor->id }}">
                   <button type="submit" class="btn btn-danger">Eliminar::</button>
                 </form>
+                <a href="{{ route('doctores.schedules', $doctor->id) }}" class="btn btn-info">Ver Horarios</a>
               </td>
             </tr>
             @endforeach
@@ -55,54 +58,6 @@
         </table>
         <br>
 
-        <table id="example" class="table table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Especialidad</th>
-                <th>Email</th>
-                <th>Direccion</th>
-                <th>Telefono</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-              @foreach($doctores as $doctor)
-            <tr>
-              <td>{{ $doctor->id }}</td>
-              <td>{{ $doctor->user->name }}</td>
-              <td>{{ $doctor->speciality->name }}</td>
-              <td>{{ $doctor->user->email }}</td>  
-              <td>{{ $doctor->user->address }}</td>  
-              <td>{{ $doctor->user->phone }}</td>
-              <td>
-                <a href="{{ route('doctores.show', $doctor->id) }}" class="btn btn-primary">Ver</a>
-                <a href="{{ route('doctores.edit', $doctor->id) }}" class="btn btn-primary">Editar</a>
-                <form action="{{ route('doctores.destroy', $doctor->id) }}" 
-                  method="POST" 
-                  style="display:inline;"
-                  class="delete-form">
-                  @csrf
-                  @method('DELETE')
-                  <input type="hidden" name="id" value="{{ $doctor->id }}">
-                  <button type="submit" class="btn btn-danger">Eliminar::</button>
-                </form>
-              </td>
-            </tr>
-            <tr>
-            @endforeach
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Direccion</th>
-                <th>Telefono</th>
-            </tr>
-        </tfoot>
-    </table>
       </div>
 
 
@@ -123,22 +78,6 @@
       </script>
     @endif
 
-
-<script>
-    new DataTable('#example', {
-        /*
-      dom: 'Bfrtip',
-      buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print' // Añade 'pdf' aquí
-      ]
-            */
-        layout: {
-            topStart: {
-                buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-            }
-        }
-    });
- </script>     
 @endsection
 
 

@@ -57,6 +57,8 @@ class SpecialityController extends Controller
     public function edit(string $id)
     {
         //
+        $speciality = Speciality::findOrFail($id);
+        return view('admin.specialities.edit', compact('speciality'));
     }
 
     /**
@@ -65,6 +67,16 @@ class SpecialityController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]); 
+        $speciality = Speciality::findOrFail($id);
+        $speciality->name = $request->input('name');
+        $speciality->save();
+        
+        $specialities = Speciality::all();
+        return view('admin.specialities.index', compact('specialities'));
+
     }
 
     /**

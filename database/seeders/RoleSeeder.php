@@ -17,7 +17,8 @@ class RoleSeeder extends Seeder
             'Paciente',
             'Doctor',
             'Recepcionista',
-            'Administrador' 
+            'Auxiliar de Enfermería',
+            'Administrador'
         ];
         foreach ($roles as $role) {
             \Spatie\Permission\Models\Role::create(['name' => $role]);

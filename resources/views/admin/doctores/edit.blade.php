@@ -35,6 +35,15 @@
                           <input type="text" class="form-control" id="phone" name="phone" placeholder="Teléfono" value="{{ $doctor->user->phone }}">
                         </div>
 
+                         <div class="mb-3">
+                          <label for="rol" class="form-label">Rol:</label>
+                          <select name="role" id="role" class="form-control">
+                            @foreach($roles as $role)
+                              <option value="{{ $role->id }}" {{ $doctor->user->roles->first()->id == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
                         <div class="mb-3">
                           <label for="speciality" class="form-label">Especialidad:</label>
                           <select name="speciality" id="speciality" class="form-control">
@@ -59,6 +68,14 @@
                           <label for="emergency_contact_name" class="form-label">Nombre contacto Emergencias:</label>
                           <input type="text" class="form-control" id="emergency_contact_name" name="emergency_contact_name" placeholder="Nombre Contacto Emergencias" value="{{ $doctor->emergency_contact_name }}">
                         </div>    
+
+                      <div class="mb-3">
+                          <label for="active" class="form-label">Activo:</label>
+                          <select name="active" id="active" class="form-control">
+                            <option value="1" {{ $doctor->active ? 'selected' : '' }}>Sí</option>
+                            <option value="0" {{ !$doctor->active ? 'selected' : '' }}>No</option>
+                          </select>
+                        </div>
 
                       <div class="d-grid gap-2 d-md-block">
                         <button class="btn btn-primary" type="submit">Guardar</button>

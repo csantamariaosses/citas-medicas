@@ -10,10 +10,16 @@
 
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+     <!-- 
      <script src="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css"></script>
      <script src="https://cdn.datatables.net/buttons/3.2.6/css/buttons.dataTables.css"></script>
-     
+-->
+     <!-- alpine.js -->
+   <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> -->
+    
      @include('sweetalert2::index')
+     @livewireStyles
+     @stack('css')
 </head>
 <body>
   <div class="container">
@@ -29,9 +35,11 @@
     @yield('content')
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  <script src="sweetalert2.all.min.js"></script>
+  <!-- <script src="sweetalert2.all.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <!--  
   <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/dataTables.buttons.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.dataTables.js"></script>
@@ -40,12 +48,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.html5.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.print.min.js"></script>
+-->
 
-  <script>
-  // Source - https://stackoverflow.com/a/53407506
-// Posted by Hemanth, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-01-30, License - CC BY-SA 4.0
-  </script>
   <!-- Muestra mensaje de alerta -->
   <!-- json transforma a json array que trae variable swal  -->
     @if(session('swal'))
@@ -80,25 +84,8 @@
         });
     </script>
 
+    @livewireScripts
+    @stack('js')
 
-<script>
-    $(document).ready(function() { 
-        $('#example').DataTable( 
-        { 
-            dom: 'Bfrtip', 
-            buttons: [ 'copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5' ] ,
-            columnDefs: [{
-                "defaultContent": "-",
-                "targets": "_all"
-            }]    
-        }
-   
-    ); 
-
-        
-    } ); 
- </script>   
-
-  
 </body>
 </html>

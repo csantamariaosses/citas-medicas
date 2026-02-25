@@ -25,6 +25,7 @@ return new class extends Migration
                   ->nullOnDelete();      
             $table->string('medical_license_number')->unique();        
             $table->text('biography')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
