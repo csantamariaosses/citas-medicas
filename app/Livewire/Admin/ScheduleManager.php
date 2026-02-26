@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Livewire\Attributes\Computed;
+use DateTimeZone;
 
 class ScheduleManager extends Component
 {
@@ -111,7 +112,42 @@ class ScheduleManager extends Component
     }
 
     public function saveSchedules(){
-        dd("Guardando horarios...");
+        //dd("Guardando horarios...");
+        $this->doctor->schedules()->delete(); // Elimina los horarios existentes del doctor
+
+         foreach($this->schedules as $day_of_week => $intervals){
+            foreach($intervals as $start_time => $isChecked){
+                //dd( "Guardando horario: Día: $day_of_week, Hora: $start_time, Estado: $isChecked");
+                if($isChecked){
+                    //$timezone = new DateTimeZone('America/Santiago');
+                    //$date->setTimezone('Europe/Paris');
+                    
+                    $hora_fin = Carbon::createFromTimeString($start_time)
+                                ->addMinutes($this->apointment_duration)
+                                ->format('H:i:s');
+                    
+                    $schedule = new \App\Models\Schedule();
+                    $schedule->doctor_id = $this->doctor->id;
+                    $schedule->day_of_week = $day_of_week;
+                    $schedule->start_time = $start_time;
+                    $schedule->end_time = $hora_fin;
+                    $schedule->created_at = Carbon::now();
+                    $schedule->updated_at = Carbon::now();
+                    $schedule->save();
+
+                    
+                }
+            }
+        }
+        /*
+        $this->dispatch('console-log', ['mensaje' => "Horarios guardados correctamente."]);
+        
+        $this->dispatch('swal', [
+            'icon' => 'success',
+            'title' => 'Horario actualizado correctamente',
+            'text' => "Horarios guardados correctamente."
+        ]);
+        */
         //$this->dispatch('console-log', ['mensaje' => "Guardando horarios..."]);
         //$this->dispatch('console-log', ['mensaje' => $this->schedules]);
 

@@ -29,12 +29,12 @@
               @foreach($this->hourBlocks as $hourBlocks)
                    @php
                         // Formateo a string
-                        $hour = $hourBlocks->format('H:i:s');  
-                        $hour_str =  str_replace(':', '', $hour);                                
+                        $hour = $hourBlocks->format('H:i:s');                                
                    @endphp
                     <tr>
                         <td>
-                          <input type="checkbox">
+                          <input type="checkbox" x-on:click="toggleFullHourBlock( '{{ $hour }}', $event.target.checked) "
+                          :checked="isFullHourBlockChecked('{{ $hour }}')">
                           <span>
                             {{ $hour }}
                           </span>
@@ -43,7 +43,8 @@
                         @foreach($days as $indexDay => $day)
                             <td>
                                 <label>
-                                    <input type="checkbox"  x-on:click="toggleHourBlock({{ $indexDay }}, '{{ $hour }}', $event.target.checked)">
+                                    <input type="checkbox" x-on:click="toggleHourBlock( '{{ $indexDay }}', '{{ $hour }}', $event.target.checked) "
+                                    :checked="isHourBlockChecked('{{ $indexDay }}', '{{ $hour }}')">
                                     <span class="ml-2">
                                       Todos..
                                     </span>
@@ -52,16 +53,14 @@
                                     @php
                                         $startTime = $hourBlocks->copy()->addMinutes($i * $this->apointment_duration);
                                         $endTime = $startTime->copy()->addMinutes($this->apointment_duration);
-                                        $hour_str =  str_replace(':', '', $startTime->format('H:i:s'));
-
-                                        $startTime_str = str_replace(':', '', $startTime->format('H:i:s'));
-                                        $endTime_str = str_replace(':', '', $endTime->format('H:i:s'));
+                                
                                     @endphp
                               
                                     <div>
                                         <label>
                     
-                                            <input type="checkbox" x-model="schedules['{{ $indexDay }}']['{{ $startTime->format('H:i:s') }}']" x-on:click="toggleHourBlock({{ $indexDay }}, '{{ $hour_str }}', $event.target.checked)"> 
+                                            <!-- aqui va el checkbox -->
+                                             <input type="checkbox" x-model="schedules['{{ $indexDay }}']['{{ $startTime->format('H:i:s') }}']">
                                             <span class="ml-2">
                                                 {{ $startTime->format('H:i') }} - {{ $endTime->format('H:i') }}
                                             </span>
@@ -85,29 +84,50 @@
             schedules: @entangle('schedules'),
             apointment_duration: @entangle('apointment_duration'),
             intervals : @entangle('intervals'),
+            days:@entangle('days'),
+
             inicio() {
                 console.log('Componente Livewire inicializado');
             },
-            toggleHourBlock(indexDay, hourBlock, evenntChecked) {
-                
-                console.log('Toggle hour block:', indexDay, hourBlock, evenntChecked);  
-                
-                let hour = new Date(`1970-01-01T${hourBlock}`);
-                console.log( hour );
-                console.log(this.intervals);
 
-                
-
+            toggleHourBlock(indexDay, hourBlock, evenntChecked) {            
+                console.log('Toggle hour block:', indexDay, hourBlock, evenntChecked);                  
+                let hour = new Date(`1970-01-01T${hourBlock}`); 
                 for(i=0; i<this.intervals; i++) {
                     let startTime = new Date(hour.getTime() + i * this.apointment_duration * 60000);                    
                     let formattedStartTime = startTime.toTimeString().split(' ')[0];
-                    console.log( 'Formatted Start Time:', indexDay, i, formattedStartTime );
-                    this.schedules[indexDay][formattedStartTime] = evenntChecked;
+                    console.log( 'Formatted Start Time:++', indexDay, i, formattedStartTime );
+                    this.schedules[indexDay][formattedStartTime] = evenntChecked;                    
+                }                                                        
+            },
+            
+            isHourBlockChecked(indexDay, hourBlock) {                            
+                let hour = new Date(`1970-01-01T${hourBlock}`); 
+                
+                for(i=0; i<this.intervals; i++) {
+                    let startTime = new Date(hour.getTime() + (i * this.apointment_duration * 60000))                    
+                    let formattedStartTime = startTime.toTimeString().split(' ')[0];
                     
-                }
-                                    
+                    if( !this.schedules[indexDay][formattedStartTime] ) {
+                        return false; // Si alguna hora no está marcada, el bloque no está completamente marcado
+                    }                                       
+                } 
+                              
+                return true; // Si todas las horas están marcadas, el bloque está completamente marcado
+                
+            },
+
+            toggleFullHourBlock( hourBlock, checked) {
+                Object.keys(this.days).forEach(indexDay => {
+                    this.toggleHourBlock(indexDay, hourBlock, checked);
+                });
+            },
+
+            isFullHourBlockChecked(hourBlock) {
+                return Object.keys(this.days).every(indexDay => {
+                    return this.isHourBlockChecked(indexDay, hourBlock);
+                });
             }
-        
         }
     }
 </script>
