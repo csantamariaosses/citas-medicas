@@ -15,16 +15,11 @@ class ScheduleManager extends Component
     public Doctor $doctor;
     public $scheduleDb;
     public $schedules = [];
-    public $days = [
-        1 => "Lunes",
-        2 => 'Martes', 
-        3 => 'Miércoles',
-        4 => 'Jueves', 
-        5 => 'Viernes', 
-        6 => 'Sábado', 
-        0 => 'Domingo'];
-    
-    public $apointment_duration = 15; // Duración de la cita en minutos        
+    public $days = [];
+
+    public $apointment_duration; //
+    public $start_time;
+    public $end_time;
     public $intervals;
     public $indexDay, $hour;
     public $estado = false;
@@ -32,15 +27,20 @@ class ScheduleManager extends Component
     #[Computed()]
     public function hourBlocks(){
         return CarbonPeriod::create(
-            Carbon::createFromTimeString('08:00:00'),
+            Carbon::createFromTimeString( $this->start_time . ':00'),
             '1 hour',
-            Carbon::createFromTimeString('18:00:00')
-        )->toArray();
+            Carbon::createFromTimeString( $this->end_time . ':00' )
+        )->excludeEndDate();
     }
 
     public function mount(Doctor $doctor){
+        $this->days = config('schedules.days');
+        $this->apointment_duration = config('schedules.apointment_duration');
+
         $this->intervals = 60 / $this->apointment_duration;
         $this->doctor = $doctor;
+        $this->start_time = config('schedules.start_time');
+        $this->end_time = config('schedules.end_time');
         $this->dispatch('console-log', ['mensaje' => "MONTADO"]);
 
         $this->initializeSchedules();
@@ -49,12 +49,6 @@ class ScheduleManager extends Component
     public function initializeSchedules(){
         $schedules = $this->doctor->schedules;
 
-        /*
-         $this->dispatch('console-log', ['mensaje' => "initializeSchedules()"]);
-         $this->scheduleDb = \App\Models\Schedule::all();
-         //$this->schedulesDb = $this->doctor->schedules();
-         $this->dispatch('console-log', ['mensaje' => $this->scheduleDb]);
-        */
         foreach($this->hourBlocks as $hourBlock){
             $period = CarbonPeriod::create(
                 $hourBlock->copy(),
@@ -75,8 +69,6 @@ class ScheduleManager extends Component
                 }                      
             }   
         } 
-        //dd($this->schedules);
-
 
        $this->dispatch('console-log', ['mensaje' => "SCHEDULES INICIALIZADOS"]);
        $this->dispatch('console-log', ['mensaje' => $this->schedules]);
@@ -119,8 +111,6 @@ class ScheduleManager extends Component
             foreach($intervals as $start_time => $isChecked){
                 //dd( "Guardando horario: Día: $day_of_week, Hora: $start_time, Estado: $isChecked");
                 if($isChecked){
-                    //$timezone = new DateTimeZone('America/Santiago');
-                    //$date->setTimezone('Europe/Paris');
                     
                     $hora_fin = Carbon::createFromTimeString($start_time)
                                 ->addMinutes($this->apointment_duration)
@@ -135,23 +125,17 @@ class ScheduleManager extends Component
                     $schedule->updated_at = Carbon::now();
                     $schedule->save();
 
-                    
                 }
             }
         }
-        /*
-        $this->dispatch('console-log', ['mensaje' => "Horarios guardados correctamente."]);
-        
+
         $this->dispatch('swal', [
             'icon' => 'success',
-            'title' => 'Horario actualizado correctamente',
-            'text' => "Horarios guardados correctamente."
-        ]);
-        */
-        //$this->dispatch('console-log', ['mensaje' => "Guardando horarios..."]);
-        //$this->dispatch('console-log', ['mensaje' => $this->schedules]);
-
-        // Aquí puedes implementar la lógica para guardar los horarios en la base de datos
+            'title' => 'Horario actualizado',
+            'text' => 'Los horarios del doctor han sido actualizados exitosamente.'
+            ]
+        );
+        //dd( "Horarios guardados exitosamente." );
     }   
 
     public function render()

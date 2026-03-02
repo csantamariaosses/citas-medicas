@@ -52,11 +52,7 @@
 
   <!-- Muestra mensaje de alerta -->
   <!-- json transforma a json array que trae variable swal  -->
-    @if(session('swal'))
-        <script>
-            Swal.fire(@json(session('swal')));
-        </script>
-    @endif  
+    
 
     
     <script>
@@ -85,6 +81,19 @@
     </script>
 
     @livewireScripts
+
+     @if(session('swal'))
+        <script>
+            Swal.fire(@json(session('swal')));
+        </script>
+    @endif 
+
+    <script>
+        Livewire.on('swal', function(data) {
+            Swal.fire(data[0]);
+        });
+    </script>
+
     @stack('js')
 
 </body>

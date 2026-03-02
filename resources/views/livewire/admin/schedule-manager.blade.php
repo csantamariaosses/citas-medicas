@@ -75,6 +75,12 @@
         </tbody>
 
     </table>
+
+     <div>
+        <button wire:click="saveSchedules" class="btn btn-primary">
+            Guardar Horarios
+        </button>
+    </div>
   </div>
 </div>
 
