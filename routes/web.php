@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PatientController;
 use App\Http\Controllers\Admin\BloodTypeController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\SpecialityController;
+use App\Http\Controllers\Admin\AppointmentController;
 
 
 
@@ -39,6 +40,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('bloodTypes', BloodTypeController::class);
     Route::resource('specialities', SpecialityController::class);
     Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy']);
+    Route::resource('appointments', AppointmentController::class);
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
@@ -47,3 +49,5 @@ Route::get('/prueba', function () {
     $schedule = \App\Models\Schedule::all();    
     dd($schedule);
 });
+
+//Route::resource('/appointments', AppointmentController::class);

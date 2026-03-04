@@ -82,7 +82,7 @@
 
     @livewireScripts
 
-     @if(session('swal'))
+    @if(session('swal'))
         <script>
             Swal.fire(@json(session('swal')));
         </script>
