@@ -8,6 +8,7 @@ use Carbon\CarbonPeriod;
 use Livewire\Attributes\Computed;
 use Illuminate\Validation\Rule;
 use DateTimeZone;
+use App\Services\AppointmentService;
 
 
 class AppointmentManager extends Component
@@ -34,20 +35,13 @@ class AppointmentManager extends Component
 
     public function mount(){
         $this->specialities = \App\Models\Speciality::all();
-        $this->dispatch('console-log', ['mensaje' => "MONTADO"]);
-        //dd("Montado");
-        //dd($this->specialities);
-        /*
-        $this->days = config('schedules.days');
-        $this->apointment_duration = config('schedules.apointment_duration');
+    $this->search['date'] = now()->hour >= 12 ?
+                            now()->addDay()->format('Y-m-d')
+                          : now()->format('Y-m-d');
 
-        $this->intervals = 60 / $this->apointment_duration;
-        $this->start_time = config('schedules.start_time');
-        $this->end_time = config('schedules.end_time');
         $this->dispatch('console-log', ['mensaje' => "MONTADO"]);
 
-        //$this->initializeSchedules();
-        */
+        
     }   
 
 /*
@@ -56,7 +50,7 @@ class AppointmentManager extends Component
         //$this->dispatch('console-log', ['mensaje' => "Buscando disponibilidad para: " . json_encode($this->search)]);
     }   
 */
-    public function searchAvailabilityComp(){
+    public function searchAvailabilityComp( AppointmentService $appointmentService ){
         //$this->dispatch('console-log', ['mensaje' => "Buscando disponibilidad para: " . json_encode($this->search)]);
         //console_log("Buscando disponibilidad para: " + JSON.stringify(this.search));
         //dd( "XXX:" , $this->search );
@@ -72,6 +66,9 @@ class AppointmentManager extends Component
             ],
     
         ]);
+
+        // Buscar disponibilidad
+        $appointmentService->searchAvailability(...$this->search);
 
     }
 
