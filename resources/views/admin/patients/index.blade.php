@@ -26,32 +26,41 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($patients as $patient)
-            <tr>
-              <td>{{ $patient->id }}</td>
-              <td>{{ $patient->user->name }}</td>
-              <td>{{ $patient->user->email }}</td>  
-              <td>{{ $patient->user->address }}</td>  
-              <td>{{ $patient->user->phone }}</td>
-              <td>{{ $patient->bloodType->name }}</td>
+            <?php if( $patients != null   ) { ?>
+                @foreach($patients as $patient)
+                  <tr>
+                    <td>{{ $patient->id }}</td>
+                    <td>{{ $patient->user->name }}</td>
+                    <td>{{ $patient->user->email }}</td>  
+                    <td>{{ $patient->user->address }}</td>  
+                    <td>{{ $patient->user->phone }}</td>
+                    <td>{{ $patient->bloodType->name }}</td>
 
-              <td>
-                <a href="{{ route('patients.show', $patient->id) }}" class="btn btn-primary">Ver</a>
-                <a href="{{ route('patients.edit', $patient->id) }}" class="btn btn-primary">Editar</a>
-                <form action="{{ route('patients.destroy', $patient->id) }}" 
-                  method="POST" 
-                  style="display:inline;"
-                  class="delete-form">
-                  @csrf
-                  @method('DELETE')
-                  <input type="hidden" name="id" value="{{ $patient->id }}">
-                  <button type="submit" class="btn btn-danger">Eliminar::</button>
-                </form>
-              </td>
-            </tr>
-            @endforeach
+                    <td>
+                      <a href="{{ route('patients.show', $patient->id) }}" class="btn btn-primary">Ver</a>
+                      <a href="{{ route('patients.edit', $patient->id) }}" class="btn btn-primary">Editar</a>
+                      <form action="{{ route('patients.destroy', $patient->id) }}" 
+                        method="POST" 
+                        style="display:inline;"
+                        class="delete-form">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="id" value="{{ $patient->id }}">
+                        <button type="submit" class="btn btn-danger">Eliminar::</button>
+                      </form>
+                    </td>
+                  </tr>
+              @endforeach
+            <?php} else { ?>
+                <tr>
+                    <td colspan="7">No se encontraron pacientes.</td>
+                </tr>
+            <?php } ?>
           </tbody>
         </table>
+
+            }
+
         <br>
 
         <hr>

@@ -2,44 +2,75 @@
 
 namespace App\Services;
 use Carbon\Carbon;
+use App\Models\Doctor;
+use Illuminate\Support\Facades\DB;
 
 
 class AppointmentService
 {
+    public $doctors;
+    public $appointment_resumen;
     // Aquí puedes agregar métodos relacionados con la lógica de las citas médicas
     public function searchAvailability($date, $hour, $speciality_id)
     {
-        //dd($date, $hour, $speciality_id);
+        //dd('AppointmentService:',$date, $hour, $speciality_id);
+
         $date = Carbon::parse($date);
         $hourStart = Carbon::parse($hour)->format('H:i:s');
-        $hourEnd   = Carbon::parse($hour)->addHour()->format('H:i:s');
- 
-        $doctors = \App\Models\Doctor::whereHas('schedules', function($query) use ($date, $hourStart, $hourEnd){
-            $query->where('day_of_week', $date->dayOfWeek)
-                  ->where('start_time', '>=', $hourStart)
-                  ->where('start_time', '<', $hourEnd);
-        })
-        ->when($speciality_id, function($query, $speciality_id) {
-            return $query->where('speciality_id', $speciality_id);
-        })
-        ->with([
-          'user',
-          'speciality',
-          'schedules' => function($query) use ($date, $hourStart, $hourEnd){
-            $query->where('day_of_week', $date->dayOfWeek)
-                  ->where('start_time', '>=', $hourStart)
-                  ->where('start_time', '<', $hourEnd);
-           },
-           'appointments' => function($query) use ($date, $hourStart, $hourEnd){
-              $query->whereDate('date', $date)
-                  ->where('start_time', '>=', $hourStart)
-                  ->where('start_time', '<', $hourEnd);
-            }
-        ])
-        ->get();
+        $hourEnd   = Carbon::parse($hour)->addMinutes(15)->format('H:i:s');
 
-        dd( $doctors->toArray());
 
+         $this->doctors = DB::table('schedules')
+                            ->where('day_of_week', $date->dayOfWeek)
+                            ->where('start_time', '>=', $hourStart)
+                            ->where('start_time', '<', $hourEnd)
+                            ->join('doctors', 'schedules.doctor_id', '=', 'doctors.id')
+                            ->join('users', 'doctors.user_id', '=', 'users.id')
+                            ->join('specialities', 'doctors.speciality_id', '=', 'specialities.id')
+                            ->select('doctors.id as doctor_id','users.name as doctor', 'specialities.id as speciality_id', 'specialities.name as speciality', 'schedules.day_of_week as dia','schedules.start_time', 'schedules.end_time')
+                            ->distinct()
+                            ->get();
+
+         return $this->doctors;
+    }
+
+    public function guardarCita($date, $doctor_id, $speciality_id, $start_time, $patient_id, $appointment_duration){
+        // Aquí puedes implementar la lógica para guardar la cita en la base de datos
+       
+        //dd("Guardar Cita:Servicio:", $date, $doctor_id, $speciality_id, $start_time, $appointment_duration, $patient_id);
+
+        $date = Carbon::parse($date);
+        $appointment = new \App\Models\Appointment();
+        $appointment->doctor_id = $doctor_id;
+        $appointment->patient_id = $patient_id;
+        //$appointment->speciality_id = $speciality_id;
+        $appointment->date = $date;
+        $appointment->start_time = Carbon::createFromFormat('H:i:s', $start_time);
+        $appointment->end_time = Carbon::createFromFormat('H:i:s', $start_time)->addMinutes($appointment_duration);
+        $appointment->save();
+
+
+
+    }
+
+    public function resumenCita($date, $doctor_id, $patient_id, $start_time ){
+
+           $this->appointment_resumen = DB::table('appointments')
+                            //->where('date', $date)
+                            ->where('doctor_id', $doctor_id)
+                            ->where('patient_id', $patient_id)
+                            ->where('start_time', $start_time)
+
+                            ->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')
+                            ->join('users as user_doc', 'user_doc.id', '=', 'doctors.user_id')                            
+
+                            ->join('patients', 'appointments.patient_id', '=', 'patients.id')
+                            ->join('users as user_pac','patients.user_id','=','user_pac.id')
+                            ->select('user_doc.name as doctor_name', 'user_pac.name as paciente', 'appointments.date as fecha', 'appointments.start_time as hora_inicio', 'appointments.end_time as hora_fin')
+                            ->distinct()
+                            ->get();
+
+         return $this->appointment_resumen;
     }
 }
 

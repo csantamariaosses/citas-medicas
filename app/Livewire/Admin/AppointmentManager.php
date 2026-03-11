@@ -9,6 +9,9 @@ use Livewire\Attributes\Computed;
 use Illuminate\Validation\Rule;
 use DateTimeZone;
 use App\Services\AppointmentService;
+use App\Services\PatientService;
+use App\Models\Patient;
+
 
 
 class AppointmentManager extends Component
@@ -21,8 +24,35 @@ class AppointmentManager extends Component
         'speciality_id' => null
     ];
 
+    public $date;
     public $specialities = [];
+    public $availability = [];
     public $hola = "Hola mundo";
+    public $intervals;
+    public $selectedSchedules = [];
+
+    public $patient = [
+        'patient_id',
+        'name'
+    ];
+    public $patientService;
+
+    public $pacientes;
+    public $patients = [];
+
+    public $appointment = [
+        'patient_id' => '',
+        'doctor_id' => '',
+        'date' => '',
+        'start_time' => '',
+        'end_time' => '',
+        'duration' => '',
+        'reason' => ''
+    ];
+
+    public $resumen_cita = [];
+
+    public $appointment_duration = 15;
 
     #[Computed()]
     public function hourBlocks(){
@@ -34,26 +64,49 @@ class AppointmentManager extends Component
     }
 
     public function mount(){
+        $servicio = app('App\Services\PatientService');
+        $this->patients = $servicio->patients();
+        //dd( $this->patients );
+
         $this->specialities = \App\Models\Speciality::all();
-    $this->search['date'] = now()->hour >= 12 ?
+
+        // Si es mas de las 12 horas se impide agendar para el mismo dia
+        // solo permite agendar para el dia
+        $this->search['date'] = now()->hour >= 12 ?
                             now()->addDay()->format('Y-m-d')
                           : now()->format('Y-m-d');
+        $this->intervals = 60 / $this->appointment_duration;
 
-        $this->dispatch('console-log', ['mensaje' => "MONTADO"]);
-
-        
+        $this->date = $this->search['date'];
     }   
 
-/*
-    public function searchAvailability(){
-        console_log("Buscando disponibilidad para: " + JSON.stringify(this.search));
-        //$this->dispatch('console-log', ['mensaje' => "Buscando disponibilidad para: " . json_encode($this->search)]);
-    }   
+    public function searchAvailability(AppointmentService $service){
+
+    /*
+        $this->validate([
+            'search.date' => 'required|date|after_or_equal:today',
+                'search.hour' => [
+                    'required',   
+                    'date_format:H:i:s',
+                    Rule::when( $this->search['date'] === now()->format('Y-m-d') , [
+                        'after_or_equal:' .now()->format('H:i:s')
+                    ])
+                ]
+        ]);
 */
+        // Buscar disponibilidad
+        $this->availability = $service->searchAvailability(...$this->search);
+        $this->appointment['date'] = $this->search['date'];
+        $this->availability->toArray();
+
+       // dd( "Disponibilidad: ", $this->availability );
+
+        //$this->appointment['date'] = $this->search['date'];
+        
+    }
+
+
     public function searchAvailabilityComp( AppointmentService $appointmentService ){
-        //$this->dispatch('console-log', ['mensaje' => "Buscando disponibilidad para: " . json_encode($this->search)]);
-        //console_log("Buscando disponibilidad para: " + JSON.stringify(this.search));
-        //dd( "XXX:" , $this->search );
         $this->validate([
             'search.date' => 'required|date|after_or_equal:today',
             
@@ -64,13 +117,41 @@ class AppointmentManager extends Component
                     'after_or_equal:' .now()->format('H:i:s')
                  ])
             ],
-    
         ]);
 
+        //dd("Paso validacion");
+
+        $this->appointment['date'] = $this->search['date'];
+
+
         // Buscar disponibilidad
-        $appointmentService->searchAvailability(...$this->search);
+        $this->availability = $appointmentService->searchAvailability(...$this->search);
+
+        //dd( "Disponibilidad: ", $this->appointmentService );
+
+        //dd( "Disponibilidad: ", $this->availability );
 
     }
+
+
+    public function guardarCita( $date , $doctor_id, $speciality_id, $start_time, $patient_id, AppointmentService $appointmentService ){
+        //dd("Guardar cita para el horario: ", "doctor_id:", $doctor_id, "especialidad_id#", $speciality_id, "fecha:", $this->appointment['date'], "hora_inicio:", $start_time, "paciente_id:", $patient_id);
+
+        //$appointmentService->guardarCita($date, $doctor_id, $speciality_id, $start_time, $patient_id, $this->appointment_duration);
+
+        $this->resumen_cita = $appointmentService->resumenCita($date, $doctor_id, $patient_id, $start_time);
+
+        //dd("Resumen cita:", $this->resumen_cita);
+
+         $this->dispatch('swal', [
+            'icon' => 'success',
+            'title' => 'Cita actualizada',
+            'text' => 'La cita ha sido actualizada exitosamente.'
+            ]
+        );
+
+    }
+
 
     public function render()
     {

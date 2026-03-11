@@ -36,11 +36,12 @@ Route::prefix('admin')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UsersController::class);
-    Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update']);
+    Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update','create', 'store','destroy']);
     Route::resource('bloodTypes', BloodTypeController::class);
     Route::resource('specialities', SpecialityController::class);
     Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy']);
     Route::resource('appointments', AppointmentController::class);
+
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');

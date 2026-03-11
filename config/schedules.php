@@ -12,8 +12,8 @@ return [
         7 => 'Domingo'
     ],
 
-    'apointment_duration' => 20,
-    'start_time' => '08:00',
-    'end_time' => '18:00',
+    'apointment_duration' => 15,
+    'start_time' => '08:00:00',
+    'end_time' => '18:00:00',
     
 ];

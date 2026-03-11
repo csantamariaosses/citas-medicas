@@ -93,7 +93,7 @@
             days:@entangle('days'),
 
             inicio() {
-                console.log('Componente Livewire inicializado');
+                console.log('Componente Livewire schedule inicializado');
             },
 
             toggleHourBlock(indexDay, hourBlock, evenntChecked) {            
