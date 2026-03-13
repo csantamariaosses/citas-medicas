@@ -9,6 +9,7 @@
         <P> <H4>SELECCIONAR HORARIO DE CITAS PARA</H4></P>
         <P>
             <SELECT  wire:model="patient->patient_id" class="form-control">
+               <option value="">Selecciona un paciente</option>
                @foreach($this->patients as $patient)
                   <option value="{{ $patient->patient_id }}">{{ $patient->name }}</option>
                @endforeach
@@ -68,11 +69,33 @@
             @if( $appointment['date'])
                @if( $availability <> null and count($availability) > 0 )
                   <h4>Disponibilidad para:</h4>
-                  <ul>
-                     @foreach($availability as $slot)
-                        <li>{{ $slot->doctor_id }} - {{ $slot->doctor }} : {{ $slot->speciality_id}} - {{ $slot->speciality}} - {{$appointment['date']}} - {{ $slot->start_time }} -  {{ $slot->end_time }} - {{$patient->patient_id}} - {{ $patient->name }}<button class="btn btn-primary ms-2" wire:click="guardarCita( '{{ $appointment['date']}} ', '{{ $slot->doctor_id}}', '{{$slot->speciality_id}}', '{{$slot->start_time }}', '{{$patient->patient_id}}' )">Seleccionar</button></li>
-                     @endforeach
-                  </ul>
+                  <table class="table table-bordered">
+                     <thead>
+                     <tr>
+                        <td><strong>Doctor</strong></td>
+                        <td><strong>Especialidad</strong></td>
+                        <td><strong>Fecha</strong></td>
+                        <td><strong>Hora inicio</strong></td>
+                        <td><strong>Hora fin</strong></td>
+                        <td><strong>Paciente</strong></td>
+                        <td><strong>Accion</strong></td>
+                     </tr>
+                     </thead>
+                     <tbody>
+                         @foreach($availability as $slot)
+                         <tr>
+                           <td>{{ $slot->doctor }}</td>
+                           <td>{{ $slot->speciality }}</td>
+                           <td>{{ $appointment['date'] }}</td>
+                           <td>{{ $slot->start_time }}</td>
+                           <td>{{ $slot->end_time }}</td>
+                           <td>{{ $patient->name }}</td>
+                           <td><button class="btn btn-primary ms-2" wire:click="guardarCita( '{{ $appointment['date']}} ', '{{ $slot->doctor_id}}', '{{$slot->speciality_id}}', '{{$slot->start_time }}', '{{$patient->patient_id}}' )">Seleccionar</button></strong></td>
+                        </tr>
+
+                        @endforeach
+                     </tbody>
+                  </table>   
                @else
                    
                   <p class="mt-5">No hay disponibilidad para la fecha y hora seleccionada.</p>
@@ -91,6 +114,35 @@
                      
                   @endif
          </div>
+      </div>
+
+      <div class="row mt-4">
+         <div class="col-12">
+            <h4>Histórico de citas</h4>
+            <table class="table table-bordered">
+               <thead>
+                  <tr>
+                     <th>Doctor</th>
+                     <th>Paciente</th>
+                     <th>Fecha</th>
+                     <th>Hora inicio</th>
+                     <th>Hora fin</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  @foreach($appointments_current as $appointment)
+                     <tr>
+                        <td>{{ $appointment->doctor_name }}</td>
+                        <td>{{ $appointment->patient_name }}</td>
+                        <td>{{ $appointment->date }}</td>
+                        <td>{{ $appointment->start_time }}</td>
+                        <td>{{ $appointment->end_time }}</td>
+                     </tr>
+                  @endforeach
+               </tbody>
+            </table>
+         </div>
+
       </div>
 
 

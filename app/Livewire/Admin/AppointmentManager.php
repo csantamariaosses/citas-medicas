@@ -31,6 +31,8 @@ class AppointmentManager extends Component
     public $intervals;
     public $selectedSchedules = [];
 
+    public $upcomingAppointments = [];
+
     public $patient = [
         'patient_id',
         'name'
@@ -52,6 +54,7 @@ class AppointmentManager extends Component
 
     public $resumen_cita = [];
 
+    public $appointments_current = [];
     public $appointment_duration = 15;
 
     #[Computed()]
@@ -78,6 +81,7 @@ class AppointmentManager extends Component
         $this->intervals = 60 / $this->appointment_duration;
 
         $this->date = $this->search['date'];
+        $this->proximasCitas(app('App\Services\AppointmentService'));
     }   
 
     public function searchAvailability(AppointmentService $service){
@@ -137,10 +141,10 @@ class AppointmentManager extends Component
     public function guardarCita( $date , $doctor_id, $speciality_id, $start_time, $patient_id, AppointmentService $appointmentService ){
         //dd("Guardar cita para el horario: ", "doctor_id:", $doctor_id, "especialidad_id#", $speciality_id, "fecha:", $this->appointment['date'], "hora_inicio:", $start_time, "paciente_id:", $patient_id);
 
-        //$appointmentService->guardarCita($date, $doctor_id, $speciality_id, $start_time, $patient_id, $this->appointment_duration);
+        $appointmentService->guardarCita($date, $doctor_id, $speciality_id, $start_time, $patient_id, $this->appointment_duration);
 
         $this->resumen_cita = $appointmentService->resumenCita($date, $doctor_id, $patient_id, $start_time);
-
+        $this->appointments_current = $appointmentService->proximasCitas();
         //dd("Resumen cita:", $this->resumen_cita);
 
          $this->dispatch('swal', [
@@ -152,6 +156,11 @@ class AppointmentManager extends Component
 
     }
 
+
+    public function proximasCitas(AppointmentService $appointmentService){
+        $this->appointments_current = $appointmentService->proximasCitas();
+        //dd( "Próximas citas: ", $this->appointments_current );
+    }
 
     public function render()
     {

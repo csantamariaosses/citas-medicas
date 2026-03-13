@@ -10,6 +10,8 @@ class AppointmentService
 {
     public $doctors;
     public $appointment_resumen;
+    public $appointments_current;
+
     // Aquí puedes agregar métodos relacionados con la lógica de las citas médicas
     public function searchAvailability($date, $hour, $speciality_id)
     {
@@ -24,6 +26,7 @@ class AppointmentService
                             ->where('day_of_week', $date->dayOfWeek)
                             ->where('start_time', '>=', $hourStart)
                             ->where('start_time', '<', $hourEnd)
+                            ->where('speciality_id', $speciality_id)
                             ->join('doctors', 'schedules.doctor_id', '=', 'doctors.id')
                             ->join('users', 'doctors.user_id', '=', 'users.id')
                             ->join('specialities', 'doctors.speciality_id', '=', 'specialities.id')
@@ -72,5 +75,65 @@ class AppointmentService
 
          return $this->appointment_resumen;
     }
+
+
+    public function buscaDisponibilidad($date, $hour, $speciality_id){
+
+        // Aquí puedes implementar la lógica para buscar la disponibilidad de los doctores según la fecha, hora y especialidad
+/*
+        select sch.*, app.*
+        from schedules sch
+        left join appointments app on sch.day_of_week = dayofweek(app.date) -1
+        where app.id is null
+*/
+        $this->doctors = DB::select('select 
+                                    sch.doctor_id, 
+                                    day_of_week, 
+                                    start_time, 
+                                    end_time 
+                                    from schedules sch 
+                                    left join appointments app on sch.day_of_week = dayofweek(app.date) -1 
+                                    left join doctors doc on sch.doctor_id = doc.id
+                                    left join specialities sp on doc.speciality_id = sp.id
+                                    where doc.speciality_id = ?
+                                    and app.start_time = ? 
+                                    
+                                    where app.id is null', [$speciality_id, $hour]); 
+        
+        
+       
+/*
+         $this->doctors = DB::table('schedules')
+                            ->where('day_of_week', $date->dayOfWeek)
+                            ->where('start_time', '>=', $hourStart)
+                            ->where('start_time', '<', $hourEnd)
+                            ->leftjoin('doctors', 'schedules.doctor_id', '=', 'doctors.id')
+                            ->join('users', 'doctors.user_id', '=', 'users.id')
+                            ->join('specialities', 'doctors.speciality_id', '=', 'specialities.id')
+                            ->select('doctors.id as doctor_id','users.name as doctor', 'specialities.id as speciality_id', 'specialities.name as speciality', 'schedules.day_of_week as dia','schedules.start_time', 'schedules.end_time')
+                            ->distinct()
+                            ->get();
+
+                            */
+
+         return $this->doctors;
+    }
+
+
+    public function proximasCitas(){
+        // Aquí puedes implementar la lógica para buscar las próximas citas
+        $this->appointments_current = DB::select('
+            select apps.date, apps.start_time, apps.end_time, users_doc.name as doctor_name, users_pat.name as patient_name
+            from appointments apps
+            left join doctors on (apps.doctor_id = doctors.id)
+            left join users as users_doc on ( doctors.user_id = users_doc.id)
+            left join patients on (  apps.patient_id = patients.id)
+            left join users as users_pat on ( patients.user_id = users_pat.id)
+            order by apps.date, apps.start_time');
+        //dd($this->appointments_current);
+        return $this->appointments_current;
+    }   
+
+
 }
 
