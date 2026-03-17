@@ -30,6 +30,7 @@ class AppointmentManager extends Component
     public $hola = "Hola mundo";
     public $intervals;
     public $selectedSchedules = [];
+    public $appointment_edit = [];
 
     public $upcomingAppointments = [];
 
@@ -161,6 +162,15 @@ class AppointmentManager extends Component
         $this->appointments_current = $appointmentService->proximasCitas();
         //dd( "Próximas citas: ", $this->appointments_current );
     }
+
+
+    public function editarCita($appointment_id, AppointmentService $appointmentService){
+        //dd("Editar cita con ID: ", $appointment_id);
+        $this->appointment_edit = $appointmentService->editarCita($appointment_id);
+        //dd( "Datos de la cita a editar: ", $this->appointment_edit );
+
+
+    }   
 
     public function render()
     {

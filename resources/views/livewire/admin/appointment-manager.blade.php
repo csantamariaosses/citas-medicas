@@ -122,21 +122,28 @@
             <table class="table table-bordered">
                <thead>
                   <tr>
+                     <th>Id</th>
                      <th>Doctor</th>
                      <th>Paciente</th>
                      <th>Fecha</th>
                      <th>Hora inicio</th>
                      <th>Hora fin</th>
+                     <th>Acciones</th>
                   </tr>
                </thead>
                <tbody>
                   @foreach($appointments_current as $appointment)
                      <tr>
+                        <td>{{ $appointment->id }}</td>
                         <td>{{ $appointment->doctor_name }}</td>
                         <td>{{ $appointment->patient_name }}</td>
                         <td>{{ $appointment->date }}</td>
                         <td>{{ $appointment->start_time }}</td>
                         <td>{{ $appointment->end_time }}</td>
+                        <td>
+                           <button class="btn btn-warning" wire:click="editarCita({{ $appointment->id }})">Modificar</button>
+                           <button class="btn btn-danger" wire:click="eliminarCita({{ $appointment->id }})">Eliminar</button>
+                        </td>
                      </tr>
                   @endforeach
                </tbody>
@@ -144,6 +151,27 @@
          </div>
 
       </div>
+
+      @if( $appointment_edit )
+
+         <div class="row mt-4">
+            <div class="col-12">
+               <h4>Modificar cita...</h4>
+               <table>
+                  <tr><td>Id: </td><td>{{ $appointment_edit[0]->id }}</td></tr>
+                  <tr><td>Doctor: </td><td>{{ $appointment_edit[0]->doctor_name }}</td></tr>
+                  <tr><td>Paciente: </td><td>{{ $appointment_edit[0]->patient_name }}</td></tr>
+                  <tr><td>Fecha Actual: </td><td>{{ \Carbon\Carbon::parse($appointment_edit[0]->date)->format('d-m-Y') }}<td>
+                  <tr><td>Nueva Fecha:</td><td><input type="date" id="date" class="form-control" wire:model="search.date" value="{{ $appointment_edit[0]->date }}"> </td> 
+
+                                     </td></tr>
+                  <tr><td>Hora inicio: </td><td>{{ $appointment_edit[0]->start_time }}</td></tr>
+                  <tr><td>Hora fin: </td><td>{{ $appointment_edit[0]->end_time }}</td></tr>
+
+               <table>
+            </div>
+         </div>
+      @endif
 
 
 </div>

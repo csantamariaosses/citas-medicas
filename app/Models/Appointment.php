@@ -32,4 +32,8 @@ class Appointment extends Model
     public function patient(){
         return $this->belongsTo(Patient::class);
     }   
+
+    public function consultation(){
+        return $this->hasOne(Consultation::class);
+    }   
 }

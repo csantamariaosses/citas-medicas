@@ -123,7 +123,7 @@ class AppointmentService
     public function proximasCitas(){
         // Aquí puedes implementar la lógica para buscar las próximas citas
         $this->appointments_current = DB::select('
-            select apps.date, apps.start_time, apps.end_time, users_doc.name as doctor_name, users_pat.name as patient_name
+            select apps.id, apps.date, apps.start_time, apps.end_time, users_doc.name as doctor_name, users_pat.name as patient_name
             from appointments apps
             left join doctors on (apps.doctor_id = doctors.id)
             left join users as users_doc on ( doctors.user_id = users_doc.id)
@@ -133,6 +133,20 @@ class AppointmentService
         //dd($this->appointments_current);
         return $this->appointments_current;
     }   
+
+    public function editarCita($appointment_id){
+        // Aquí puedes implementar la lógica para editar una cita existente
+        $this->appointment_edit = DB::select('
+            select apps.id, apps.date, apps.start_time, apps.end_time, users_doc.name as doctor_name, users_pat.name as patient_name
+            from appointments apps
+            left join doctors on (apps.doctor_id = doctors.id)
+            left join users as users_doc on ( doctors.user_id = users_doc.id)
+            left join patients on (  apps.patient_id = patients.id)
+            left join users as users_pat on ( patients.user_id = users_pat.id)
+            where apps.id = ?', [$appointment_id]);
+        //dd($this->appointment_edit);
+        return $this->appointment_edit;
+    }
 
 
 }
