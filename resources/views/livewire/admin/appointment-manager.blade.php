@@ -8,12 +8,13 @@
        
         <P> <H4>SELECCIONAR HORARIO DE CITAS PARA</H4></P>
         <P>
-            <SELECT  wire:model="patient->patient_id" class="form-control">
-               <option value="">Selecciona un paciente</option>
-               @foreach($this->patients as $patient)
-                  <option value="{{ $patient->patient_id }}">{{ $patient->name }}</option>
+           Paciente::
+            <select wire:model="patient" class="form-control">
+               <option value="">Seleccione paciente</option>
+               @foreach( $this->patients as $patient)
+                   <option value="{{$patient->patient_id}}">{{ $patient->name}}</option>
                @endforeach
-            </SELECT>
+            </select>
 
 
         </P>
@@ -143,6 +144,7 @@
                         <td>
                            <button class="btn btn-warning" wire:click="editarCita({{ $appointment->id }})">Modificar</button>
                            <button class="btn btn-danger" wire:click="eliminarCita({{ $appointment->id }})">Eliminar</button>
+                           <a href="{{ route('appointments.consultation', $appointment->id)}}" class="btn btn-primary">Consulta</a>
                         </td>
                      </tr>
                   @endforeach

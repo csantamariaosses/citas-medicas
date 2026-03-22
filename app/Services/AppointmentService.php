@@ -3,7 +3,9 @@
 namespace App\Services;
 use Carbon\Carbon;
 use App\Models\Doctor;
+use App\Models\Consultation;
 use Illuminate\Support\Facades\DB;
+
 
 
 class AppointmentService
@@ -42,6 +44,7 @@ class AppointmentService
        
         //dd("Guardar Cita:Servicio:", $date, $doctor_id, $speciality_id, $start_time, $appointment_duration, $patient_id);
 
+        // Crea nueva cita
         $date = Carbon::parse($date);
         $appointment = new \App\Models\Appointment();
         $appointment->doctor_id = $doctor_id;
@@ -50,8 +53,15 @@ class AppointmentService
         $appointment->date = $date;
         $appointment->start_time = Carbon::createFromFormat('H:i:s', $start_time);
         $appointment->end_time = Carbon::createFromFormat('H:i:s', $start_time)->addMinutes($appointment_duration);
+        $appointment->duration = $appointment_duration;
         $appointment->save();
 
+        // cREA NUEVA CONSULTA ASOCIADA A LA CITA
+        $last_appointment = $appointment->id;
+        $consultation = new Consultation();
+        $consultation->appointment_id = $last_appointment;
+        $consultation->save();
+        return $appointment;
 
 
     }

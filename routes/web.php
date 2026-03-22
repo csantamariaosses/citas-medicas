@@ -41,6 +41,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('specialities', SpecialityController::class);
     Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy']);
     Route::resource('appointments', AppointmentController::class);
+    Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation');
 
 });
 

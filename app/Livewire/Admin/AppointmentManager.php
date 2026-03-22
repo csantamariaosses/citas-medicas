@@ -70,7 +70,7 @@ class AppointmentManager extends Component
     public function mount(){
         $servicio = app('App\Services\PatientService');
         $this->patients = $servicio->patients();
-        //dd( $this->patients );
+       // dd( $this->patients );
 
         $this->specialities = \App\Models\Speciality::all();
 
@@ -171,6 +171,15 @@ class AppointmentManager extends Component
 
 
     }   
+
+    public function editarConsulta($appointment_id, AppointmentService $appointmentService){
+        //dd("Editar consulta ID: ", $appointment_id);
+        //$this->appointment_edit = $appointmentService->editarCita($appointment_id);
+        //dd( "Datos de la cita a editar: ", $this->appointment_edit );
+
+
+    } 
+
 
     public function render()
     {

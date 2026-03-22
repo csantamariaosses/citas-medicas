@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -61,5 +62,16 @@ class AppointmentController extends Controller
     public function destroy(string $id)
     {
         return view('admin.appointments.destroy');
+    }
+
+    public function consultation($id){
+        //return "Consulta_id:: $id";
+        $appointment = Appointment::find( $id);
+        //dd("AppointmentController::", $appointment);
+        //dd( $appointment, $appointment->consultation);
+       // return null;
+       //return "Consultation";
+
+        return view('admin.appointments.consultation', compact('appointment'));
     }
 }
