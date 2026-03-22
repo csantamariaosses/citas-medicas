@@ -31,6 +31,7 @@
             <li><a class="dropdown-item" href="{{ route('doctores.index') }}">Doctores</a></li>
             <li><a class="dropdown-item" href="{{ route('specialities.index') }}">Especialidades</a></li>
             <li><a class="dropdown-item" href="{{ route('appointments.index') }}">Citas</a></li>
+            <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>

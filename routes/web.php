@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\BloodTypeController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\SpecialityController;
 use App\Http\Controllers\Admin\AppointmentController;
+use App\Http\Controllers\Admin\CalendarController;
 
 
 
@@ -43,6 +44,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('appointments', AppointmentController::class);
     Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation');
 
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
