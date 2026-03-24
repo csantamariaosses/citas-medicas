@@ -47,10 +47,15 @@
 
                       slotDuration: '00:15:00',
                       initialView: 'timeGridWeek',
-                      //slotMinTime: '08:00:00',
-                      //slotMaxTime: '18:00:00'
                       slotMinTime: "{{ config('schedules.start_time') }}",
-                      slotMaxTime: "{{ config('schedules.end_time') }}"
+                      slotMaxTime: "{{ config('schedules.end_time') }}",
+
+                      events:{
+                        url:"{{ route('api.appointments.index') }}",
+                        failure: function() {
+                          alert("Ocurrio un error al cargar los eventos");
+                        }
+                      }
                    });
                   calendar.render();
                     //alert("Calendario cargado");
