@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Session;
@@ -45,13 +46,24 @@ Route::prefix('admin')->group(function () {
     Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation');
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('calendartest', [CalendarController::class, 'test'])->name('calendar.test');
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
 
 Route::get('/prueba', function () {
     $schedule = \App\Models\Schedule::all();    
-    dd($schedule);
+    //dd($schedule);
 });
 
+Route::post("prueba.testSave", [AppointmentController::class, 'testSave'])->name('prueba.testSave');
+
 //Route::resource('/appointments', AppointmentController::class);
+
+Route::get('agendadoc', [AppointmentController::class,'agendadoc'] )->name('agendadoc');
+Route::post('agendadoc.especialidad', [AppointmentController::class,'especialidad'] )->name('agendadoc.especialidad');
+
+Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar');
+Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar');
+
+Route::get('login', [LoginController::class, "login"])->name("login");
