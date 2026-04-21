@@ -7,11 +7,8 @@
   <div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">  
-            <h1>Index</h1>
-            <ul>
-              <li><a href="{{ route('productos.index') }}">Producto....</a></li>
-              <li><a href="{{ route('users.index') }}">Usuarios</a></li>
-            </ul>
+            <h1>HOME</h1>
+            <p>Bienvenido a la página de inicio.</p>
         </div>
     </div>    
    </div>

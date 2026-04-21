@@ -50,6 +50,8 @@
                       slotMinTime: "{{ config('schedules.start_time') }}",
                       slotMaxTime: "{{ config('schedules.end_time') }}",
 
+                      
+
                       events:{
                         url:"{{ route('api.appointments.index') }}",
                         failure: function() {
