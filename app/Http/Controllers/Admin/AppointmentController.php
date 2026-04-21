@@ -1,6 +1,10 @@
 <?php
 
+
+
 namespace App\Http\Controllers\Admin;
+
+session_start();
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
@@ -8,9 +12,18 @@ use App\Models\Doctor;
 use App\Models\Schedule;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
+=======
+use App\Models\Doctor;
+use App\Models\Schedule;
+use App\Models\Speciality;
+use Illuminate\Foundation\Auth;
+use Illuminate\Support\Facades\Http;
+use DateTime;
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
 
 class AppointmentController extends Controller
 {
@@ -19,6 +32,8 @@ class AppointmentController extends Controller
      */
     public function index()
     {
+    
+        $_SESSION['paciente'] = "Carlos Santa";
         return view('admin.appointments.index');
     }
 
@@ -81,7 +96,11 @@ class AppointmentController extends Controller
         return view('admin.appointments.consultation', compact('appointment'));
     }
 
+<<<<<<< HEAD
        public function testSave(Request $request){
+=======
+    public function testSave(Request $request){
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
 
         return $request->all();
         /*
@@ -118,6 +137,7 @@ class AppointmentController extends Controller
     public function especialidad(Request $request){
         $patient_id = $request->input('patient_id');
         $especialidad_id = $request->input('especialidad');
+<<<<<<< HEAD
 /*
          $request->validate([
              'especialidad' => 'required|numeric|gt:0'
@@ -125,6 +145,8 @@ class AppointmentController extends Controller
             'especialidad.gt' => 'Debe seleccionar una especialidad válida.'
          ]);
 */
+=======
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
         $speciality = Speciality::find( $especialidad_id);
         //dd( $speciality );
         $specialityName = $speciality->name;
@@ -145,6 +167,7 @@ class AppointmentController extends Controller
     }
 
     public function showcalendar(Request $request){
+<<<<<<< HEAD
 
     /*
         dd($request->all());
@@ -160,6 +183,15 @@ class AppointmentController extends Controller
         $doctorName = $doctor->user->name;
 
         session(['doctor_id' => $doctor_id]);
+=======
+        //dd("function Showcalendar");
+        $doctor_id = $request->input('doctor');
+        session(['doctor_id' => $doctor_id]);
+        $doctor = Doctor::find($doctor_id);
+        $doctorName = $doctor->user->name;
+
+        //dd("doctorName: sesion" , $doctor->user->name);
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
         session(['doctorName' => $doctorName]);
 
 
@@ -198,15 +230,50 @@ class AppointmentController extends Controller
             ];
         };
 
+<<<<<<< HEAD
       
         $json_schedules = json_encode($schedules);
+=======
+        //dd( $arr_schedules[0]['day_of_week'],$arr_schedules[0]['start_time'], $arr_schedules[0]['end_time'] );
+        // GENERANDO DIAS DEL MES PARA PRUEBAS
+        //$mes = 4; // Abril
+        //$anio = 2026;
+        //$totalDias = cal_days_in_month(CAL_GREGORIAN, $mes, $anio); // 
+
+        //$diasMes = [];
+        //for ($i = 1; $i <= $totalDias; $i++) {
+            // Formatear como YYYY-MM-DD
+
+        //    $diasMes[] = [
+        //            'fecha' => date('Y-m-d', strtotime("$anio-$mes-$i")),
+        //            'posicion' => date('w', strtotime( date('Y-m-d', strtotime("$anio-$mes-$i"))))
+         //   ];
+            
+        //}   
+
+        //dd( $diasMes );
+        //$posicionDia = $arr_schedules[0]->day_of_week;
+        //$fechaDeEseDia = date('Y-m-d', strtotime($posicionDia));
+        //dd( $posicionDia, $fechaDeEseDia );
+      
+        //dd($arr_appointments);
+        $json_schedules = json_encode($schedules);
+        //dd( $schedules_json);
+        //$schedules = $schedules->toArray();
+
+        //dd( $schedules, $arr_schedules);
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
 
         return view("admin.agendadoc.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules"));
     }
 
     public function confirmar(Request $request){
+<<<<<<< HEAD
         //$end_time_ = new Date($request->input('startTime'));
         $end_time_ =  Carbon::parse($request->input('startTime'));
+=======
+        $end_time_ = new DateTime($request->input('startTime'));
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
         $end_time_->modify('+15 minutes');
 
         //dd($request->all());
@@ -226,8 +293,11 @@ class AppointmentController extends Controller
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
 
+<<<<<<< HEAD
         $doctor_id = $request->input('doctor_id');
 
+=======
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
         session()->flash( 'swal' , [
             'title' => 'Agendaniento Confirmado',
             'text' => 'La cita ha sido creada con exito !!!!',
@@ -236,7 +306,11 @@ class AppointmentController extends Controller
             'showConfirmButton' => 'Ok'
         ]); 
 
+<<<<<<< HEAD
         return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id") );
+=======
+        return view('index', compact('especialidades', 'doctors'))->with('success', 'Cita confirmada exitosamente.');
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
     }
 
     public function buscahorasreservadas(Request $request) {
@@ -245,4 +319,8 @@ class AppointmentController extends Controller
          return response->json();
         
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
 }

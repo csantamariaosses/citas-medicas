@@ -11,5 +11,23 @@
             <p>Bienvenido a la página de inicio.</p>
         </div>
     </div>    
+
+   @if(session('swal'))
+        <script>
+            Swal.fire(@json(session('swal')));
+        </script>
+    @endif 
+
+    @if(Session::has('success'))
+      <script>
+        Swal.fire({
+                icon: 'success',
+                title: 'Entrada registrada',
+                html: '{{ Session::get('success') }}',
+            })
+      </script>
+    @endif
    </div>
+
+
 @endsection 

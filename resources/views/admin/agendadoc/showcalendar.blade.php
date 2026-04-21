@@ -1,11 +1,19 @@
 @extends('layouts.app') 
 
 @section('menu')
+<<<<<<< HEAD
   @include('menuadmin')
 @endsection
 
 @section('content')
     <h3>SHOW CALENDAR - ADMIN</h3>
+=======
+  @include('menu')
+@endsection
+
+@section('content')
+    <h3>SHOW CALENDAR </h3>
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
     <div class="row">
 
         <div class="col-2">
@@ -36,7 +44,11 @@
       <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <form action="{{ route('agendadoc.confirmar') }}" method="POST">
           @csrf 
+<<<<<<< HEAD
         <div class="modal-dialog color:blue">
+=======
+        <div class="modal-dialog">
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="staticBackdropLabel">Confirmación de Hora</h5>
@@ -129,6 +141,7 @@
         </form>
       </div>
 
+<<<<<<< HEAD
 <style>
 #modal .modal-content {
     background-color: #aee7e7;
@@ -137,6 +150,8 @@
     background-color: #b8c1f4;
 }       
 </style>
+=======
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
 
@@ -306,11 +321,28 @@
                               console.log("Medico:" + doctorName); // 14:00:00
                               console.log("Paciente:" + doctorName); // 14:00:00
 
+<<<<<<< HEAD
                               if( info.event.start < now ) {
                                   alert("La Fecha seleccionada es pasada");  
                               } else {
                                     let now = new Date();
                                     if( info.event.title == 'Disponible'  ) {
+=======
+
+                              if( info.event.title == 'Agendado') {
+                                 $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
+                                 $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
+                                 $("#modalDoctorNameAg").val( doctorName);
+                                 $("#modalPacienteNameAg").val( pacienteName);
+                                 $("#modalSpecialityNameAg").val( specialityName);
+
+                                 $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
+                                 $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
+
+                                   $("#modalAgendado").modal("show");
+                              } else {
+                                    if( info.event.title == 'Disponible') {
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
                                         $("#modalDoctorName").val( doctorName );
                                         $("#modalSpecialityName").val( specialityName );
                                         $("#modalPatientName").val( patientName );
@@ -320,6 +352,7 @@
 
                                         $("#fecha").val( info.event.start.toISOString().slice(0, 10));                                        
                                         $("#startTime").val( info.event.start.toString().split(' ')[4]  );
+<<<<<<< HEAD
                                         $("#modal").modal("show");      
                                     } else { 
                                         if( info.event.title == 'Agendado') {
@@ -336,6 +369,33 @@
                                         }        
                                     }                                                                                       
                               }                                                                                         
+=======
+                                        
+                                        $("#modal").modal("show"); 
+                                    }
+                              }
+                              
+                              
+                              {
+                                    let now = new Date();
+          
+                                    if(  info.event.start > now  ){ // Evitar que se abra el modal para fechas pasadas
+                                        $("#fecha").val( info.event.start.toISOString().slice(0, 10));
+                                        $("#start_time").val( info.event.start.toString().split(' ')[4] );
+                                        $("#modalDoctorName").val( doctorName);
+                                        $("#modalPacienteName").val( pacienteName);
+                                        $("#modalSpecialityName").val( specialityName);
+
+                                        //$("#end_time").val(fecha_fin.toTimeString({ hour12: false }).substring(0, 8)  ); // 14:30:00
+                                        $("#modal").modal("show"); 
+                                        console.log("Abrir modal");
+                                    } else {     
+                                        alert("La Fecha seleccionada es pasada");                           //alert("No puedes seleccionar una fecha pasada");
+                                    }
+
+                              }
+                              
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
                         },
                         hiddenDays: [ 0 ]
                         

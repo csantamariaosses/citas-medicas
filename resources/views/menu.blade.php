@@ -14,15 +14,42 @@
         </li>
         @auth
         <li class="nav-item">
+<<<<<<< HEAD
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; margin-top: 8px; border: none; background: none;">Logout</button>               
             </form>
             
+=======
+          <a class="nav-link" href="{{ route('users.index') }}">Usuarios</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Administración
+          </a>
+          <ul class="dropdown-menu">
+
+            <li><a class="dropdown-item" href="{{ route('roles.index') }}">Roles</a></li>
+            <li><a class="dropdown-item" href="{{ route('permissions.index') }}">Permisos</a></li>
+            <li><a class="dropdown-item" href="{{ route('users.index') }}">Usuarios</a></li>
+            <li><a class="dropdown-item" href="{{ route('patients.index') }}">Pacientes</a></li>
+            <li><a class="dropdown-item" href="{{ route('bloodTypes.index') }}">Tipos de Sangre</a></li>
+            <li><a class="dropdown-item" href="{{ route('doctores.index') }}">Doctores</a></li>
+            <li><a class="dropdown-item" href="{{ route('specialities.index') }}">Especialidades</a></li>
+            <li><a class="dropdown-item" href="{{ route('appointments.index') }}">Citas</a></li>
+            <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario</a></li>
+            <li><a class="dropdown-item" href="{{ route('calendar.test') }}">Calendario Test</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
         </li>
         <li class="nav-item">
             <a class="nav-link" style="color:#0000ff" href="#">{{  Auth::user()->name }}</a>
         </li>
+<<<<<<< HEAD
         @else
         <li class="nav-item">
           <a class="nav-link" href="{{ route('login') }}">Login</a>
@@ -30,6 +57,11 @@
          <li class="nav-item">
           <a class="nav-link" href="{{ route('register') }}">Register</a>
         @endauth
+=======
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('login') }}">Login</a>
+        </li>
+>>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
