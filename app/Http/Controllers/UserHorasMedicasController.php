@@ -15,9 +15,15 @@ class UserHorasMedicasController extends Controller
 {
     public function index()
     {
+        $user_id = session('user_id');
+        $user = User::find($user_id);        
+        $patient_id = $user->patient->id;
+
+        $appointments = Appointment::where('patient_id', $patient_id)->get();
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
-        return view("horasmedicas.index", compact('especialidades','doctors'));    
+        // dd(  $patient_id );
+        return view("horasmedicas.index", compact('especialidades','doctors', 'appointments') );    
 
     }
 
@@ -87,5 +93,10 @@ class UserHorasMedicasController extends Controller
         $json_schedules = json_encode($schedules);
 
         return view("horasmedicas.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules"));
+    }
+
+    public function listhorasagendadas() {
+        dd( pacient_id , doctor_id );
+
     }
 }

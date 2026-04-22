@@ -5,7 +5,37 @@
 @endsection
 
 @section('content')
-
+ <div class="row">
+     <div class="col-12">
+         <h3>HORAS MEDICAS - PACIENTE</h3>
+    </div>
+</div>
+  
+ <div class="row">
+     <div class="col-6">
+         <table class="table">
+             <thead>
+                 <tr>
+                     <th>Fecha</th>
+                     <th>Hora</th>
+                     <th>Doctor</th>
+                     <th>Especialidad</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 @foreach($appointments as $appointment)
+                     <tr>
+                         <td>{{ $appointment->date->format('Y-m-d') }}</td>
+                         <td>{{ $appointment->start_time->format('H:i') }}</td>
+                         <td>{{ $appointment->doctor->user->name }}</td>
+                         <td>{{ $appointment->doctor->speciality->name }}</td>
+                     </tr>
+                 @endforeach
+             </tbody>
+         </table>
+     </div>
+ </div>
+<hr>
  <div class="row">
         <div class="col-8">
               <div class="card">

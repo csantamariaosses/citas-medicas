@@ -9,9 +9,6 @@ abstract class Controller
         return "index";
     }
 
-    public function login(){
-        return "login";
-    }
 
 
 }

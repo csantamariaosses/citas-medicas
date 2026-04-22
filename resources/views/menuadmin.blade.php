@@ -32,10 +32,7 @@
             <li><a class="dropdown-item" href="{{ route('specialities.index') }}">Especialidades</a></li>
             <li><a class="dropdown-item" href="{{ route('appointments.index') }}">Citas</a></li>
             <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario</a></li>
-<<<<<<< HEAD
-=======
             <li><a class="dropdown-item" href="{{ route('calendar.test') }}">Calendario Test</a></li>
->>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
             <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
@@ -44,7 +41,6 @@
         <li class="nav-item">
           <a class="nav-link disabled" aria-disabled="true">Disabled</a>
         </li>
-<<<<<<< HEAD
         @auth
         <li class="nav-item">
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
@@ -64,8 +60,6 @@
          <li class="nav-item">
           <a class="nav-link" href="{{ route('register') }}">Register</a>
         @endauth
-=======
->>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>

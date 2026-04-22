@@ -37,7 +37,11 @@ Route::resource('productos', ProductoController::class);
 //Route::resource('users', UserController::class);
 
 //Administración de usuarios
+
+Route::get('admin.index', [AdminController::class, "index"])->name("admin.index");
+
 Route::prefix('admin')->group(function () {
+    
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
     Route::resource('users', UsersController::class);
@@ -49,13 +53,8 @@ Route::prefix('admin')->group(function () {
     Route::resource('appointments', AppointmentController::class);
     Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation');
 
-<<<<<<< HEAD
-    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');   
-    Route::get('index', [AdminController::class, 'index'])->name('admin.index');   
-=======
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('calendartest', [CalendarController::class, 'test'])->name('calendar.test');
->>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
@@ -75,7 +74,6 @@ Route::post('agendadoc.especialidad', [AppointmentController::class,'especialida
 Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar');
 Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar');
 
-<<<<<<< HEAD
 //Route::get('login', [AuthenticatedSessionController::class, "create"])->name("login");
 
 //Route::resource('/appointments', AppointmentController::class);
@@ -98,6 +96,5 @@ Route::get('/dashboard', function () {
 Route::get('/horasmedicas', [UserHorasMedicasController::class, 'index'])->name('horasmedicas.index')->middleware('auth');
 Route::post('/horasmedicas.doctores', [UserHorasMedicasController::class, 'doctores'])->name('horasmedicas.doctores')->middleware('auth');
 Route::post('/horasmedicas.showcalendar', [UserHorasMedicasController::class, 'showcalendar'])->name('horasmedicas.showcalendar')->middleware('auth');
-=======
-Route::get('login', [LoginController::class, "login"])->name("login");
->>>>>>> 5033bce6b1cb0930b50305631c7b91376bc765e2
+//Route::get('login', [LoginController::class, "login"])->name("login");
+Route::get('/horasmedicas.listar', [UserHorasMedicasController::class, 'listhorasagendadas'])->name('horasmedicas.listar')->middleware('auth');

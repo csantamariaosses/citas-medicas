@@ -20,6 +20,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
+        //dd( $request->all() );
+
         $credentials = $request->only('email', 'password');
         if( Auth::attempt($credentials) ) {
             // Authentication passed...
@@ -31,7 +33,7 @@ class AuthController extends Controller
             if( Auth::user()->name === 'Admin' ) {
                 return redirect()->route('admin.index');
             } else {
-                return redirect()->route('dashboard');
+                return redirect()->route('horasmedicas.index');
             }
 
         }   
