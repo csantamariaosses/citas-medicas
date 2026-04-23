@@ -27,12 +27,21 @@ class AuthController extends Controller
             // Authentication passed...
             $request->session()->regenerate(); 
             session(['user_id' => Auth::id()]);
-            session('user_name', Auth::user()->name);
-            session('user_email', Auth::user()->email);
-            //  dd( session()->all() );
+            session(['user_name' => Auth::user()->name]);
+            session(['user_email' => Auth::user()->email]);
+            session(['patientName' => Auth::user()->name]);
+            
+            
+           
+            
+            //dd( session()->all() );
             if( Auth::user()->name === 'Admin' ) {
                 return redirect()->route('admin.index');
             } else {
+                $user_id = Auth::id();
+                $user = User::find( $user_id );
+                session(['patient_id' => Auth::user()->patient->id]);
+
                 return redirect()->route('horasmedicas.index');
             }
 

@@ -10,6 +10,7 @@ use App\Models\Speciality;
 use App\Models\Doctor;
 use App\Models\Schedule;
 use App\Models\Appointment;
+use Carbon\Carbon;
 
 class UserHorasMedicasController extends Controller
 {
@@ -18,8 +19,9 @@ class UserHorasMedicasController extends Controller
         $user_id = session('user_id');
         $user = User::find($user_id);        
         $patient_id = $user->patient->id;
+        session(['patient_id' => $patient_id]);
 
-        $appointments = Appointment::where('patient_id', $patient_id)->get();
+        $appointments = Appointment::where('patient_id', $patient_id)->orderBy('date')->get();
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
         // dd(  $patient_id );
@@ -36,6 +38,7 @@ class UserHorasMedicasController extends Controller
         //dd( $speciality );
         $specialityName = $speciality->name;
         session(['specialityName' => $specialityName]);
+        
         //dd( session( 'specialityName') );
 
         $doctors = Doctor::where('speciality_id', $especialidad_id)->get();
@@ -99,4 +102,48 @@ class UserHorasMedicasController extends Controller
         dd( pacient_id , doctor_id );
 
     }
+
+    public function confirmar(Request $request){
+        //$end_time_ = new Date($request->input('startTime'));
+        $end_time_ =  Carbon::parse($request->input('startTime'));
+        $end_time_->modify('+15 minutes');
+
+        //dd($request->all());
+        //dd( $end_time_->format('H:i:s') );
+
+        $appointment = new Appointment();
+        $appointment->patient_id = $request->input('patient_id'); // Aquí deberías obtener el ID del paciente autenticado
+        $appointment->doctor_id = $request->input('doctor_id');
+        $appointment->date = $request->input('fecha');
+        $appointment->start_time = $request->input('startTime');
+
+        $appointment->end_time = $end_time_->format('H:i:s');
+        $appointment->duration = 15; // Duración fija de 15 minutos, puedes ajustarla según tus necesidades
+        $appointment->status = 1; // Estado "confirmada"
+        /*
+        $appointment->extendedProps = json_encode([
+            'patient_id' => session('patient_id'),
+            'pacienteName' => session('patientName'),
+            'doctorName' => session('doctorName'),
+            'specialityName' => session('specialityName')
+        ]);
+        */
+        $appointment->save();
+
+        $especialidades = Speciality::all();
+        $doctors = Doctor::all();
+
+        $doctor_id = $request->input('doctor_id');
+
+        session()->flash( 'swal' , [
+            'title' => 'Agendaniento Confirmado',
+            'text' => 'La cita ha sido creada con exito !!!!',
+            'icon' => 'success',
+            //'timer' => 3000,
+            'showConfirmButton' => 'Ok'
+        ]); 
+
+        return view('horasmedicas.showcalendar' , compact("especialidades", "doctors", "doctor_id") );
+    }
+
 }

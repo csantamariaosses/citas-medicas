@@ -70,7 +70,7 @@ Route::post("prueba.testSave", [AppointmentController::class, 'testSave'])->name
 
 Route::get('agendadoc', [AppointmentController::class,'agendadoc'] )->name('agendadoc');
 Route::post('agendadoc.especialidad', [AppointmentController::class,'especialidad'] )->name('agendadoc.especialidad');
-
+Route::post('agendadoc.doctors', [AppointmentController::class,'doctors'] )->name('agendadoc.doctors');
 Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar');
 Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar');
 
@@ -96,5 +96,6 @@ Route::get('/dashboard', function () {
 Route::get('/horasmedicas', [UserHorasMedicasController::class, 'index'])->name('horasmedicas.index')->middleware('auth');
 Route::post('/horasmedicas.doctores', [UserHorasMedicasController::class, 'doctores'])->name('horasmedicas.doctores')->middleware('auth');
 Route::post('/horasmedicas.showcalendar', [UserHorasMedicasController::class, 'showcalendar'])->name('horasmedicas.showcalendar')->middleware('auth');
+Route::post('/horasmedicas.confirmar', [UserHorasMedicasController::class,'confirmar'] )->name('horasmedicas.confirmar');
 //Route::get('login', [LoginController::class, "login"])->name("login");
 Route::get('/horasmedicas.listar', [UserHorasMedicasController::class, 'listhorasagendadas'])->name('horasmedicas.listar')->middleware('auth');

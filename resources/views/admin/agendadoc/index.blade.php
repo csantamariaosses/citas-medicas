@@ -16,7 +16,7 @@
                     <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
-                                     <form name="frmEspecialidad" action="{{ route('horasmedicas.doctores') }}" method="POST">
+                                     <form name="frmEspecialidad" action="{{ route('agendadoc.especialidad') }}" method="POST">
                                       @csrf
                                       <select name="especialidad" id="especialidad">
                                             <option value="0">Seleccione Especialidad</option>
@@ -34,7 +34,7 @@
                                       <span id="selectedEspecialidad"></span>
                                 </div>
                                 <div class="col-6">
-                                     <form action="">
+                                     <form action="{{ route('agendadoc.doctors') }}" method="POST">
                                       @csrf
                                       <select name="doctor" id="doctor">
                                             <option value="0">Seleccione Doctor</option>

@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth;
 use Illuminate\Support\Facades\Http;
 use DateTime;
+use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {

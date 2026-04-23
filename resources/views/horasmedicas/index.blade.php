@@ -8,6 +8,8 @@
  <div class="row">
      <div class="col-12">
          <h3>HORAS MEDICAS - PACIENTE</h3>
+         <p>Bienvenido {{ session('patientName') }} - patient_id: {{ session('patient_id') }}</p>
+         
     </div>
 </div>
   
@@ -16,6 +18,7 @@
          <table class="table">
              <thead>
                  <tr>
+                     <th>patient_id</th>
                      <th>Fecha</th>
                      <th>Hora</th>
                      <th>Doctor</th>
@@ -25,6 +28,7 @@
              <tbody>
                  @foreach($appointments as $appointment)
                      <tr>
+                         <td>{{ $appointment->patient_id }}</td>
                          <td>{{ $appointment->date->format('Y-m-d') }}</td>
                          <td>{{ $appointment->start_time->format('H:i') }}</td>
                          <td>{{ $appointment->doctor->user->name }}</td>

@@ -11,7 +11,8 @@
         <div class="col-8">
               <div class="card">
                     <div class="card-header">
-                          AGENDA DOCTORES - Patient_id:{{ session('patient_id') }} - PatientName:{{ session('patientName') }}
+                          AGENDA DOCTORES - Patient_id:{{ session('patient_id') }} - PatientName:{{ session('patientName') }} - SpecialityName: {{ session('specialityName') }}
+
                     </div>
                     <div class="card-body">
                             <div class="row">

@@ -18,10 +18,10 @@
             <input type="hidden" id="doctorName" value="{{ session('doctorName') }}">
             <input type="hidden" id="specialityName" value="{{ session('specialityName') }}">
             <input type="hidden" id="pacienteName" value="{{ session('paciente') }}">
-                       
+            patient_id: {{ session('patient_id') }} -
+            pacienteName: {{ session('patientName') }} -            
             doctor_id:{{ $doctor_id}} - doctorName: {{ session('doctorName') }}  - Especialidad : {{ session('specialityName') }} - 
-            Patient_id:{{ session('patient_id') }} 
-            PatientName:{{ session('patientName') }} 
+            
           <div x-data="dataCalendar()">
               <div x-ref="calendar"> </div> 
           </div>
@@ -34,7 +34,7 @@
      
    <!-- Modal -->
       <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('agendadoc.confirmar') }}" method="POST">
+        <form action="{{ route('horasmedicas.confirmar') }}" method="POST">
           @csrf 
         <div class="modal-dialog color:blue">
           <div class="modal-content">
@@ -85,7 +85,7 @@
 
       <!-- Modal  Agendado-->
       <div class="modal fade" id="modalAgendado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('agendadoc.confirmar') }}" method="POST">
+        <form action="{{ route('horasmedicas.confirmar') }}" method="POST">
           @csrf 
         <div class="modal-dialog">
           <div class="modal-content">
@@ -214,27 +214,29 @@
                       events: [
                                 <?php
                                 use Illuminate\Support\Facades\DB;                                
-                                $sql = " select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Disponible' as estado, '#669999' as color, ";
+                                $sql = " select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Disponible' as estado, '#5897b1' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend, ";
+                                $sql = $sql ." app.patient_id, app.doctor_id ";
                                 $sql = $sql ." from fechaposdias fecha ";
                                 $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
                                 $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
-                                $sql = $sql ." where sch.doctor_id = 3 ";
+                                $sql = $sql ." where sch.doctor_id = ? ";
                                 $sql = $sql ." and  app.date is null ";
                                 $sql = $sql ." union ";
-                                $sql = $sql ." select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#0000ff' as color, ";
+                                $sql = $sql ." select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#a58d13' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend, ";
+                                $sql = $sql ." app.patient_id, app.doctor_id ";
                                 $sql = $sql ." from fechaposdias fecha ";
                                 $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
                                 $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
-                                $sql = $sql ." where sch.doctor_id = 3";
+                                $sql = $sql ." where sch.doctor_id = ?";
                                 $sql = $sql ." and   sch.doctor_id = app.doctor_id ";
                                 $sql = $sql ." and  app.id is not null";
                                 $sql = $sql ." and  sch.id is not null ";
 
-                                $registros = DB::select( $sql );             
+                                $registros = DB::select( $sql, [$doctor_id, $doctor_id] );             
 
                                 foreach( $registros as $fila) {
                                 ?>
@@ -242,7 +244,12 @@
                                             'start': '<?php echo $fila->fechastart ?>',
                                             'end': '<?php echo $fila->fechaend ?>',
                                             'title': '<?php echo $fila->estado ?>',
-                                            'color': '<?php echo $fila->color ?>'
+                                            'color': '<?php echo $fila->color ?>',
+                                            extendedProps: {
+                                                'patient_id': '<?php echo $fila->patient_id ?>',
+                                                'doctor_id': '<?php echo $fila->doctor_id ?>'                                           
+                                            }
+                                           
                                         },
                                 <?php
                                  }                                 
@@ -304,7 +311,7 @@
                               
                               console.log("Hora:" + info.event.start.toString().split(' ')[4]  ); // 14:00:00
                               console.log("Medico:" + doctorName); // 14:00:00
-                              console.log("Paciente:" + doctorName); // 14:00:00
+                              console.log("Paciente:" + patientName); // 14:00:00
 
                               if( info.event.start < now ) {
                                   alert("La Fecha seleccionada es pasada");  
@@ -323,16 +330,22 @@
                                         $("#modal").modal("show");      
                                     } else { 
                                         if( info.event.title == 'Agendado') {
-                                            $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
-                                            $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
-                                            $("#modalDoctorNameAg").val( doctorName);
-                                            $("#modalPacienteNameAg").val( pacienteName);
-                                            $("#modalSpecialityNameAg").val( specialityName);
+                                            if( info.event.extendedProps.patient_id == patient_id ) {
+//                                                 alert("Esta es una de tus horas agendadas");
+                                                $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
+                                                $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
+                                                $("#modalDoctorNameAg").val( doctorName);
+                                                $("#modalPacienteNameAg").val( pacienteName);
+                                                $("#modalSpecialityNameAg").val( specialityName);
 
-                                            $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
-                                            $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
+                                                $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
+                                                $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
 
-                                            $("#modalAgendado").modal("show");
+                                                $("#modalAgendado").modal("show");
+                                            } else {
+                                                alert("Esta hora ya fue agendada por otro paciente");
+                                            }
+                                           
                                         }        
                                     }                                                                                       
                               }                                                                                         

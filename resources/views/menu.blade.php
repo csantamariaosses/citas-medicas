@@ -19,8 +19,6 @@
                 @csrf
                 <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; margin-top: 8px; border: none; background: none;">Logout</button>               
             </form>
-            
-          <a class="nav-link" href="{{ route('users.index') }}">Usuarios</a>
         </li>
 
         <li class="nav-item">
