@@ -18,9 +18,6 @@ use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserHorasMedicasController;
 
-
-
-
 Route::get('/', function () {
     //return view('welcome');
     $version = app()->version();
@@ -32,7 +29,6 @@ Route::get('/', function () {
     return view('index');
 });
 
-
 Route::resource('productos', ProductoController::class);
 //Route::resource('users', UserController::class);
 
@@ -42,16 +38,16 @@ Route::get('admin.index', [AdminController::class, "index"])->name("admin.index"
 
 Route::prefix('admin')->group(function () {
     
-    Route::resource('roles', RoleController::class);
-    Route::resource('permissions', PermissionController::class);
-    Route::resource('users', UsersController::class);
+    Route::resource('roles', RoleController::class)->middleware('admin');
+    Route::resource('permissions', PermissionController::class)->middleware('admin');
+    Route::resource('users', UsersController::class)->middleware('admin');
     //Route::resource('users', [UsersController::class, 'index'])->name('admin.users.index');
-    Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update','create', 'store','destroy']);
-    Route::resource('bloodTypes', BloodTypeController::class);
-    Route::resource('specialities', SpecialityController::class);
-    Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy']);
-    Route::resource('appointments', AppointmentController::class);
-    Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation');
+    Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update','create', 'store','destroy'])->middleware('admin');
+    Route::resource('bloodTypes', BloodTypeController::class)->middleware('admin');;
+    Route::resource('specialities', SpecialityController::class)->middleware('admin');;
+    Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy'])->middleware('admin');;
+    Route::resource('appointments', AppointmentController::class)->middleware('auth');;
+    Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation')->middleware('auth');;
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('calendartest', [CalendarController::class, 'test'])->name('calendar.test');

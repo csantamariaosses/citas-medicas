@@ -7,8 +7,9 @@
   <div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">  
-            <h1>HOME</h1>
-            <p>Bienvenido a la página de inicio.</p>
+            <p>Bienvenido al sistema de Citas Médicas.</p>
+
+            <img src="{{ asset('images/imagen_citas_medicas.jpg') }}" alt="Description of the image" class="img-fluid">
         </div>
     </div>    
 
