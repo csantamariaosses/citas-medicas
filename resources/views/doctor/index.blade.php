@@ -83,7 +83,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">Gestionar Consulta</h5>
+            <h5 class="modal-title">Gestion de la  Consulta</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
@@ -94,10 +94,10 @@
                 Paciente: {{ $cita->patient->user->name }}<br>
                 Fecha: {{ Illuminate\Support\Arr::first( explode( ' ', $cita->date ) )  }}<br>
                 Hora: {{ Illuminate\Support\Arr::last( explode( ' ', $cita->start_time ) ) }} <br>
-                Diagnostico: <textarea name="diagnostic" class="form-control"></textarea><br>
-                Tratamiento: <textarea name="treatment" class="form-control"></textarea><br>
-                Notas: <textarea name="notes" class="form-control"></textarea><br>
-                Prescription: <textarea name="prescriptions" class="form-control"></textarea><br><br>
+                Diagnostico: <textarea name="diagnostic" class="form-control">{{ $cita->consultation ? $cita->consultation->diagnostic : '' }}</textarea><br>
+                Tratamiento: <textarea name="treatment" class="form-control">{{ $cita->consultation ? $cita->consultation->treatment : '' }}</textarea><br>
+                Notas: <textarea name="notes" class="form-control">{{ $cita->consultation ? $cita->consultation->notes : '' }}</textarea><br>
+                Prescription: <textarea name="prescriptions" class="form-control">{{ $cita->consultation ? $cita->consultation->prescriptions : '' }}</textarea><br><br>
                 Estado de la cita: {{ $cita->status }}
                 <select name="status" class="form-control">
                     @if( $cita->status == App\Enums\AppointmentEnum::SCHEDULED )
