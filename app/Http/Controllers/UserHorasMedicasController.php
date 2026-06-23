@@ -11,17 +11,20 @@ use App\Models\Doctor;
 use App\Models\Schedule;
 use App\Models\Appointment;
 use Carbon\Carbon;
+use App\Enums\AppointmentEnum;
 
 class UserHorasMedicasController extends Controller
 {
     public function index()
     {
         $user_id = session('user_id');
+        //dd( $user_id);
+
         $user = User::find($user_id);        
         $patient_id = $user->patient->id;
-        session(['patient_id' => $patient_id]);
+        //session(['patient_id' => $patient_id]);
 
-        $appointments = Appointment::where('patient_id', $patient_id)->orderBy('date')->get();
+        $appointments = Appointment::where('patient_id', $patient_id)->orderBy('date','desc')->get();
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
         // dd(  $patient_id );
@@ -52,6 +55,7 @@ class UserHorasMedicasController extends Controller
         $doctor_id = $request->input('doctor');
         $doctor = Doctor::find($doctor_id);
         $doctorName = $doctor->user->name;
+        $patient_id = $request->input('patient_id');
 
         session(['doctor_id' => $doctor_id]);
         session(['doctorName' => $doctorName]);
@@ -95,7 +99,7 @@ class UserHorasMedicasController extends Controller
       
         $json_schedules = json_encode($schedules);
 
-        return view("horasmedicas.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules"));
+        return view("horasmedicas.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "patient_id", "appointments", "arr_appointments", "arr_schedules"));
     }
 
     public function listhorasagendadas() {
@@ -134,6 +138,7 @@ class UserHorasMedicasController extends Controller
         $doctors = Doctor::all();
 
         $doctor_id = $request->input('doctor_id');
+        $patient_id = $request->input('patient_id');
 
         session()->flash( 'swal' , [
             'title' => 'Agendaniento Confirmado',
@@ -143,7 +148,36 @@ class UserHorasMedicasController extends Controller
             'showConfirmButton' => 'Ok'
         ]); 
 
-        return view('horasmedicas.showcalendar' , compact("especialidades", "doctors", "doctor_id") );
+        return view('horasmedicas.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patient_id") );
     }
+
+
+    public function cancelar(Request $request){
+        $appointment_id = $request->input('appointment_id');
+        $appointment = Appointment::find($appointment_id);
+        if ($appointment) {
+            //dd("Cancel", $appointment_id, session('patient_id') );
+            $appointment->status = AppointmentEnum::CANCELED; // Estado "cancelada"
+            $appointment->save();
+
+            session()->flash( 'swal' , [
+                'title' => 'Agendaniento Cancelado',
+                'text' => 'La cita ha sido cancelada con exito !!!!',
+                'icon' => 'success',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+        } else {
+            session()->flash( 'swal' , [
+                'title' => 'Error',
+                'text' => 'No se encontró la cita para cancelar.',
+                'icon' => 'error',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+        }
+
+        return redirect()->route('horasmedicas.index');
+    }   
 
 }

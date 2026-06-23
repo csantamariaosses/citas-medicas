@@ -34,6 +34,7 @@ class AppointmentService
                             ->join('specialities', 'doctors.speciality_id', '=', 'specialities.id')
                             ->select('doctors.id as doctor_id','users.name as doctor', 'specialities.id as speciality_id', 'specialities.name as speciality', 'schedules.day_of_week as dia','schedules.start_time', 'schedules.end_time')
                             ->distinct()
+                            ->OrderBy('schedules.start_time', 'desc')
                             ->get();
 
          return $this->doctors;
@@ -139,7 +140,7 @@ class AppointmentService
             left join users as users_doc on ( doctors.user_id = users_doc.id)
             left join patients on (  apps.patient_id = patients.id)
             left join users as users_pat on ( patients.user_id = users_pat.id)
-            order by apps.date, apps.start_time');
+            order by apps.date desc, apps.start_time desc');
         //dd($this->appointments_current);
         return $this->appointments_current;
     }   

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Enums\AppointmentEnum;
 
 class Appointment extends Model
 {
@@ -21,10 +22,11 @@ class Appointment extends Model
     ];
 
     protected $casts = [
+        'status' => AppointmentEnum::class,
         'date' => 'date',
         'start_time' => 'datetime',
-        'end_time' => 'datetime'
-        //'status' => AppointmentEnum::class,
+        'end_time' => 'datetime',
+        
     ];  
 
     public function doctor(){

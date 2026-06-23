@@ -50,7 +50,7 @@
             
        </li>
         <li class="nav-item">
-           <a class="nav-link"  style="color:#0000ff"  href="#">{{  Auth::user()->name }}</a>
+           <a class="nav-link"  style="color:#0000ff"  href="#">{{  Auth::user()->name }} - perfil [{{  session('role') }}]</a>
         </li>
 
         @else

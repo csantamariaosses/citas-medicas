@@ -11,6 +11,7 @@ use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Schedule;
 use App\Models\Speciality;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth;
 use Illuminate\Support\Facades\Http;
@@ -25,7 +26,7 @@ class AppointmentController extends Controller
     public function index()
     {
     
-        $_SESSION['paciente'] = "Carlos Santa";
+        //$_SESSION['paciente'] = "Carlos Santa";
         return view('admin.appointments.index');
     }
 
@@ -109,14 +110,15 @@ class AppointmentController extends Controller
 
     public function agendadoc(){
         //Auth::user()->name = "Carlos Santa";
-        session(['patient_id' => 1]); // Reemplaza 1 con el ID real del paciente autenticado
-        session(['patientName' => 'Carlos Santa Maria']); // Reemplaza 1 con el ID real del paciente autenticado
+        session(['patient_id' => 0]); // Reemplaza 1 con el ID real del paciente autenticado
+        session(['patientName' => 'NN']); // Reemplaza 1 con el ID real del paciente autenticado
        
 
 
         $doctors = Doctor::all();
         $schedules = Schedule::all();
         $especialidades = Speciality::all();
+        //$patients = Patient::all();
         //dd($doctors, $schedules, $especialidades);
         return view("admin.agendadoc.index", compact("doctors", "especialidades", "schedules"));
 
@@ -159,16 +161,7 @@ class AppointmentController extends Controller
         $doctorName = $doctor->user->name;
 
         session(['doctor_id' => $doctor_id]);
-        //dd("function Showcalendar");
-        $doctor_id = $request->input('doctor');
-        session(['doctor_id' => $doctor_id]);
-        $doctor = Doctor::find($doctor_id);
-        $doctorName = $doctor->user->name;
-
-        //dd("doctorName: sesion" , $doctor->user->name);
         session(['doctorName' => $doctorName]);
-
-
 
         $schedules = Schedule::where('doctor_id', $doctor_id)->get();
         $appointments = Appointment::where('doctor_id', $doctor_id)->get();
@@ -204,14 +197,27 @@ class AppointmentController extends Controller
             ];
         };
 
+        $patients = Patient::all();
       
         $json_schedules = json_encode($schedules);
 
-        return view("admin.agendadoc.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules"));
+        return view("admin.agendadoc.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules", "patients"));
     }
 
     public function confirmar(Request $request){
-        //$end_time_ = new Date($request->input('startTime'));
+
+        // Obtener patiente_id
+        $patient_id;
+        if( $request->input('selectPatient_id') != 0) {
+            // id viene desde pantalla modal de admin
+            $patient_id = $request->input('selectPatient_id');
+        } else {
+            if( $request->input('patient_id') !=  null ) {
+                // id viene desde sesion de usuario
+                $patient_id = $request->input('patient_id');
+            }
+        }
+        
         $end_time_ =  Carbon::parse($request->input('startTime'));
         $end_time_->modify('+15 minutes');
 
@@ -219,7 +225,7 @@ class AppointmentController extends Controller
         //dd( $end_time_->format('H:i:s') );
 
         $appointment = new Appointment();
-        $appointment->patient_id = $request->input('patient_id'); // Aquí deberías obtener el ID del paciente autenticado
+        $appointment->patient_id = $patient_id; // Aquí deberías obtener el ID del paciente autenticado
         $appointment->doctor_id = $request->input('doctor_id');
         $appointment->date = $request->input('fecha');
         $appointment->start_time = $request->input('startTime');
@@ -242,7 +248,9 @@ class AppointmentController extends Controller
             'showConfirmButton' => 'Ok'
         ]); 
 
-        return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id") );
+        $patients = Patient::all();
+
+        return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
     }
 
     public function buscahorasreservadas(Request $request) {
@@ -250,5 +258,20 @@ class AppointmentController extends Controller
          $response = Http::get('http://localhost:8080/api/buscahorasreservadas');
          return response->json();
         
+    }
+
+
+    public function cancelaCita(Request $request) {
+        $appointment_id = $request->input('appointment_id');
+        $appointment = Appointment::find($appointment_id);
+
+        if ($appointment) {
+            $appointment->status = 3; // Estado "cancelada"
+            $appointment->save();
+
+            return response()->json(['success' => true, 'message' => 'Cita cancelada exitosamente.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);
+        }
     }
 }

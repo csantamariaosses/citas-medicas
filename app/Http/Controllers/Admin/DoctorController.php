@@ -17,10 +17,10 @@ class DoctorController extends Controller
     public function index()
     {
         //
-        $doctores = Doctor::all();
+       // $doctores = Doctor::all();
         //dd( $doctores );
-        $roles = Role::all();
-        return view('admin.doctores.index', compact('doctores', 'roles'));
+        //$roles = Role::all();
+        return view('admin.doctores.index');
     }
 
     /**

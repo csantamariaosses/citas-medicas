@@ -153,10 +153,10 @@
             let doctorName =  $( "#doctorName" ).val();
             
             let specialityName =  $( "#specialityName").val();
-            //document.getElementById('sesion_id').value
 
             console.log("Doctor_Id:" + doctor_id);
             console.log("Doctor:" + doctorName);
+            console.log("Paciente_id:" + patient_id);
             console.log("Paciente:" + patientName);
             console.log("Especialidad:" + specialityName);
 
@@ -222,8 +222,10 @@
                                 $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
                                 $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
                                 $sql = $sql ." where sch.doctor_id = ? ";
-                                $sql = $sql ." and  app.date is null ";
+                                $sql = $sql ." and  app.date is null ";                                
+                                
                                 $sql = $sql ." union ";
+
                                 $sql = $sql ." select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#a58d13' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend, ";
@@ -232,11 +234,28 @@
                                 $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
                                 $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
                                 $sql = $sql ." where sch.doctor_id = ?";
-                                $sql = $sql ." and   sch.doctor_id = app.doctor_id ";
+                                $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
+                                $sql = $sql ." and  app.id is not null ";
+                                $sql = $sql ." and  sch.id is not null ";
+                                $sql = $sql ." and  app.patient_id = ? ";
+
+                                $sql = $sql ." union ";
+                                
+                                $sql = $sql ." select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Ocupado' as estado, '#e35555' as color, ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend, ";
+                                $sql = $sql ." app.patient_id, app.doctor_id ";
+                                $sql = $sql ." from fechaposdias fecha ";
+                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
+                                $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
+                                $sql = $sql ." where sch.doctor_id = ?";
+                                $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
                                 $sql = $sql ." and  app.id is not null";
                                 $sql = $sql ." and  sch.id is not null ";
+                                $sql = $sql ." and  app.patient_id != ? ";
 
-                                $registros = DB::select( $sql, [$doctor_id, $doctor_id] );             
+                                //$registros = DB::select( $sql, [$doctor_id, $doctor_id, $patient_id, $doctor_id, $patient_id] );             
+                                $registros = DB::select( $sql, [$doctor_id, $doctor_id, $patient_id, $doctor_id, $patient_id] );             
 
                                 foreach( $registros as $fila) {
                                 ?>
@@ -303,7 +322,7 @@
                         
                         eventClick:function(info){
 
-                              console.log("*****evento Click");
+                              console.log("*****evento Click*****");
                               console.log('Title: ' + info.event.title);
 
                               console.log("Fecha:" + info.event.start.toISOString().slice(0, 10)); // 2026-03-30
@@ -312,6 +331,7 @@
                               console.log("Hora:" + info.event.start.toString().split(' ')[4]  ); // 14:00:00
                               console.log("Medico:" + doctorName); // 14:00:00
                               console.log("Paciente:" + patientName); // 14:00:00
+                              console.log("********");
 
                               if( info.event.start < now ) {
                                   alert("La Fecha seleccionada es pasada");  
@@ -346,7 +366,7 @@
                                                 alert("Esta hora ya fue agendada por otro paciente");
                                             }
                                            
-                                        }        
+                                        }  
                                     }                                                                                       
                               }                                                                                         
                         },

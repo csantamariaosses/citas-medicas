@@ -23,7 +23,7 @@ class ConsultationManager extends Component
 
     public function mount(Appointment $appointment){
         //dd("Montaje ConsultationManager");
-//        dd( $appointment_);
+        dd( $appointment_);
         $this->consultation_id = $appointment->consultation->id;
         $this->form = [
             'diagnostic' => $appointment->consultation->diagnostic,

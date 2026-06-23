@@ -51,7 +51,19 @@
                       <th>Especialidad:</th><td><input type="text" id="modalSpecialityName" name="modalSpecialityName" value="{{ session('specialityName') }}" disabled></td>
                     </tr>
                     <tr>
-                      <th>Paciente:</th><td><input type="text" id="modalPatientName" name="modalPatientName" value="{{ session('patientName') }}" disabled></td>
+                        @if( session('patientName') != 'NN')
+                         <th>Paciente:</th><td><input type="text" id="modalPatientName" name="modalPatientName" value="{{ session('patientName') }}" disabled></td>
+                        @else
+                         <th>Paciente:</th><td>
+                           <select name="selectPatient_id">
+                             <option value="0">Seleccione un paciente</option>
+                              @foreach($patients as $patient)
+                                  <option value="{{ $patient->id }}">{{ $patient->id }}-{{ $patient->user->name }}</option>
+                             @endforeach
+                           </select>
+                        </td>
+                       @endif
+
                     </tr>
                     <tr>
                         <th>Fecha:</th><td><input type="text" id="modalFecha" name="modalFecha" disabled></td>
@@ -102,7 +114,7 @@
                       <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameAg" name="modalSpecialityNameAg" value="{{ session('specialityName') }}" disabled></td>
                     </tr>
                     <tr>
-                      <th>Paciente:</th><td><input type="text" id="modalPatientNameAg" name="modalPatientNameAg" value="{{ session('patientName') }}" disabled></td>
+                      <th>Paciente:</th><td><input type="text" id="modalPatientNameAg" name="modalPatientNameAg"  disabled></td>
                     </tr>
                     <tr>
                         <th>Fecha:</th><td><input type="text" id="fechaAg" name="fechaAg" disabled></td>
@@ -216,23 +228,32 @@
                                 use Illuminate\Support\Facades\DB;                                
                                 $sql = " select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Disponible' as estado, '#669999' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , ' ' as doctorName, ' ' as patientName ";
                                 $sql = $sql ." from fechaposdias fecha ";
                                 $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
                                 $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
+
                                 $sql = $sql ." where sch.doctor_id = ?";
                                 $sql = $sql ." and  app.date is null ";
+
                                 $sql = $sql ." union ";
+
                                 $sql = $sql ." select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#a58d13' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend,   user1.name as doctorName, user2.name as patientName ";
                                 $sql = $sql ." from fechaposdias fecha ";
                                 $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
                                 $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
+                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id ) ";
+                                $sql = $sql ." left join users user1 on ( doc.user_id = user1.id ) ";
+                                $sql = $sql ." left join patients pat on ( app.patient_id = pat.id ) ";
+                                $sql = $sql ." left join users user2 on ( pat.user_id = user2.id ) ";
                                 $sql = $sql ." where sch.doctor_id = ?";
-                                $sql = $sql ." and   sch.doctor_id = app.doctor_id ";
+                                $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
                                 $sql = $sql ." and  app.id is not null";
                                 $sql = $sql ." and  sch.id is not null ";
+
+
 
                                 $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id')] );             
 
@@ -242,7 +263,13 @@
                                             'start': '<?php echo $fila->fechastart ?>',
                                             'end': '<?php echo $fila->fechaend ?>',
                                             'title': '<?php echo $fila->estado ?>',
-                                            'color': '<?php echo $fila->color ?>'
+                                            'color': '<?php echo $fila->color ?>',
+                                            
+                                            extendedProps: {
+                                                doctorName: '<?php echo $fila->doctorName ?>',
+                                                patientName: '<?php echo $fila->patientName ?>'
+                                            }
+                                                
                                         },
                                 <?php
                                  }                                 
@@ -303,8 +330,8 @@
                               console.log('Start: ' + info.event.start);
                               
                               console.log("Hora:" + info.event.start.toString().split(' ')[4]  ); // 14:00:00
-                              console.log("Medico:" + doctorName); // 14:00:00
-                              console.log("Paciente:" + doctorName); // 14:00:00
+                              console.log("Medico:" + info.event.extendedProps.doctorName); // 14:00:00
+                              console.log("Paciente:" + info.event.extendedProps.patientName); // 14:00:00
 
                               if( info.event.start < now ) {
                                   alert("La Fecha seleccionada es pasada");  
@@ -325,8 +352,8 @@
                                         if( info.event.title == 'Agendado') {
                                             $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
                                             $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
-                                            $("#modalDoctorNameAg").val( doctorName);
-                                            $("#modalPacienteNameAg").val( pacienteName);
+                                            $("#modalDoctorNameAg").val( info.event.extendedProps.doctorName);
+                                            $("#modalPatientNameAg").val( info.event.extendedProps.patientName);
                                             $("#modalSpecialityNameAg").val( specialityName);
 
                                             $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));

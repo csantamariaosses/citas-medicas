@@ -51,15 +51,13 @@
                     </td>
                   </tr>
               @endforeach
-            <?php} else { ?>
+            <?php } else { ?>
                 <tr>
                     <td colspan="7">No se encontraron pacientes.</td>
                 </tr>
             <?php } ?>
           </tbody>
         </table>
-
-            }
 
         <br>
 
