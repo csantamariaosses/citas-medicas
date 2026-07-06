@@ -18,7 +18,7 @@
 </style>
     <div class="row">
         <div class="col-10 offset-2">  
-          <h3>Doctor Dashboard</h3>
+          <h3>Listado Citas Médicas</h3>
         </div>
     </div>
     <div class="row">
@@ -37,38 +37,30 @@
                 <th>Estado Cita</th>
                 <th>Acciones</th>
             </thead>
-            @foreach($citas as $cita)
+            @foreach($appointments  as $appointment)
 
             <tbody>
                 <tr>
-                <td>{{ Illuminate\Support\Arr::first( explode( ' ', $cita->date ) )  }}</td>
-                <td>{{ Illuminate\Support\Arr::last( explode( ' ', $cita->start_time ) ) }}</td>
-                <td>{{ $cita->patient->user->name }}</td>
-                <td>    @if( $cita->status == App\Enums\AppointmentEnum::SCHEDULED )
-                            <span class="color-green">{{ $cita->status->label() }}</span></td>
-                        @elseif( $cita->status == App\Enums\AppointmentEnum::CANCELED )
-                            <span class="color-red">{{ $cita->status->label() }}</span></td>
-                        @elseif( $cita->status == App\Enums\AppointmentEnum::COMPLETED )
-                            <span class="color-blue">{{ $cita->status->label() }}</span></td>
-                        @elseif( $cita->status == App\Enums\AppointmentEnum::EN_PROCESO )
-                            <span class="color-yellow">{{ $cita->status->label() }}</span></td>
+                <td>{{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}</td>
+                <td>{{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }}</td>
+                <td>{{ $appointment->patient->user->name }}</td>
+                <td>    @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )
+                            <span class="color-green">{{ $appointment->status->label() }}</span></td>
+                        @elseif( $appointment->status == App\Enums\AppointmentEnum::CANCELED )
+                            <span class="color-red">{{ $appointment->status->label() }}</span></td>
+                        @elseif( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
+                            <span class="color-blue">{{ $appointment->status->label() }}</span></td>
+                        @elseif( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
+                            <span class="color-yellow">{{ $appointment->status->label() }}</span></td>
                         @endif
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal-{{ $cita->id }}">
-                         Gestionar
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal-{{ $appointment->id }}">
+                         Ver / Gestionar
                     </button>
-                    <a href="{{ route('doctor.cita.show', $cita->id) }}" class="btn btn-primary">Ver</a>
-                    <a href="{{ route('doctor.cita.gestionar', $cita->id) }}" class="btn btn-primary">Gestionar</a>
-                    <form action="{{ route('doctor.cita.destroy', $cita->id) }}" 
-                          method="POST" 
-                          style="display:inline;"
-                          class="delete-form">
-                        @csrf
-                        @method('DELETE')
-                        <input type="hidden" name="id" value="{{ $cita->id }}">
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
+                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModalHistorial-{{ $appointment->id }}">
+                         Historial
+                    </button>
                 </td>
                 <tr>      
             </tbody>
@@ -78,8 +70,8 @@
     </div>
 
     <!-- Estructura del Modal -->
-    @foreach($citas as $cita)
-    <div class="modal fade" id="miModal-{{ $cita->id }}" tabindex="-1" aria-hidden="true">
+    @foreach($appointments as $appointment)
+    <div class="modal fade" id="miModal-{{ $appointment->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
@@ -89,43 +81,117 @@
         <div class="modal-body">
             <form action="{{ route('doctor.cita.update') }}" method="POST">
                 @csrf
-                <input type="hidden" name="cita_id" value="{{ $cita->id }}">
-                Cita: {{ $cita->id }}<br>
-                Paciente: {{ $cita->patient->user->name }}<br>
-                Fecha: {{ Illuminate\Support\Arr::first( explode( ' ', $cita->date ) )  }}<br>
-                Hora: {{ Illuminate\Support\Arr::last( explode( ' ', $cita->start_time ) ) }} <br>
-                Diagnostico: <textarea name="diagnostic" class="form-control">{{ $cita->consultation ? $cita->consultation->diagnostic : '' }}</textarea><br>
-                Tratamiento: <textarea name="treatment" class="form-control">{{ $cita->consultation ? $cita->consultation->treatment : '' }}</textarea><br>
-                Notas: <textarea name="notes" class="form-control">{{ $cita->consultation ? $cita->consultation->notes : '' }}</textarea><br>
-                Prescription: <textarea name="prescriptions" class="form-control">{{ $cita->consultation ? $cita->consultation->prescriptions : '' }}</textarea><br><br>
-                Estado de la cita: {{ $cita->status }}
+                <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
+                Cita: {{ $appointment->id }}<br>
+                Paciente: {{ $appointment->patient->user->name }}<br>
+                Fecha: {{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}<br>
+                Hora: {{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }} <br>
+                <hr>
+                Tipo de Sangre: {{ $appointment->patient->bloodType->name }} <br>
+                Alergias: <textarea name="allergies" class="form-control">{{ $appointment->patient->allergies }}</textarea> <br>
+                Enfermedades Crónicas: <textarea name="chronicDiseases" class="form-control">{{ $appointment->patient->chronics_conditions }}</textarea> <br><br>
+                <hr>
+                Diagnostico: <textarea name="diagnostic" class="form-control">{{ $appointment->consultation ? $appointment->consultation->diagnostic : '' }}</textarea><br>
+                Tratamiento: <textarea name="treatment" class="form-control">{{ $appointment->consultation ? $appointment->consultation->treatment : '' }}</textarea><br>
+                Prescription: <textarea name="prescriptions" class="form-control">{{ $appointment->consultation ? $appointment->consultation->prescriptions : '' }}</textarea><br><br>
+                Notas: <textarea name="notes" class="form-control">{{ $appointment->consultation ? $appointment->consultation->notes : '' }}</textarea><br>
+                Estado de la cita: {{ $appointment->status }}
+               
+                
                 <select name="status" class="form-control">
-                    @if( $cita->status == App\Enums\AppointmentEnum::SCHEDULED )
+                    @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )
                         <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}" selected>Agendada</option>
                     @else 
                         <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}">Agendada</option>
                     @endif
 
-                    @if( $cita->status == App\Enums\AppointmentEnum::COMPLETED )
+                    @if( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
                         <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" selected>Terminada</option>
                     @else
                         <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" >Terminada</option>
                     @endif
 
-                    @if( $cita->status == App\Enums\AppointmentEnum::CANCELED )
+                    @if( $appointment->status == App\Enums\AppointmentEnum::CANCELED )
                         <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" selected>Cancelada</option>
                     @else
                         <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" >Cancelada</option>
                     @endif
 
-                    @if( $cita->status == App\Enums\AppointmentEnum::EN_PROCESO )
+                    @if( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
                         <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" selected>En Proceso</option>
                     @else
                         <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" >En Proceso</option>
                     @endif
                     
                 </select><br><br>
-                <input type="hidden" name="id" value="{{ $cita->id }}">
+                <input type="hidden" name="id" value="{{ $appointment->id }}">
+                <button type="submit" class="btn btn-primary">Guardar</button> 
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+    @endforeach
+
+     <!-- Estructura del Modal -->
+    @foreach($appointments as $appointment)
+    <div class="modal fade" id="miModalHistorial-{{ $appointment->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Historial Paciente</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{{ route('doctor.cita.update') }}" method="POST">
+                @csrf
+                <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
+                Cita: {{ $appointment->id }}<br>
+                Paciente: {{ $appointment->patient->user->name }}<br>
+                Fecha: {{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}<br>
+                Hora: {{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }} <br>
+                <hr>
+                Tipo de Sangre: {{ $appointment->patient->bloodType->name }} <br>
+                Alergias: <textarea name="allergies" class="form-control">{{ $appointment->patient->allergies }}</textarea> <br>
+                Enfermedades Crónicas: <textarea name="chronicDiseases" class="form-control">{{ $appointment->patient->chronics_conditions }}</textarea> <br><br>
+                <hr>
+                Diagnostico: <textarea name="diagnostic" class="form-control">{{ $appointment->consultation ? $appointment->consultation->diagnostic : '' }}</textarea><br>
+                Tratamiento: <textarea name="treatment" class="form-control">{{ $appointment->consultation ? $appointment->consultation->treatment : '' }}</textarea><br>
+                Prescription: <textarea name="prescriptions" class="form-control">{{ $appointment->consultation ? $appointment->consultation->prescriptions : '' }}</textarea><br><br>
+                Notas: <textarea name="notes" class="form-control">{{ $appointment->consultation ? $appointment->consultation->notes : '' }}</textarea><br>
+                Estado de la cita: {{ $appointment->status }}
+               
+                
+                <select name="status" class="form-control">
+                    @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )
+                        <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}" selected>Agendada</option>
+                    @else 
+                        <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}">Agendada</option>
+                    @endif
+
+                    @if( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
+                        <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" selected>Terminada</option>
+                    @else
+                        <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" >Terminada</option>
+                    @endif
+
+                    @if( $appointment->status == App\Enums\AppointmentEnum::CANCELED )
+                        <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" selected>Cancelada</option>
+                    @else
+                        <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" >Cancelada</option>
+                    @endif
+
+                    @if( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
+                        <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" selected>En Proceso</option>
+                    @else
+                        <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" >En Proceso</option>
+                    @endif
+                    
+                </select><br><br>
+                <input type="hidden" name="id" value="{{ $appointment->id }}">
                 <button type="submit" class="btn btn-primary">Guardar</button> 
             </form>
         </div>

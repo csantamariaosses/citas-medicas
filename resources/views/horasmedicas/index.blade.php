@@ -67,6 +67,7 @@ th {
                         <th>Doctor</th>
                         <th>Especialidad</th>
                         <th>Estado</th>
+                        <th>Ver Detalle</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -87,12 +88,17 @@ th {
                                 @elseif( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
                                  <span class="color-blue">{{ $appointment->status->label() }}</span></td>
                                 @else
-                                 <span>{{ $appointment->status->label() }}</span></td>
+                                 <span>{{ $appointment->status->label() }}</span>                            
                                 @endif
+                            </td>
+                            <td> 
+                                <button type="button" class="btn btn-primary "  data-bs-toggle="modal" data-bs-target="#ModalDetalle-{{ $appointment->id }}"> Ver Detalle
+                                </button>
+                            </td>
                             <td>
                             @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )    
-                            <button type="button" class="btn btn-primary "  data-bs-toggle="modal" data-bs-target="#Modal-{{ $appointment->id }}">
-  Cancelar Cita
+                            <button type="button" class="btn btn-danger "  data-bs-toggle="modal" data-bs-target="#Modal-{{ $appointment->id }}">
+                                 Cancelar Cita
                             </button>
                             @else
                             <span style="color:gray;">No disponibles</span>
@@ -157,7 +163,7 @@ th {
     </div>
 
 
-    <!-- Modal -->
+<!-- Modal -->
 @foreach($appointments as $appointment)
 <div class="modal fade" id="Modal-{{ $appointment->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -184,7 +190,37 @@ th {
     </div> 
     </div>
   </div>
-   @endforeach
+@endforeach
+   
+
+<!-- Modal Detalle -->
+@foreach($appointments as $appointment)
+<div class="modal fade" id="ModalDetalle-{{ $appointment->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detalle Cita</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Id:</strong> {{ $appointment->id }}</p>
+        <p><strong>Fecha:</strong> {{ $appointment->date }}</p>
+        <p><strong>Hora:</strong> {{ $appointment->start_time }}</p>
+        <p><strong>Especialidad:</strong> {{ $appointment->doctor->speciality->name }}</p>
+        <p><strong>Médico:</strong> {{ $appointment->doctor->user->name }}</p>
+        <p><strong>Paciente:</strong> {{ $appointment->patient->user->name }}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div> 
+    </div>
+  </div>
+@endforeach
+
    
     <script>
         document.getElementById('especialidad').addEventListener('change', function() {

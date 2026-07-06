@@ -39,8 +39,8 @@
               <td>{{ $doctor->user->phone }}</td>
               <td>{{ $doctor->active ? 'Activo' : 'Inactivo' }}</td>
               <td>
-                <a href="{{ route('doctores.show', $doctor->id) }}" class="btn btn-primary">Ver</a>
-                <a href="{{ route('doctores.edit', $doctor->id) }}" class="btn btn-primary">Editar::</a>
+                <a href="{{ route('doctores.edit', $doctor->id) }}" class="btn btn-primary">Ver / Editar</a>
+                <!--
                 <form action="{{ route('doctores.destroy', $doctor->id) }}" 
                   method="POST" 
                   style="display:inline;"
@@ -48,9 +48,10 @@
                   @csrf
                   @method('DELETE')
                   <input type="hidden" name="id" value="{{ $doctor->id }}">
-                  <button type="submit" class="btn btn-danger">Eliminar::</button>
+                  <button type="submit" class="btn btn-danger">Eliminar::-></button>
                 </form>
-                <a href="{{ route('doctores.schedules', $doctor->id) }}" class="btn btn-info">Ver Horarios</a>
+-->
+                <a href="{{ route('doctores.schedules', $doctor->id) }}" class="btn btn-info" target="_blank">Ver Horarios</a>
               </td>
             </tr>
             @endforeach

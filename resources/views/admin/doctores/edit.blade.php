@@ -77,10 +77,9 @@
                           </select>
                         </div>
 
-                      <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-primary" type="submit">Guardar</button>
-                        <button class="btn btn-primary" type="button" onClick="window.history.back()">Cancelar</button>
-
+                      <div class="d-grid gap-2 d-md-block">                        
+                          <button class="btn btn-primary" type="button" onClick="window.history.back()">Cancelar</button>
+                          <button class="btn btn-primary" type="submit">Guardar</button>
                       </div>
                   </form>
               </div>     <!-- card-body -->       
@@ -88,4 +87,5 @@
         </div> <!-- col-md-6 offset-md-3 -->
       </div> <!-- row -->
   </div>  <!-- container --> 
+  <br><br><br>
   @endsection

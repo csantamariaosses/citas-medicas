@@ -17,10 +17,8 @@ class DoctorController extends Controller
     public function index()
     {
         //
-       // $doctores = Doctor::all();
-        //dd( $doctores );
-        //$roles = Role::all();
-        return view('admin.doctores.index');
+        $doctores = Doctor::orderBy('created_at', 'desc')->get();
+        return view('admin.doctores.index', compact('doctores'));
     }
 
     /**
@@ -63,7 +61,7 @@ class DoctorController extends Controller
 
         $doctor->save();
 
-        $doctores = Doctor::all();
+        $doctores = Doctor::orderBy('created_at', 'desc')->get();
         $roles = Role::all();
 
         return redirect()->route('doctores.index', compact('doctores', 'roles'));
@@ -127,7 +125,7 @@ class DoctorController extends Controller
         $user->syncRoles($roleName);
         $user->save();
         
-        $doctores = Doctor::all();
+        $doctores = Doctor::orderBy('created_at', 'desc')->get();
         return view('admin.doctores.index', compact('doctores'));
         
 

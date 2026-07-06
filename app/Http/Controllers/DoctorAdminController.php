@@ -9,6 +9,7 @@ use App\Models\Speciality;
 use Spatie\Permission\Models\Role;  
 use App\Models\Appointment;
 use App\Models\Consultation;
+use App\Models\Patient;
 
 class DoctorAdminController extends Controller
 {
@@ -21,10 +22,11 @@ class DoctorAdminController extends Controller
          session(['doctor_id' => $doctor->id]);
          //dd( session('doctor_id') );
 
-         $citas = Appointment::where('doctor_id', session('doctor_id'))->orderBy('date', 'desc')->get();
+         $appointments = Appointment::where('doctor_id', session('doctor_id'))->orderBy('date', 'desc')->get();
+         //dd( $citas->all() );
    
          $doctor = Doctor::find(session('doctor_id'));
-         return view('doctor.index', compact('citas','doctor'));
+         return view('doctor.index', compact('appointments','doctor'));
           
      
     }
@@ -32,19 +34,26 @@ class DoctorAdminController extends Controller
 
     public function gestionar($id)
     {
-        $cita = Appointment::findOrFail($id);
-        return view('doctor.gestionar', compact('cita'));
+        $appointment = Appointment::findOrFail($id);
+        return view('doctor.gestionar', compact('appointment'));
     }
 
     public function update(Request $request )
     {
         //dd( $request->all() );
-        $cita = Appointment::findOrFail($request->cita_id );
-        $cita->status = $request->input('status');
-        $cita->save();
+        $appointment = Appointment::findOrFail($request->cita_id );        
+        $appointment->status = $request->input('status');
+        $appointment->save();
+
+        $patient = Patient::find($appointment->patient_id);
+        $patient->allergies = $request->input('allergies');
+        $patient->chronics_conditions = $request->input('chronicDiseases');
+        $patient->save();
+
 
         $consult = Consultation::where('appointment_id', $request->cita_id)->first();
         if( $consult ){
+            
             $consult->diagnostic = $request->diagnostic;
             $consult->treatment = $request->treatment;
             $consult->notes = $request->notes;
@@ -60,6 +69,15 @@ class DoctorAdminController extends Controller
             $consulta->save();
         }
 
+        //dd( $appointment->all());
+
         return redirect()->route('doctor.index')->with('success', 'Cita actualizada correctamente.');
+    }
+
+    public function dashboard()
+    {
+        $doctor = Doctor::where('user_id', session('user_id'))->first();
+        $appointments = Appointment::where('doctor_id', $doctor->id)->orderBy('date', 'desc')->get();
+        return view('doctor.dashboard', compact('appointments','doctor'));
     }
 }

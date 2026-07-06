@@ -28,7 +28,7 @@ class PatientController extends Controller
             ->get();
             //dd($patients);
 */
-        $patients = Patient::all();
+        $patients = Patient::orderBy('created_at', 'desc')->get();
         //dd( $patients );
         return view('admin.patients.index', compact('patients'));
     }   
@@ -86,7 +86,7 @@ class PatientController extends Controller
             'blood_types.name as blood_type')
             ->get();
         */
-        $patients = Patient::all();
+        $patients = Patient::orderBy('created_at', 'desc')->get();
         return view('admin.patients.index', compact('patients'));
 
     }   
