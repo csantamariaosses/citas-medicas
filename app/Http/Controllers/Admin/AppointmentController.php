@@ -274,4 +274,28 @@ class AppointmentController extends Controller
             return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);
         }
     }
+
+    public function agendadocfull(){
+        $especialidades = Speciality::all();
+        $doctors = Doctor::all();
+        $patients = Patient::all();
+
+        $appointments = Appointment::where('status', '!=', 3)->orderBy('date', 'desc')->orderBy('start_time', 'desc')->get();
+
+        return view("admin.agendafull.index", compact("appointments"));
+    }
+
+    public function dashboard(){
+        /*
+        $especialidades = Speciality::all();
+        $doctors = Doctor::all();
+        $patients = Patient::all();
+
+        $appointments = Appointment::where('status', '!=', 3)->orderBy('date', 'desc')->orderBy('start_time', 'desc')->get();
+
+        return view("admin.dashboard.index");
+        */
+        //-return "Dashboard";
+        return view("admin.dashboard.index");
+    }
 }

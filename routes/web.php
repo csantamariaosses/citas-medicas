@@ -54,11 +54,12 @@ Route::prefix('admin')->group(function () {
     Route::resource('users', UsersController::class)->middleware('admin');
     //Route::resource('users', [UsersController::class, 'index'])->name('admin.users.index');
     Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update','create', 'store','destroy'])->middleware('admin');
-    Route::resource('bloodTypes', BloodTypeController::class)->middleware('admin');;
-    Route::resource('specialities', SpecialityController::class)->middleware('admin');;
-    Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy'])->middleware('admin');;
-    Route::resource('appointments', AppointmentController::class)->middleware('auth');;
-    Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation')->middleware('auth');;
+    Route::resource('bloodTypes', BloodTypeController::class)->middleware('admin');
+    Route::resource('specialities', SpecialityController::class)->middleware('admin');
+    Route::resource('doctores', DoctorController::class)->only(['index', 'create','store','show', 'edit', 'update','destroy'])->middleware('admin');
+    Route::resource('appointments', AppointmentController::class)->middleware('auth');
+    Route::get('appointments/consultation/{id}', [AppointmentController::class,'consultation'] )->name('appointments.consultation')->middleware('auth');
+    Route::get('dashboard', [AppointmentController::class,'dashboard'] )->name('dashboard')->middleware('auth');
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('calendartest', [CalendarController::class, 'test'])->name('calendar.test');
@@ -68,6 +69,7 @@ Route::prefix('admin')->group(function () {
     Route::post('agendadoc.doctors', [AppointmentController::class,'doctors'] )->name('agendadoc.doctors')->middleware('admin');
     Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');
     Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar')->middleware('admin');
+    Route::get('agendadocfull', [AppointmentController::class,'agendadocfull'] )->name('agendadocfull')->middleware('admin');
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');

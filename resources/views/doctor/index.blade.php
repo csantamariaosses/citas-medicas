@@ -15,6 +15,12 @@
     .color-blue {
         color: #0000ff;
     }
+    .color-orange {
+        color: #ffa500;
+    }
+    .color-brown {
+        color: #97660a;
+    }
 </style>
     <div class="row">
         <div class="col-10 offset-2">  
@@ -51,7 +57,7 @@
                         @elseif( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
                             <span class="color-blue">{{ $appointment->status->label() }}</span></td>
                         @elseif( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
-                            <span class="color-yellow">{{ $appointment->status->label() }}</span></td>
+                            <span class="color-brown">{{ $appointment->status->label() }}</span></td>
                         @endif
                 </td>
                 <td>
@@ -79,6 +85,23 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
+
+            @switch ($appointment->status) 
+                @case(App\Enums\AppointmentEnum::SCHEDULED)
+                    <span class="badge bg-success">Agendada</span>
+                    @break
+                @case(App\Enums\AppointmentEnum::COMPLETED)
+                    <span class="badge bg-primary">Terminada</span>
+                    @break
+                @case(App\Enums\AppointmentEnum::CANCELED)
+                    <span class="badge bg-danger">Cancelada</span>
+                    @break
+                @case(App\Enums\AppointmentEnum::EN_PROCESO)
+                    <span class="badge bg-warning">En Proceso</span>
+                    @break
+            @endswitch
+            
+
             <form action="{{ route('doctor.cita.update') }}" method="POST">
                 @csrf
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">

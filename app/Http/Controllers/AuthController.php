@@ -68,7 +68,8 @@ class AuthController extends Controller
 
 
         }   else {
-            dd("No autenticado");
+            //dd("No autenticado");
+            return redirect()->back()->withErrors(['email' => 'Credenciales incorrectas.']);
         }
 
         return back()->withErrors([
