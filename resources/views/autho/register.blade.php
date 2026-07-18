@@ -11,7 +11,7 @@
         <div class="row">
         <div class="col-md-4 offset-md-2">  
              <div class="card">
-                <div class="card-header">Registro:::</div>
+                <div class="card-header">Registro</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
@@ -27,6 +27,7 @@
                             <label for="password_confirmation" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required placeholder="password">
                         </div>
+                         <a href="{{ route('home') }}" button type="button" class="btn btn-primary">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Registrar</button>
                     </form>
                 </div>

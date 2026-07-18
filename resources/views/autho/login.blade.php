@@ -23,7 +23,8 @@
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required autocomplete="off">
                         </div>
-                        <button type="submit" class="btn btn-primary">Login::</button>
+                        <a href="{{ route('home') }}" button type="button" class="btn btn-primary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Login</button>
                     </form>
                 </div>
               </div>

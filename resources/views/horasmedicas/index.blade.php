@@ -215,6 +215,7 @@ th {
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="{{ route('horasmedicas.imprimir', ['id' => $appointment->id]) }}" class="btn btn-primary" target="_blank">Imprimir</a>
       </div>
     </div> 
     </div>

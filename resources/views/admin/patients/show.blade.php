@@ -81,43 +81,42 @@
             <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Info Clinica</button>
             <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
           </div>
-        </nav>
+      </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
-            <div class="mb-3">
-                          <label for="name" class="form-label">Nombre::</label>
-                          <input type="text" class="form-control" id="name" name="name" placeholder="nombre" value="{{ $patient->user->name }}" readonly>
-                        </div>
-                        <div class="mb-3">
-                          <label for="email" class="form-label">Email::</label>
-                          <input type="email" class="form-control" id="email" name="email" placeholder="email"  value="{{ $patient->user->email }}" readonly  >
-                        </div>
+             <div class="mb-3">
+                  <label for="name" class="form-label">Nombre::</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="nombre" value="{{ $patient->user->name }}" readonly>
+             </div>
+             <div class="mb-3">
+                  <label for="email" class="form-label">Email::</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="email"  value="{{ $patient->user->email }}" readonly  >
+             </div>
 
-                        <div class="mb-3">
-                          <label for="address" class="form-label">Dirección:</label>
-                          <input type="text" class="form-control" id="address" name="address" placeholder="Dirección" value="{{ $patient->user->address }}" readonly>
-                        </div>
+             <div class="mb-3">
+                  <label for="address" class="form-label">Dirección:</label>
+                  <input type="text" class="form-control" id="address" name="address" placeholder="Dirección" value="{{ $patient->user->address }}" readonly>
+             </div>
           </div>
           <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <div class="mb-3">
+              <div class="mb-3">
                   <label for="email" class="form-label">Tipo de Sangre</label>
                   <input type="text" class="form-control" id="bloodType" name="bloodType" placeholder="Tipo de Sangre" value="{{ $patient->bloodType->name }}" readonly>
+              </div>
 
-                </div>
-
-                <div class="mb-3">
+              <div class="mb-3">
                   <label for="allergies" class="form-label">Tipos de Alergias:</label>
                   <input type="text" class="form-control" id="allergies" name="allergies" placeholder="Tipos de Alergias" value="{{ $patient->allergies }}" readonly>
-                </div>
+              </div>
 
-                <div class="mb-3">
+              <div class="mb-3">
                   <label for="condiciones" class="form-label">Condiciones cronicas:</label>
                   <input type="text" class="form-control" id="chronics_conditions" name="chronics_conditions" placeholder="Condiciones cronicas" value="{{ $patient->chronics_conditions }}" readonly>
-                </div>            
+              </div>            
           </div>
           <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-            This is some placeholder content the Contact tab's associated content. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.
+             This is some placeholder content the Contact tab's associated content. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.
           </div>
         </div>
       </div> <!-- row -->

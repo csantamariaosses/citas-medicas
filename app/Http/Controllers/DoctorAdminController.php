@@ -10,6 +10,8 @@ use Spatie\Permission\Models\Role;
 use App\Models\Appointment;
 use App\Models\Consultation;
 use App\Models\Patient;
+use Barryvdh\DomPDF\Facade\Pdf;
+//use Spatie\LaravelPdf\Facades\Pdf;
 
 class DoctorAdminController extends Controller
 {
@@ -80,4 +82,58 @@ class DoctorAdminController extends Controller
         $appointments = Appointment::where('doctor_id', $doctor->id)->orderBy('date', 'desc')->get();
         return view('doctor.dashboard', compact('appointments','doctor'));
     }
+
+
+    public function consultaPdf($id)
+    {
+
+
+        $appointment = Appointment::findOrFail($id);
+        $patient_id = $appointment->patient_id;
+        $patient = Patient::find($patient_id);
+        $nombrePaciente = $patient->user->name;
+        
+        $fecha = substr($appointment->date, 0, 10);
+        $hora =  substr($appointment->start_time, 11, 10);
+
+
+        $doctor_id = $appointment->doctor_id;
+        $doctor = Doctor::find($doctor_id);
+        $nombreDoctor = $doctor->user->name;
+
+        $consulta = Consultation::where('appointment_id', $id)->first();
+        $diagnostic = $consulta ? $consulta->diagnostic : '';
+        $treatment = $consulta ? $consulta->treatment : '';
+        $notes = $consulta ? $consulta->notes : '';
+        $prescriptions = $consulta ? $consulta->prescriptions : '';
+
+
+        $data = [
+            'citaId' => $id,   // id appointment
+            'fecha' => $fecha,
+            'hora' => $hora,
+            'doctorName' => $nombreDoctor,
+            'patientName' => $nombrePaciente,
+            'diagnostic' => $diagnostic,
+            'treatment' => $treatment,
+            'notes' => $notes,
+            'prescriptions' => $prescriptions
+        ];
+
+        //dd($data);
+        //Pdf::view('doctor.consulta', $data )
+        //    ->save('/publicconsulta.pdf');
+
+
+        $pdf = Pdf::loadView('doctor/consulta', $data);
+
+        // Opción 1: Descargar el archivo automáticamente
+        //return $pdf->download('factura.pdf');
+
+        // Opción 2: Visualizar en el navegador
+        return $pdf->stream('factura.pdf');
+
+    }
+
+   
 }

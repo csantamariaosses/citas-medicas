@@ -28,7 +28,19 @@ Route::get('/', function () {
     session(['laravel_version' => $version]);
 
     return view('index');
-});
+})->name("/");
+
+
+Route::get('/home', function () {
+    //return view('welcome');
+    $version = app()->version();
+    $versionPhp = phpversion();
+    //dd($versionPhp);
+    session(['php_version' => $versionPhp]);
+    session(['laravel_version' => $version]);
+
+    return view('index');
+})->name("home");
 
 Route::resource('productos', ProductoController::class);
 //Route::resource('users', UserController::class);
@@ -116,6 +128,7 @@ Route::post('/horasmedicas.confirmar', [UserHorasMedicasController::class,'confi
 Route::post('/horasmedicas.cancelar', [UserHorasMedicasController::class,'cancelar'] )->name('horasmedicas.cancelar');
 //Route::get('login', [LoginController::class, "login"])->name("login");
 Route::get('/horasmedicas.listar', [UserHorasMedicasController::class, 'listhorasagendadas'])->name('horasmedicas.listar')->middleware('auth');
+Route::get("horasmedicas.imprimir/{id}", [UserHorasMedicasController::class, 'imprimir'])->name('horasmedicas.imprimir')->middleware('auth');
 
 
 Route::get('doctor', [DoctorAdminController::class, 'index'])->name('doctor.index');
@@ -137,6 +150,8 @@ Route::get('doctor-cita/{id}', [DoctorAdminController::class, 'show'])->name('do
 Route::get('doctor-cita/{id}/edit', [DoctorAdminController::class, 'edit'])->name('doctor.cita.edit');
 Route::put('doctor-cita/{id}', [DoctorAdminController::class, 'update'])->name('doctor.cita.update');
 Route::delete('doctor-cita/{id}', [DoctorAdminController::class, 'destroy'])->name('doctor.cita.destroy');
+
+Route::get('doctor-cita-pdf/{id}', [DoctorAdminController::class, 'consultaPdf'])->name('doctor.cita.pdf');
 
 
 

@@ -37,6 +37,7 @@
         <div class="col-8 offset-2">  
            <table class="table table-striped">
             <thead>
+                <th>Id</th>
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Paciente</th>
@@ -47,6 +48,7 @@
 
             <tbody>
                 <tr>
+                <td>{{ $appointment->id }}</td>
                 <td>{{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}</td>
                 <td>{{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }}</td>
                 <td>{{ $appointment->patient->user->name }}</td>
@@ -149,6 +151,7 @@
                 </select><br><br>
                 <input type="hidden" name="id" value="{{ $appointment->id }}">
                 <button type="submit" class="btn btn-primary">Guardar</button> 
+                <a href="{{ route('doctor.cita.pdf', ['id' => $appointment->id]) }}" class="btn btn-primary" target="_blank">PDF/Imprimir</a>
             </form>
         </div>
         <div class="modal-footer">

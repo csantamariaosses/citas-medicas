@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use App\Models\Patient;
 use App\Models\Speciality;
 use App\Models\Doctor;
 use App\Models\Schedule;
 use App\Models\Appointment;
-use Carbon\Carbon;
+use App\Models\Consultation;
 use App\Enums\AppointmentEnum;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class UserHorasMedicasController extends Controller
 {
@@ -59,8 +62,6 @@ class UserHorasMedicasController extends Controller
 
         session(['doctor_id' => $doctor_id]);
         session(['doctorName' => $doctorName]);
-
-
 
         $schedules = Schedule::where('doctor_id', $doctor_id)->get();
         $appointments = Appointment::where('doctor_id', $doctor_id)->get();
@@ -180,4 +181,51 @@ class UserHorasMedicasController extends Controller
         return redirect()->route('horasmedicas.index');
     }   
 
+
+    public function imprimir($id)
+    {
+        $appointment = Appointment::findOrFail($id);
+        $patient_id = $appointment->patient_id;
+        $patient = Patient::find($patient_id);
+        $nombrePaciente = $patient->user->name;
+        
+        $fecha = substr($appointment->date, 0, 10);
+        $hora =  substr($appointment->start_time, 11, 10);
+
+
+        $doctor_id = $appointment->doctor_id;
+        $doctor = Doctor::find($doctor_id);
+        $nombreDoctor = $doctor->user->name;
+
+        $consulta = Consultation::where('appointment_id', $id)->first();
+        $diagnostic = $consulta ? $consulta->diagnostic : '';
+        $treatment = $consulta ? $consulta->treatment : '';
+        $notes = $consulta ? $consulta->notes : '';
+        $prescriptions = $consulta ? $consulta->prescriptions : '';
+
+
+        $data = [
+            'citaId' => $id,   // id appointment
+            'fecha' => $fecha,
+            'hora' => $hora,
+            'doctorName' => $nombreDoctor,
+            'patientName' => $nombrePaciente,
+            'diagnostic' => $diagnostic,
+            'treatment' => $treatment,
+            'notes' => $notes,
+            'prescriptions' => $prescriptions
+        ];
+
+        //dd($data);
+
+        //Pdf::view('doctor.consulta', $data )
+        //    ->save('/publicconsulta.pdf');
+
+        $pdf = Pdf::loadView('doctor/consulta', $data);
+        // Opción 1: Descargar el archivo automáticamente
+        //return $pdf->download('factura.pdf');
+
+        // Opción 2: Visualizar en el navegador
+        return $pdf->stream('cita.pdf');
+    }
 }
