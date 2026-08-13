@@ -18,12 +18,13 @@ use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserHorasMedicasController;
+use App\Mail\ContactanosMailable;
+use Illuminate\Support\Facades\Mail;
+
 
 Route::get('/', function () {
-    //return view('welcome');
     $version = app()->version();
     $versionPhp = phpversion();
-    //dd($versionPhp);
     session(['php_version' => $versionPhp]);
     session(['laravel_version' => $version]);
 
@@ -32,10 +33,8 @@ Route::get('/', function () {
 
 
 Route::get('/home', function () {
-    //return view('welcome');
     $version = app()->version();
     $versionPhp = phpversion();
-    //dd($versionPhp);
     session(['php_version' => $versionPhp]);
     session(['laravel_version' => $version]);
 
@@ -43,10 +42,8 @@ Route::get('/home', function () {
 })->name("home");
 
 Route::resource('productos', ProductoController::class);
-//Route::resource('users', UserController::class);
 
 //Administración de usuarios
-
 Route::get('admin.index', [AdminController::class, "index"])->name("admin.index");
 
 /*
@@ -88,27 +85,13 @@ Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules']
 
 Route::get('/prueba', function () {
     $schedule = \App\Models\Schedule::all();    
-    //dd($schedule);
 });
 
 Route::post("prueba.testSave", [AppointmentController::class, 'testSave'])->name('prueba.testSave');
 
-//Route::resource('/appointments', AppointmentController::class);
-
-/*
-Route::get('agendadoc', [AppointmentController::class,'agendadoc'] )->name('agendadoc');
-Route::post('agendadoc.especialidad', [AppointmentController::class,'especialidad'] )->name('agendadoc.especialidad');
-Route::post('agendadoc.doctors', [AppointmentController::class,'doctors'] )->name('agendadoc.doctors');
-Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar');
-Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar');
-*/
-//Route::get('login', [AuthenticatedSessionController::class, "create"])->name("login");
-
-//Route::resource('/appointments', AppointmentController::class);
 
 #include auth routes
 //require __DIR__.'/auth.php';
-
 Route::get('login', [AuthController::class, "showLoginForm"])->name("login");
 Route::post('login', [AuthController::class, "login"]);
 Route::post('logout', [AuthController::class, "logout"])->name("logout");
@@ -126,7 +109,6 @@ Route::post('/horasmedicas.doctores', [UserHorasMedicasController::class, 'docto
 Route::post('/horasmedicas.showcalendar', [UserHorasMedicasController::class, 'showcalendar'])->name('horasmedicas.showcalendar')->middleware('auth');
 Route::post('/horasmedicas.confirmar', [UserHorasMedicasController::class,'confirmar'] )->name('horasmedicas.confirmar');
 Route::post('/horasmedicas.cancelar', [UserHorasMedicasController::class,'cancelar'] )->name('horasmedicas.cancelar');
-//Route::get('login', [LoginController::class, "login"])->name("login");
 Route::get('/horasmedicas.listar', [UserHorasMedicasController::class, 'listhorasagendadas'])->name('horasmedicas.listar')->middleware('auth');
 Route::get("horasmedicas.imprimir/{id}", [UserHorasMedicasController::class, 'imprimir'])->name('horasmedicas.imprimir')->middleware('auth');
 
@@ -155,3 +137,8 @@ Route::get('doctor-cita-pdf/{id}', [DoctorAdminController::class, 'consultaPdf']
 
 
 
+Route::get('/contactanos', function () {
+    Mail::to('cssantam@gmail.com')->send(new ContactanosMailable );
+
+    return "Correo enviado correctamente";
+})->name('contactanos');    

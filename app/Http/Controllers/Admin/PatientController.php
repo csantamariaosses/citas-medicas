@@ -29,8 +29,10 @@ class PatientController extends Controller
             //dd($patients);
 */
         $patients = Patient::orderBy('created_at', 'desc')->get();
+        $bloodType = BloodType::all();
+        $roles = Role::all();
         //dd( $patients );
-        return view('admin.patients.index', compact('patients'));
+        return view('admin.patients.index', compact('patients', 'bloodType', 'roles'));
     }   
 
     public function create()
@@ -49,6 +51,7 @@ class PatientController extends Controller
         $user->email = $request->input('email');
         $user->address = $request->input('address');
         $user->phone = $request->input('phone');
+                
         $user->password = bcrypt($request->input('password'));
         $user->save();
         $user->assignRole('Paciente');
@@ -58,6 +61,8 @@ class PatientController extends Controller
         $patient = new Patient();
         $patient->user_id = $userId;
 
+        $patient->birth_date = $request->input('birth_date');
+        $patient->gender = $request->input('gender');
         $patient->blood_type_id = $request->input('bloodType');
         $patient->allergies = $request->input('allergies');
 
@@ -87,7 +92,9 @@ class PatientController extends Controller
             ->get();
         */
         $patients = Patient::orderBy('created_at', 'desc')->get();
-        return view('admin.patients.index', compact('patients'));
+        $bloodType = BloodType::all();
+        $roles = Role::all();
+        return view('admin.patients.index', compact('patients', 'bloodType', 'roles'));
 
     }   
 
@@ -132,24 +139,13 @@ class PatientController extends Controller
 
     public function update(Request $request, string $id)
     {
-        //
-        //dd($request->all());
-        // Tabla Patients
-        // Typo de Sangre
-        // Alergias
-        // Condiciones Cronicas
-        // Observaciones
-        // Contacto de Emergencia
-
-        // Tabla Users
-        // Nombre
-        // Email
-        // Direccion
-        // Telefono
-        // Password
+        //dd( $request->all() );
         $patient = Patient::findOrFail( $id );
         $user = User::findOrFail( $patient->user_id );
         
+        $patient->birth_date = $request->input('birth_date');
+       
+        $patient->gender = $request->input('gender');
         $patient->blood_type_id = $request->input('bloodType');
         $patient->allergies = $request->input('allergies');
         $patient->chronics_conditions = $request->input('chronics_conditions');    
@@ -181,7 +177,10 @@ class PatientController extends Controller
             ->get();
 */
         $patients = Patient::all();
-        return view('admin.patients.index', compact('patients'));
+        $bloodType = BloodType::all();
+        $roles = Role::all();
+
+        return view('admin.patients.index', compact('patients', 'bloodType', 'roles'));
 
 
         //return "Update Patient";

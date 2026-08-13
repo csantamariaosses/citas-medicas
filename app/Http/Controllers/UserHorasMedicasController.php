@@ -14,6 +14,7 @@ use App\Models\Appointment;
 use App\Models\Consultation;
 use App\Enums\AppointmentEnum;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 
 class UserHorasMedicasController extends Controller
@@ -196,12 +197,14 @@ class UserHorasMedicasController extends Controller
         $doctor_id = $appointment->doctor_id;
         $doctor = Doctor::find($doctor_id);
         $nombreDoctor = $doctor->user->name;
+        $especialidad = $doctor->speciality->name;
 
         $consulta = Consultation::where('appointment_id', $id)->first();
         $diagnostic = $consulta ? $consulta->diagnostic : '';
         $treatment = $consulta ? $consulta->treatment : '';
         $notes = $consulta ? $consulta->notes : '';
         $prescriptions = $consulta ? $consulta->prescriptions : '';
+        $estado = $appointment->status->label();
 
 
         $data = [
@@ -209,6 +212,8 @@ class UserHorasMedicasController extends Controller
             'fecha' => $fecha,
             'hora' => $hora,
             'doctorName' => $nombreDoctor,
+            'speciality' => $especialidad,
+            'estado' => $estado,
             'patientName' => $nombrePaciente,
             'diagnostic' => $diagnostic,
             'treatment' => $treatment,

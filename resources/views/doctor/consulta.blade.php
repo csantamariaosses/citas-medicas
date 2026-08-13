@@ -8,11 +8,17 @@
     </style>
 </head>
 <body>
+    <h3>Detalle de la Consulta</h3>
+    <hr>
     <h1>Cita #{{ $citaId }}</h1>
-    <p>Paciente: {{ $patientName }}</p>
+    <hr>
+    <p>Paciente: {{ $patientName }},</p>
+    
     <p>Fecha: {{ $fecha }}</p>
     <p>Hora: {{ $hora }}</p>
     <p>Doctor: {{ $doctorName }}</p>
+    <p>Especialidad: {{ $speciality }}</p>
+    <p>Estado: {{ $estado }}</p>
     <hr>
     <h4>Diadnostico:</h4>
     <p>{{ $diagnostic }}</p>

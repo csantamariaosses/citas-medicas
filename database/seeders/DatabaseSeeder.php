@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        $this->call(UserSeeder::class);
+
         /*
         User::factory()->create([
             'name' => 'Test User',
@@ -26,7 +28,7 @@ class DatabaseSeeder extends Seeder
         */
         //$this->call(ProductoSeeder::class);
         //$this->call( RoleSeeder::class);
-        $this->call( BloodTypeSeeder::class);
+        //$this->call( BloodTypeSeeder::class);
         /*
         User::factory()->create([
             'name' => 'Carlos Santa',

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fechaposdias', function (Blueprint $table) {
-            $table->id();
-            $table->date('fecha');
-            $table->integer('day_of_week');
-            $table->datetime('created_at');
-            $table->datetime('updated_at');
+        Schema::table('patients', function (Blueprint $table) {
+            $table->string('rh', 10)->nullable()->after('blood_type_id');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fechaposdias');
+        Schema::table('patients', function (Blueprint $table) {
+            $table->dropColumn('rh');
+        });
     }
 };

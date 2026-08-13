@@ -206,11 +206,13 @@ th {
 
       <div class="modal-body">
         <p><strong>Id:</strong> {{ $appointment->id }}</p>
-        <p><strong>Fecha:</strong> {{ $appointment->date }}</p>
-        <p><strong>Hora:</strong> {{ $appointment->start_time }}</p>
+        <p><strong>Paciente:</strong> {{ $appointment->patient->user->name }}</p>
+        <hr>
+        <p><strong>Fecha:</strong> {{ substr($appointment->date, 0, 10) }}</p>
+        <p><strong>Hora:</strong> {{ substr($appointment->start_time, 11,10) }}</p>
         <p><strong>Especialidad:</strong> {{ $appointment->doctor->speciality->name }}</p>
         <p><strong>Médico:</strong> {{ $appointment->doctor->user->name }}</p>
-        <p><strong>Paciente:</strong> {{ $appointment->patient->user->name }}</p>
+        
       </div>
 
       <div class="modal-footer">

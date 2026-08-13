@@ -1,0 +1,153 @@
+@extends('layouts.datatables')
+
+@section('menu')
+  @include('menuadmin')  
+@endsection
+
+@section('content')
+
+    <div class="row">
+        <div class="col-10 offset-2">  
+          <h3>Pacientes</h3>
+        </div>
+    </div>
+
+     <div>
+        <a href="{{ route('patients.create') }}" class="btn btn-primary">Crear Paciente</a>
+     <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Dirección</th>
+              <th>Telefono</th>
+              <th>Tipo de Sangre</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if( $patients != null   ) { ?>
+                @foreach($patients as $patient)
+                  <tr>
+                    <td>{{ $patient->id }}</td>
+                    <td>{{ $patient->user->name }}</td>
+                    <td>{{ $patient->user->email }}</td>  
+                    <td>{{ $patient->user->address }}</td>  
+                    <td>{{ $patient->user->phone }}</td>
+                    <td>{{ $patient->bloodType->name }}</td>
+
+                    <td>
+                      <a href="{{ route('patients.show', $patient->id) }}" class="btn btn-primary">Ver</a>
+                      <a href="{{ route('patients.edit', $patient->id) }}" class="btn btn-primary">Editar</a>
+                      <form action="{{ route('patients.destroy', $patient->id) }}" 
+                        method="POST" 
+                        style="display:inline;"
+                        class="delete-form">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="id" value="{{ $patient->id }}">
+                        <button type="submit" class="btn btn-danger">Eliminar::</button>
+                      </form>
+                    </td>
+                  </tr>
+              @endforeach
+            <?php } else { ?>
+                <tr>
+                    <td colspan="7">No se encontraron pacientes.</td>
+                </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+
+        <br>
+
+        <hr>
+        <h3>Tabla con DataTables</h3>
+        <table id="tblPacientes" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Direccion</th>
+                <th>Telefono</th>
+                <th>Tipo de Sangre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+              @foreach($patients as $patient)
+            <tr>
+              <td>{{ $patient->id }}</td>
+              <td>{{ $patient->user->name }}</td>
+              <td>{{ $patient->user->email }}</td>  
+              <td>{{ $patient->user->address }}</td>  
+              <td>{{ $patient->user->phone }}</td>
+              <td>{{ $patient->bloodType->name }}</td>
+              <td>
+                <a href="{{ route('patients.show', $patient->id) }}" class="btn btn-primary">Ver</a>
+                <a href="{{ route('patients.edit', $patient->id) }}" class="btn btn-primary">Editar</a>
+                <form action="{{ route('patients.destroy', $patient->id) }}" 
+                  method="POST" 
+                  style="display:inline;"
+                  class="delete-form">
+                  @csrf
+                  @method('DELETE')
+                  <input type="hidden" name="id" value="{{ $patient->id }}">
+                  <button type="submit" class="btn btn-danger">Eliminar::</button>
+                </form>
+              </td>
+            </tr>
+            <tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Direccion</th>
+                <th>Telefono</th>
+                <th>Tipo de Sangre</th>
+            </tr>
+        </tfoot>
+    </table>
+      </div>
+
+      <script>
+        $(document).ready(function() {
+            $('#tblPacientes').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+                },
+                 dom: 'Bfrtip',
+                    buttons: [
+                        'csv',
+                        'excel',
+                        'print',
+                        'pdf'
+                    ]
+            });
+        });
+      </script>
+
+      <!-- Muestra mensaje de alerta -->
+    @if(session('swal'))
+        <script>
+            Swal.fire(@json(session('swal')));
+        </script>
+    @endif 
+
+    @if(Session::has('success'))
+      <script>
+        Swal.fire({
+                icon: 'success',
+                title: 'Entrada registrada',
+                html: '{{ Session::get('success') }}',
+            })
+      </script>
+    @endif
+@endsection
+
+

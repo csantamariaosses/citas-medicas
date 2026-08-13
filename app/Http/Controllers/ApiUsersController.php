@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
 
-class ApiProductosController extends Controller
+class ApiUsersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -66,16 +66,16 @@ class ApiProductosController extends Controller
     public function destroy(string $id)
     {
         //
-        if( \App\Models\Producto::destroy($id) ) {
+        if( \App\Models\User::destroy($id) ) {
             session()->flash( 'swal' , [
-                'title' => 'Producto eliminado',
-                'text' => 'El producto ha sido eliminado con exito',
+                'title' => 'Usuario eliminado',
+                'text' => 'El usuario ha sido eliminado con exito',
                 'icon' => 'success',
                 //'timer' => 3000,
                 'showConfirmButton' => false
             ]);
 
-            return redirect()->route('productos.index');
+            return redirect()->route('users.index');
 
         } 
 
