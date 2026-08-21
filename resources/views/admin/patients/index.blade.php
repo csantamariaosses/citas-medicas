@@ -67,12 +67,15 @@
                 </tbody>
                 <tfoot>
                 <tr>
+                    <th>Id</th>
                     <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
+                    <th>Fecha Nac.</th>
+                    <th>Edad</th>
+                    <th>Email</th>
+                    <th>Direccion</th>
+                    <th>Teléfono</th>
+                    <th>Tipo Sangre</th>
+                    <th>Acciones</th>
                 </tr>
                 </tfoot>
             </table>

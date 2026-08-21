@@ -18,9 +18,10 @@ class UsersController extends Controller
     public function index()
     {
         //
-        $users = User::all();
+        $users = User::OrderBy('Id', 'desc')->get();
+        $roles = Role::all();
         //dd( $users );
-        return view('admin.users.index', compact('users'));     
+        return view('admin.users.index', compact('users', 'roles'));     
     }
 
     /**
