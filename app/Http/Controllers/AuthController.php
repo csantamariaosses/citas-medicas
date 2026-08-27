@@ -24,14 +24,20 @@ class AuthController extends Controller
         //dd( $request->all() );
 
         $credentials = $request->only('email', 'password');
+        //dd( $credentials );
         if( Auth::attempt($credentials) ) {
+            //dd("Autenticado");
             // Authentication passed...
             $user_id = Auth::id();
             $user = Auth::user();   
+            //dd( $user );
             //$user = User::find( $user_id );
             $request->session()->regenerate(); 
+
+            //dd( $user->hasRole('admin'));
                       
             if ($user->hasRole('admin')) {
+                //dd("Autenticado - Es admin", $user->hasRole('admin'));
                 session(['role' => 'admin']);
                 return redirect()->route('admin.index');
 
@@ -64,11 +70,13 @@ class AuthController extends Controller
             session(['user_name' => Auth::user()->name]);
             session(['user_email' => Auth::user()->email]);
             session(['patientName' => Auth::user()->name]);
+
+            dd("Autenticado - No tiene rol asignado");
             
 
 
         }   else {
-            //dd("No autenticado");
+           //dd("No autenticado");
             return redirect()->back()->withErrors(['email' => 'Credenciales incorrectas.']);
         }
 
@@ -110,5 +118,29 @@ class AuthController extends Controller
         }
 
     }   
+
+
+    public function changePasswordSave(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        dd( Auth::id(), $request->all()    );
+        /*$user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+        return redirect()->route('dashboard')->with('success', 'Contraseña cambiada exitosamente.');
+        
+        dd( Auth::id()); 
+        return view('autho.change-password');
+        */
+    }
 
 }

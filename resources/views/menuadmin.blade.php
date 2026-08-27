@@ -37,7 +37,7 @@
             <li><a class="dropdown-item" href="{{ route('agendadocfull') }}">Agenda Doctores Full</a></li>
             <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li><a class="dropdown-item" href="{{ route('change-password') }}">Cambio Password</a></li>
           </ul>
         </li>
         <li class="nav-item">

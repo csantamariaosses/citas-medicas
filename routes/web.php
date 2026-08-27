@@ -57,7 +57,10 @@ Route::middleware(['admin'])->group(function () {
 //Route::resource('roles', RoleController::class);
 
 Route::prefix('admin')->group(function () {
-    
+
+    Route::get('cambio-password', [AdminController::class,'changePassword'] )->name('change-password')->middleware('auth');
+    Route::post('cambio-password-save', [AdminController::class,'changePasswordSave'] )->name('change-password-save')->middleware('auth');
+    Route::get('cambio-password-ok', [AdminController::class,'changePasswordOk'] )->name('change-password-ok')->middleware('auth');
     Route::resource('roles', RoleController::class)->middleware('admin');
     Route::resource('permissions', PermissionController::class)->middleware('admin');
     Route::resource('users', UsersController::class)->middleware('admin');
