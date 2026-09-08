@@ -18,7 +18,9 @@ class DoctorController extends Controller
     {
         //
         $doctores = Doctor::orderBy('created_at', 'desc')->get();
-        return view('admin.doctores.index', compact('doctores'));
+        $roles = Role::all();
+        $specialities = Speciality::all();
+        return view('admin.doctores.index', compact('doctores', 'roles', 'specialities'));
     }
 
     /**

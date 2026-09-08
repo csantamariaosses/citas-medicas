@@ -10,6 +10,10 @@
         <button wire:click="saveSchedules" class="btn btn-primary">
             Guardar Horarios
         </button>
+        <button wire:click="resetSchedules" class="btn btn-warning">
+            Resetear Horarios
+        </button>
+        <button onclick="window.close();" class="btn btn-primary">Cerrar Horarios</button>
     </div>
 
     <table class="table table-striped">

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Http;
 use DateTime;
 use Carbon\Carbon;
 
-class AppointmentController extends Controller
+class Appointment2Controller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,6 +26,7 @@ class AppointmentController extends Controller
     public function index()
     {
     
+        dd("Appointment2Controller::index");
         //$_SESSION['paciente'] = "Carlos Santa";
         return view('admin.appointments.index');
     }
@@ -99,9 +100,7 @@ class AppointmentController extends Controller
         $doctors = Doctor::all();
         $schedules = Schedule::all();
         $especialidades = Speciality::all();
-        //$patients = Patient::all();
-        //dd($doctors, $schedules, $especialidades);
-        return view("admin.agendadoc.index", compact("doctors", "especialidades", "schedules"));
+        return view("admin.agendadoc2.index", compact("doctors", "especialidades", "schedules"));
 
     }
 
@@ -130,16 +129,9 @@ class AppointmentController extends Controller
 
     public function showcalendar(Request $request){
 
-        //dd( $request->all() );
-        //$doctor_id = $request->input('city_id');
-        //$doctor_id = $request->input('doctor');
         
-
         $doctor_id = $request->input('doctor');
-
         $doctor = Doctor::find($doctor_id);
-        //dd($doctor);
-
         $doctorName = $doctor->user->name;
 
         session(['doctor_id' => $doctor_id]);
@@ -180,7 +172,6 @@ class AppointmentController extends Controller
         };
 
         $patients = Patient::all();
-        dd($patients);
       
         $json_schedules = json_encode($schedules);
 

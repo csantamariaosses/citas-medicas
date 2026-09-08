@@ -162,7 +162,7 @@ class UserSeeder extends Seeder
 
         // agrega role
         DB::table('model_has_roles')->insert( [
-                'role_id' => 2, // 2: Doctor
+                'role_id' => 3, // 2: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
@@ -185,7 +185,7 @@ class UserSeeder extends Seeder
 
         // agrega role
         DB::table('model_has_roles')->insert( [
-                'role_id' => 2, // 2: Doctor
+                'role_id' => 3, // 2: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
@@ -209,7 +209,7 @@ class UserSeeder extends Seeder
 
         // agrega role
         DB::table('model_has_roles')->insert( [
-                'role_id' => 1, // 2: Doctor
+                'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
@@ -233,7 +233,7 @@ class UserSeeder extends Seeder
 
         // agrega role
         DB::table('model_has_roles')->insert( [
-                'role_id' => 1, // 2: Doctor
+                'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
@@ -257,7 +257,7 @@ class UserSeeder extends Seeder
 
         // agrega role
         DB::table('model_has_roles')->insert( [
-                'role_id' => 1, // 2: Doctor
+                'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);     

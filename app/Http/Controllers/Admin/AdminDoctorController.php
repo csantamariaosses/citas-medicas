@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Doctor;
@@ -13,24 +14,55 @@ use App\Models\Patient;
 use Barryvdh\DomPDF\Facade\Pdf;
 //use Spatie\LaravelPdf\Facades\Pdf;
 
-class DoctorAdminController extends Controller
+class AdminDoctorController extends Controller
 {
     public function index()
     {
 
-         //dd( session('user_id') );    
+        //dd("AdminDoctorController");
          $doctor = Doctor::where('user_id', session('user_id'))
                            ->first();
-         session(['doctor_id' => $doctor->id]);
-         //dd( session('doctor_id') );
-
          $appointments = Appointment::where('doctor_id', session('doctor_id'))->orderBy('date', 'desc')->get();
-         //dd( $citas->all() );
-   
          $doctor = Doctor::find(session('doctor_id'));
-         return view('doctor.index', compact('appointments','doctor'));
+         $doctores = Doctor::orderBy('created_at', 'desc')->get();
+         $specialities = Speciality::all();
+         $roles = Role::all();
+         return view('admin.doctores.index', compact('appointments','doctores', 'specialities','doctor', 'roles'));
           
      
+    }
+
+
+    public function store(Request $request)
+    {
+        //
+        //dd( $request->all() );
+        //dd($request->input('role')->name());
+        $user = new User();
+        //Asignar valores al modelo $user
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->address = $request->address;
+        $user->phone = $request->phone;
+        $user->password = bcrypt('password'); // Contraseña por defecto
+        $user->save();
+        $roleName = Role::find($request->input('role'))->name;
+        //dd( $roleName );
+        $user->assignRole($roleName);
+
+        $doctor = new Doctor();
+        //Asignar valores al modelo $doctor
+        $doctor->user_id = $user->id;
+        $doctor->speciality_id = $request->speciality;
+        $doctor->medical_license_number = $request->medical_license_number;
+        $doctor->biography = $request->biography;
+
+        $doctor->save();
+
+        $doctores = Doctor::orderBy('created_at', 'desc')->get();
+        $roles = Role::all();
+
+        return redirect()->route('doctores.index', compact('doctores', 'roles'));
     }
 
 
@@ -42,38 +74,29 @@ class DoctorAdminController extends Controller
 
     public function update(Request $request )
     {
+        //dd("doctores.admin.update");
         //dd( $request->all() );
-        $appointment = Appointment::findOrFail($request->cita_id );        
-        $appointment->status = $request->input('status');
-        $appointment->save();
+        $doctor_id =$request->input('id');
+        $user_id = Doctor::where('id', $doctor_id)->pluck('user_id')->first();
 
-        $patient = Patient::find($appointment->patient_id);
-        $patient->allergies = $request->input('allergies');
-        $patient->chronics_conditions = $request->input('chronicDiseases');
-        $patient->save();
+        //dd( $doctor_id, $user_id );
 
+        $user = User::findOrFail($user_id);
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->address = $request->input('address');
+        $user->phone = $request->input('phone');
+        $user->save();
 
-        $consult = Consultation::where('appointment_id', $request->cita_id)->first();
-        if( $consult ){
-            
-            $consult->diagnostic = $request->diagnostic;
-            $consult->treatment = $request->treatment;
-            $consult->notes = $request->notes;
-            $consult->prescriptions  = $request->prescriptions;
-            $consult->save();
-        }else{  
-            $consulta = New Consultation();
-            $consulta->appointment_id = $request->cita_id;
-            $consulta->diagnostic = $request->diagnostic;
-            $consulta->treatment = $request->treatment;
-            $consulta->notes = $request->notes;
-            $consulta->prescriptions  = $request->prescriptions;
-            $consulta->save();
-        }
+        $doctor = Doctor::findOrFail($doctor_id);
+        $doctor->speciality_id = $request->input('speciality');
+        $doctor->medical_license_number = $request->input('medical_license_number');
+        $doctor->active = $request->input('active');
+        $doctor->save();
 
         //dd( $appointment->all());
 
-        return redirect()->route('doctor.index')->with('success', 'Cita actualizada correctamente.');
+        return redirect()->route('doctores.index')->with('success', 'Registro actualizado correctamente.');
     }
 
     public function dashboard()

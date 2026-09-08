@@ -34,6 +34,7 @@
             <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario</a></li>
             <li><a class="dropdown-item" href="{{ route('calendar.test') }}">Calendario Test</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc2') }}">Agenda Doc 2 </a></li>
             <li><a class="dropdown-item" href="{{ route('agendadocfull') }}">Agenda Doctores Full</a></li>
             <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
             <li><hr class="dropdown-divider"></li>

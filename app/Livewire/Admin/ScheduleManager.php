@@ -138,6 +138,20 @@ class ScheduleManager extends Component
         //dd( "Horarios guardados exitosamente." );
     }   
 
+    public function resetSchedules(){
+        dd("Resetear horarios...");
+    /*
+        $this->schedules = [];
+        $this->initializeSchedules();
+        $this->dispatch('swal', [
+            'icon' => 'info',
+            'title' => 'Horario reiniciado',
+            'text' => 'Los horarios del doctor han sido reiniciados a su estado original.'
+            ]
+        );
+        */
+    }   
+
     public function render()
     {
         $doctor = $this->doctor;
