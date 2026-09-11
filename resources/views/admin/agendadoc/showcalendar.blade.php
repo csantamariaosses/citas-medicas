@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <h3>SHOW CALENDAR - ADMIN</h3>
+    <div align="center"><h3>SHOW CALENDAR - ADMIN</h3></div>
     <div class="row">
 
         <div class="col-2">
@@ -18,10 +18,17 @@
             <input type="hidden" id="doctorName" value="{{ session('doctorName') }}">
             <input type="hidden" id="specialityName" value="{{ session('specialityName') }}">
             <input type="hidden" id="pacienteName" value="{{ session('paciente') }}">
-                       
-            doctor_id:{{ $doctor_id}} - doctorName: {{ session('doctorName') }}  - Especialidad : {{ session('specialityName') }} - 
-            Patient_id:{{ session('patient_id') }} 
-            PatientName:{{ session('patientName') }} 
+            <p>       
+                <table> 
+                    <tbody>   
+                   <tr><th>doctor_id:</th><td>{{ $doctor_id}}</td></tr>
+                   <tr><th>doctorName:</th><td> {{ session('doctorName') }}</td></tr>
+                   <tr><th>Especialidad :</th><td> {{ session('specialityName') }}</td></tr>
+                   <tr><th>Patient_id:</th><td>{{ session('patient_id') }}</td></tr>
+                   <tr><th>PatientName:</th><td>{{ session('patientName') }}</td></tr>
+                   </tbody>
+                </table>
+            </p>
           <div x-data="dataCalendar()">
               <div x-ref="calendar"> </div> 
           </div>
@@ -44,6 +51,9 @@
             </div>
             <div class="modal-body">
                 <table>
+                    <tr>
+                      <th>Estado Hora:</th><td><span id="modalStatus" name="modalStatus"></td>
+                    </tr>
                    <tr>
                       <th>Médico:</th><td><input type="text" id="modalDoctorName" name="modalDoctorName" disabled></td>
                     </tr>
@@ -75,6 +85,8 @@
                 </table>
             </div>
             <div class="modal-footer">
+              <input type="hidden" id="status" name="status" value="{{ session('status') }}">
+              <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">  
               <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">
               <input type="hidden" id="patientName" name="patientName" value="{{ session('patientName') }}">
               <input type="hidden" id="doctor_id" name="doctor_id" value="{{ session('doctor_id') }}">
@@ -97,8 +109,9 @@
 
       <!-- Modal  Agendado-->
       <div class="modal fade" id="modalAgendado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('agendadoc.confirmar') }}" method="POST">
+        <form action="{{ route('agendadoc.cancelarCita') }}" method="POST">
           @csrf 
+         
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -107,12 +120,22 @@
             </div>
             <div class="modal-body">
                 <table>
+                    <tr>
+                      <th>Cita Id::</th><td><input type="text" id="modalCitaIdAg" name="modalCitaIdAg" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdAg" name="modalDoctorIdAg" disabled></td>
+                    </tr>
                    <tr>
                       <th>Médico:</th><td><input type="text" id="modalDoctorNameAg" name="modalDoctorNameAg" disabled></td>
                     </tr>
                     <tr>
                       <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameAg" name="modalSpecialityNameAg" value="{{ session('specialityName') }}" disabled></td>
                     </tr>
+                    <tr>
+                      <th>Id Paciente:</th><td><input type="text" id="modalPatientIdAg" name="modalPatientIdAg"  disabled></td>
+                    </tr>
+                    <tr>
                     <tr>
                       <th>Paciente:</th><td><input type="text" id="modalPatientNameAg" name="modalPatientNameAg"  disabled></td>
                     </tr>
@@ -126,15 +149,24 @@
                 </table>
             </div>
             <div class="modal-footer">
+                <input type="hidden" id="modalCitaIdAgHidden" name="modalCitaIdAgHidden">
+                <input type="hidden" id="modalDoctorIdAgHidden" name="modalDoctorIdAgHidden">
+                <input type="hidden" id="modalPatientIdAgHidden" name="modalPatientIdAgHidden">
+                <input type="hidden" id="modalFechaStartAgHidden" name="modalFechaStartAgHidden">
+                <input type="hidden" id="modalFechaHoraStartAgHidden" name="modalFechaHoraStartAgHidden">
+<!--
+              <input type="hidden" id="cita_id" name="cita_id" value="{{ session('cita_id') }}">
               <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">
-              <input type="hidden" id="patientName" name="patientName" value="{{ session('patientName') }}">
-              <input type="hidden" id="doctor_id" name="doctor_id" value="{{ session('doctor_id') }}">
+              <input type="hidden" id="patient_name" name="patient_name" value="{{ session('patient_name') }}">
+              <input type="hidden" id="doctor_id" name="doctor_id" value="{{ session('doctor_id') }}"> 
               <input type="hidden" id="doctorName" name="doctorName" value="{{ session('doctorName') }}">
               <input type="hidden" id="spetiality" name="spetiality" value="{{ session('spetiality') }}">
               <input type="hidden" id="specialityName" name="specialityName" value="{{ session('specialityName') }}">
 
-              <input type="hidden" id="end_time" name="end_time">              
+              <input type="hidden" id="end_time" name="end_time">       
+-->       
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar Cita</button>
             </div>
           </div>
         </div>
@@ -226,7 +258,7 @@
                       events: [
                                 <?php
                                 use Illuminate\Support\Facades\DB;                                
-                                $sql = " select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Disponible' as estado, '#669999' as color, ";
+                                $sql = " select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Disponible' as estado, '#669999' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , ' ' as doctorName, ' ' as patientName ";
                                 $sql = $sql ." from fechaposdias fecha ";
@@ -234,11 +266,11 @@
                                 $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
 
                                 $sql = $sql ." where sch.doctor_id = ?";
-                                $sql = $sql ." and  app.date is null ";
+                                $sql = $sql ." and  ( app.date is null or app.status = 3 ) "; // Disponible o Cancelada
 
                                 $sql = $sql ." union ";
 
-                                $sql = $sql ." select fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#a58d13' as color, ";
+                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#a58d13' as color, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend,   user1.name as doctorName, user2.name as patientName ";
                                 $sql = $sql ." from fechaposdias fecha ";
@@ -252,10 +284,29 @@
                                 $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
                                 $sql = $sql ." and  app.id is not null";
                                 $sql = $sql ." and  sch.id is not null ";
+                                $sql = $sql ." and  app.status = 1 ";
 
+/*
+                                $sql = $sql ." union ";
 
+                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Cancelada' as estado, '#13a537' as color, ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend,   user1.name as doctorName, user2.name as patientName ";
+                                $sql = $sql ." from fechaposdias fecha ";
+                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
+                                $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
+                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id ) ";
+                                $sql = $sql ." left join users user1 on ( doc.user_id = user1.id ) ";
+                                $sql = $sql ." left join patients pat on ( app.patient_id = pat.id ) ";
+                                $sql = $sql ." left join users user2 on ( pat.user_id = user2.id ) ";
+                                $sql = $sql ." where sch.doctor_id = ?";
+                                $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
+                                $sql = $sql ." and  app.id is not null";
+                                $sql = $sql ." and  sch.id is not null ";
+                                $sql = $sql ." and  app.status = 3";
+*/
 
-                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id')] );             
+                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id') ] );             
 
                                 foreach( $registros as $fila) {
                                 ?>
@@ -264,10 +315,13 @@
                                             'end': '<?php echo $fila->fechaend ?>',
                                             'title': '<?php echo $fila->estado ?>',
                                             'color': '<?php echo $fila->color ?>',
-                                            
+                                            'id': '<?php echo $fila->id ?>',
                                             extendedProps: {
-                                                doctorName: '<?php echo $fila->doctorName ?>',
-                                                patientName: '<?php echo $fila->patientName ?>'
+                                                doctor_id: '<?php echo $fila->doctor_id ?>',
+                                                doctor_name: '<?php echo $fila->doctorName ?>',
+                                                patient_id: '<?php echo $fila->patient_id ?>',
+                                                patient_name: '<?php echo $fila->patientName ?>',
+                                                status: '<?php echo $fila->estado ?>'
                                             }
                                                 
                                         },
@@ -287,6 +341,7 @@
                       
                       
                        dateClick: function(info) {
+                          console.log("DtaClick");
                         /*
                             console.log("dateClicked on:" + info.dateStr  ); // e.g., "2023-10-27"
                             let now = new Date();
@@ -324,6 +379,9 @@
                         eventClick:function(info){
 
                               console.log("*****evento Click");
+                               var eventId = info.event.id;
+                            console.log('Event ID: ', eventId);
+                              console.log('Id: ' + info.event.id);
                               console.log('Title: ' + info.event.title);
 
                               console.log("Fecha:" + info.event.start.toISOString().slice(0, 10)); // 2026-03-30
@@ -337,7 +395,7 @@
                                   alert("La Fecha seleccionada es pasada");  
                               } else {
                                     let now = new Date();
-                                    if( info.event.title == 'Disponible'  ) {
+                                    if( info.event.title == 'Disponible'  || info.event.title == 'Cancelada' ) {
                                         $("#modalDoctorName").val( doctorName );
                                         $("#modalSpecialityName").val( specialityName );
                                         $("#modalPatientName").val( patientName );
@@ -350,10 +408,21 @@
                                         $("#modal").modal("show");      
                                     } else { 
                                         if( info.event.title == 'Agendado') {
+                                            console.log( "Agendado");
+                                            console.log( info.event.id);
+                                            $("#modalCitaIdAg").val( info.event.id );
+                                            $("#modalCitaIdAgHidden").val( info.event.id );
+                                            $("#modalDoctorIdAgHidden").val( info.event.extendedProps.doctor_id );
+                                            $("#modalPatientIdAgHidden").val( info.event.extendedProps.patient_id );
+                                            $("#modalFechaStartAgHidden").val( info.event.start.toISOString().slice(0, 10) );
+                                            $("#modalFechaHoraStartAgHidden").val( info.event.start.toString().split(' ')[4] );
+
                                             $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
                                             $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
-                                            $("#modalDoctorNameAg").val( info.event.extendedProps.doctorName);
-                                            $("#modalPatientNameAg").val( info.event.extendedProps.patientName);
+                                            $("#modalDoctorIdAg").val( info.event.extendedProps.doctor_id);
+                                            $("#modalDoctorNameAg").val( info.event.extendedProps.doctor_name);
+                                            $("#modalPatientIdAg").val( info.event.extendedProps.patient_id);
+                                            $("#modalPatientNameAg").val( info.event.extendedProps.patient_name);
                                             $("#modalSpecialityNameAg").val( specialityName);
 
                                             $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));

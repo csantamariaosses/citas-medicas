@@ -180,7 +180,7 @@ class AppointmentController extends Controller
         };
 
         $patients = Patient::all();
-        dd($patients);
+        //dd($patients);
       
         $json_schedules = json_encode($schedules);
 
@@ -189,8 +189,14 @@ class AppointmentController extends Controller
 
     public function confirmar(Request $request){
 
+        // Cita a confirmar
+        $doctor_id = $request->input('doctor_id');
+        $patient_id = $request->input('selectPatient_id');
+        $start_time = $request->input('startTime');
+        $end_time_ =  Carbon::parse($request->input('startTime'));
+        $end_time_->modify('+15 minutes');
+
         // Obtener patiente_id
-        $patient_id;
         if( $request->input('selectPatient_id') != 0) {
             // id viene desde pantalla modal de admin
             $patient_id = $request->input('selectPatient_id');
@@ -201,8 +207,25 @@ class AppointmentController extends Controller
             }
         }
         
-        $end_time_ =  Carbon::parse($request->input('startTime'));
-        $end_time_->modify('+15 minutes');
+        $cita_tmp = Appointment::where('patient_id', $patient_id)
+                    ->where('doctor_id', $doctor_id)
+                    ->where('date', $request->input('fecha'))
+                    ->where('start_time', $start_time)
+                    ->where('end_time', $end_time_ )
+                    ->first();
+        if( $cita_tmp ) {
+            session()->flash( 'swal' , [
+                'title' => 'Cita ya existe',
+                'text' => 'La cita ya ha sido creada anteriormente !!!!',
+                'icon' => 'error',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+            return redirect()->back();
+        }
+
+        //$end_time_ =  Carbon::parse($request->input('startTime'));
+        //$end_time_->modify('+15 minutes');
 
         //dd($request->all());
         //dd( $end_time_->format('H:i:s') );
@@ -244,15 +267,48 @@ class AppointmentController extends Controller
     }
 
 
-    public function cancelaCita(Request $request) {
-        $appointment_id = $request->input('appointment_id');
-        $appointment = Appointment::find($appointment_id);
+    public function cancelarCita(Request $request) {
+
+
+        /*dd( $request->input('modalCitaIdAgHidden') );
+        dd( $request->input('modalPatientIdAgHidden') );
+        dd( $request->input('modalDoctorIdAgHidden') );
+        dd( $request->input('modalFechaStartAgHidden') );
+        dd( $request->input('modalFechaHoraStartAgHidden') );
+        */
+
+        $appointment_id = $request->input('modalCitaIdAgHidden');
+        $doctor_id      = $request->input('modalDoctorIdAgHidden');
+        $patient_id     = $request->input('modalPatientIdAgHidden');
+        $fecha          = $request->input('modalFechaStartAgHidden');
+        $hora_start     = $request->input('modalFechaHoraStartAgHidden');
+        
+        $appointment = Appointment::where('id', $appointment_id)
+                        ->where('doctor_id', $doctor_id)
+                        ->where('patient_id', $patient_id)
+                        ->where('date', $fecha)
+                        ->where('start_time', $hora_start)
+                        ->first();
 
         if ($appointment) {
+
             $appointment->status = 3; // Estado "cancelada"
             $appointment->save();
+            
+            session()->flash( 'swal' , [
+            'title' => 'Agendaniento Cancelado',
+            'text' => 'La cita ha sido cancelada con exito !!!!',
+            'icon' => 'success',
+            //'timer' => 3000,
+            'showConfirmButton' => 'Ok'
+        ]); 
 
-            return response()->json(['success' => true, 'message' => 'Cita cancelada exitosamente.']);
+        $patients = Patient::all();
+        $especialidades = Speciality::all();
+        $doctors = Doctor::all();   
+        $patients = Patient::all();
+
+        return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
         } else {
             return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);
         }

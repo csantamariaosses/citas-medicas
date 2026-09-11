@@ -84,6 +84,8 @@ Route::prefix('admin')->group(function () {
     Route::post('agendadoc.doctors', [AppointmentController::class,'doctors'] )->name('agendadoc.doctors')->middleware('admin');
     Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');
     Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar')->middleware('admin');
+    Route::post('agendadoc.cancelarCita', [AppointmentController::class,'cancelarCita'] )->name('agendadoc.cancelarCita')->middleware('admin');
+
     Route::get('agendadocfull', [AppointmentController::class,'agendadocfull'] )->name('agendadocfull')->middleware('admin');
 });
 

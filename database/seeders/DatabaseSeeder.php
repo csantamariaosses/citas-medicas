@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Producto;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,9 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        $this->call(UserSeeder::class);
+       DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+       
+       DB::table('users')->truncate();
+       DB::table('doctors')->truncate();
+       DB::table('schedules')->truncate();
+       DB::table('patients')->truncate();
+       DB::table('model_has_roles')->truncate();
+
+       DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        $this->call(AdminSeeder::class);
+        $this->call(PatientSeeder::class);
+        $this->call(DoctorSeeder::class);
+   
 
         /*
         User::factory()->create([

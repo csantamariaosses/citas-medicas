@@ -1,6 +1,7 @@
 <div x-data="tblData()" x-init="inicio()" style="background-color: #e0e0e0; padding: 20px; border-radius: 5px;">
   <h3> Administrar Horarios - vista componente </h3>
-  <p>Doctor: {{ $doctor->user->name }}</p>
+  <p>Doctor: {{ $doctor->user->name }}<br>
+    Especialidad: {{ $doctor->speciality->name }}</p>
   <hr>
   <div class="overflow-x-auto" style="width: 1200px;">
     <div>

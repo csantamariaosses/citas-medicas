@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class PatientSeeder extends Seeder
 {
@@ -12,6 +14,7 @@ class PatientSeeder extends Seeder
      */
     public function run(): void
     {
+        //usuario
         $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Juan Carlos Salazar',
                'email' => 'juan.carlos.salazar@gmail.com',
@@ -20,6 +23,7 @@ class PatientSeeder extends Seeder
                'phone' => '56998784512'
            ]);
 
+        // paciente
         DB::table('patients')->insert( [
                 'user_id' => $ultimoId,
                 'blood_type_id' => 3,
@@ -28,8 +32,16 @@ class PatientSeeder extends Seeder
                 'observations' => 'Sin comentarios',
                 'emergency_contact_name' => 'Contacto de Carlos Salazar'
         ]);
+        // role paciente
+        DB::table('model_has_roles')->insert( [
+                'role_id' => 2, // 2:patient
+                'model_type' => 'App\Models\User',
+                'model_id' => $ultimoId
+        ]);
 
 
+
+        // usuario
         $ultimoId =  DB::table('users')->insertGetId ( [
                'name' => 'Pedro Belmar',
                'email' => 'pedro.belmar@gmail.com',
@@ -45,9 +57,17 @@ class PatientSeeder extends Seeder
                 'chronics_conditions' => 'Insuf Renal',
                 'observations' => 'Renato Titis',
                 'emergency_contact_name' => 'Contacto sin tacto'
-           ]);
+        ]);
+        // role paciente
+        DB::table('model_has_roles')->insert( [
+                'role_id' => 2, // 2:patient
+                'model_type' => 'App\Models\User',
+                'model_id' => $ultimoId
+        ]);
 
 
+
+        // usuario
         $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Juan Pablo Escobar',
                'email' => 'juan.pablo.escobar@gmail.com',
@@ -65,7 +85,14 @@ class PatientSeeder extends Seeder
                 'emergency_contact_name' => 'Contacto dulce'
            ]);
 
+           // role paciente
+            DB::table('model_has_roles')->insert( [
+                    'role_id' => 2, // 2:patient
+                    'model_type' => 'App\Models\User',
+                    'model_id' => $ultimoId
+            ]);
 
+            // usuario
             $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Eduardo Tapia',
                'email' => 'eduardo.tapia@gmail.com',
@@ -74,6 +101,7 @@ class PatientSeeder extends Seeder
                'phone' => '569887744'
            ]);
 
+           // paciente
            DB::table('patients')->insert( [
                 'user_id' => $ultimoId,
                 'blood_type_id' => 1,
@@ -83,7 +111,15 @@ class PatientSeeder extends Seeder
                 'emergency_contact_name' => 'Contacto copete'
            ]);
 
+            // role paciente
+           DB::table('model_has_roles')->insert( [
+                'role_id' => 2, // 2:patient
+                'model_type' => 'App\Models\User',
+                'model_id' => $ultimoId
+           ]);
 
+
+           // usuario
             $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Francisco Ramirez',
                'email' => 'francisco.ramirez@gmail.com',
@@ -91,5 +127,22 @@ class PatientSeeder extends Seeder
                'address' => 'Direccion Falsa 410',
                'phone' => '569887744'
            ]);
+           // paciente
+           DB::table('patients')->insert( [
+                'user_id' => $ultimoId,
+                'blood_type_id' => 1,
+                'allergies' => 'Alcohol',
+                'chronics_conditions' => 'Alcoholicos anonimos',
+                'observations' => 'Se lo chupa todo y mas',
+                'emergency_contact_name' => 'Contacto copete chamuyento'
+           ]);
+            // role paciente
+           DB::table('model_has_roles')->insert( [
+                'role_id' => 2, // 2:patient
+                'model_type' => 'App\Models\User',
+                'model_id' => $ultimoId
+           ]);
+
+
     }
 }

@@ -142,6 +142,8 @@ class DoctorController extends Controller
         return redirect()->route('doctores.index');
     }
 
+    
+
     public function schedules( $id )
     {
         //
