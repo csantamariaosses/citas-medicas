@@ -131,11 +131,11 @@ class AppointmentController extends Controller
     public function showcalendar(Request $request){
 
         //dd( $request->all() );
-        //$doctor_id = $request->input('city_id');
+        $doctor_id = $request->input('doctor_id');
         //$doctor_id = $request->input('doctor');
         
 
-        $doctor_id = $request->input('doctor');
+       //$doctor_id = $request->input('doctor');
 
         $doctor = Doctor::find($doctor_id);
         //dd($doctor);
@@ -207,22 +207,89 @@ class AppointmentController extends Controller
             }
         }
         
-        $cita_tmp = Appointment::where('patient_id', $patient_id)
-                    ->where('doctor_id', $doctor_id)
+        $cita_tmp = Appointment::where('doctor_id', $doctor_id)
                     ->where('date', $request->input('fecha'))
                     ->where('start_time', $start_time)
                     ->where('end_time', $end_time_ )
+                    ->select( 'id', 'status')
                     ->first();
+        //dd( $cita_tmp);
+
         if( $cita_tmp ) {
+            //dd( $cita_tmp->status );
+            switch( $cita_tmp->status->value ) {
+                case 1:
+                    session()->flash( 'swal' , [
+                        'title' => 'Cita ya existe',
+                        'text' => 'La cita ya ha sido creada anteriormente !!!!',
+                        'icon' => 'error',
+                        //'timer' => 3000,
+                        'showConfirmButton' => 'Ok'
+                    ]); 
+                    return redirect()->back();
+                    break;
+                case 2:
+                    dd("Cita Confirmada");
+                    break;
+                case 3:
+                    //dd("Cita Cancelada para reagendar");
+                    $appointment = Appointment::where('id', $cita_tmp->id )
+                        ->first();
+
+                    if ($appointment) {
+
+                        $appointment->status = 1; // Estado "agendada"
+                        $appointment->save();
+                        
+                        session()->flash( 'swal' , [
+                        'title' => 'Agendaniento Confirmado',
+                        'text' => 'La cita ha sido agendada con exito !!!!',
+                        'icon' => 'success',
+                        //'timer' => 3000,
+                        'showConfirmButton' => 'Ok'
+                        ]); 
+                    }
+
+    
+                    return redirect()->back();
+                    break;
+                default:
+                    dd("Cita en estado desconocido");
+                    break;
+            }
+        } else {  // No existe agendamiento
+            // se crea nuevo registro
+            $appointment = new Appointment();
+            $appointment->patient_id = $patient_id; // Aquí deberías obtener el ID del paciente autenticado
+            $appointment->doctor_id = $request->input('doctor_id');
+            $appointment->date = $request->input('fecha');
+            $appointment->start_time = $request->input('startTime');
+
+            $appointment->end_time = $end_time_->format('H:i:s');
+            $appointment->duration = 15; // Duración fija de 15 minutos, puedes ajustarla según tus necesidades
+            $appointment->status = 1; // Estado "confirmada"
+            $appointment->save();
+
+            $especialidades = Speciality::all();
+            $doctors = Doctor::all();
+
+            $doctor_id = $request->input('doctor_id');
+
             session()->flash( 'swal' , [
-                'title' => 'Cita ya existe',
-                'text' => 'La cita ya ha sido creada anteriormente !!!!',
-                'icon' => 'error',
+                'title' => 'Agendaniento Confirmado',
+                'text' => 'La cita ha sido creada con exito !!!!',
+                'icon' => 'success',
                 //'timer' => 3000,
                 'showConfirmButton' => 'Ok'
             ]); 
-            return redirect()->back();
+
+            $patients = Patient::all();
+
+            return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
+
         }
+
+        
 
         //$end_time_ =  Carbon::parse($request->input('startTime'));
         //$end_time_->modify('+15 minutes');
@@ -230,33 +297,7 @@ class AppointmentController extends Controller
         //dd($request->all());
         //dd( $end_time_->format('H:i:s') );
 
-        $appointment = new Appointment();
-        $appointment->patient_id = $patient_id; // Aquí deberías obtener el ID del paciente autenticado
-        $appointment->doctor_id = $request->input('doctor_id');
-        $appointment->date = $request->input('fecha');
-        $appointment->start_time = $request->input('startTime');
-
-        $appointment->end_time = $end_time_->format('H:i:s');
-        $appointment->duration = 15; // Duración fija de 15 minutos, puedes ajustarla según tus necesidades
-        $appointment->status = 1; // Estado "confirmada"
-        $appointment->save();
-
-        $especialidades = Speciality::all();
-        $doctors = Doctor::all();
-
-        $doctor_id = $request->input('doctor_id');
-
-        session()->flash( 'swal' , [
-            'title' => 'Agendaniento Confirmado',
-            'text' => 'La cita ha sido creada con exito !!!!',
-            'icon' => 'success',
-            //'timer' => 3000,
-            'showConfirmButton' => 'Ok'
-        ]); 
-
-        $patients = Patient::all();
-
-        return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
+       
     }
 
     public function buscahorasreservadas(Request $request) {
@@ -269,50 +310,101 @@ class AppointmentController extends Controller
 
     public function cancelarCita(Request $request) {
 
+        //dd( $request->all() );
 
-        /*dd( $request->input('modalCitaIdAgHidden') );
-        dd( $request->input('modalPatientIdAgHidden') );
-        dd( $request->input('modalDoctorIdAgHidden') );
-        dd( $request->input('modalFechaStartAgHidden') );
-        dd( $request->input('modalFechaHoraStartAgHidden') );
-        */
 
-        $appointment_id = $request->input('modalCitaIdAgHidden');
+        $appointment_id = $request->input('modalCitaIdConfirmCancelHidden');
+        /*
         $doctor_id      = $request->input('modalDoctorIdAgHidden');
         $patient_id     = $request->input('modalPatientIdAgHidden');
         $fecha          = $request->input('modalFechaStartAgHidden');
         $hora_start     = $request->input('modalFechaHoraStartAgHidden');
-        
+        */
         $appointment = Appointment::where('id', $appointment_id)
+                                    ->first();
+        /*
                         ->where('doctor_id', $doctor_id)
                         ->where('patient_id', $patient_id)
                         ->where('date', $fecha)
                         ->where('start_time', $hora_start)
                         ->first();
-
+*/
         if ($appointment) {
 
             $appointment->status = 3; // Estado "cancelada"
             $appointment->save();
             
             session()->flash( 'swal' , [
-            'title' => 'Agendaniento Cancelado',
-            'text' => 'La cita ha sido cancelada con exito !!!!',
-            'icon' => 'success',
-            //'timer' => 3000,
-            'showConfirmButton' => 'Ok'
-        ]); 
+                'title' => 'Agendaniento Cancelado',
+                'text' => 'La cita ha sido cancelada con exito !!!!',
+                'icon' => 'success',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
 
-        $patients = Patient::all();
-        $especialidades = Speciality::all();
-        $doctors = Doctor::all();   
-        $patients = Patient::all();
+            $patients = Patient::all();
+            $especialidades = Speciality::all();
+            $doctors = Doctor::all();   
+            $patients = Patient::all();
+            $doctor_id = $request->input('modalDoctorIdConfirmCancelHidden');
 
-        return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
+            return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
         } else {
             return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);
         }
     }
+
+    public function updateCita(Request $request) {
+
+      //dd( $request->all() );
+        $appointment_id = $request->input('modalCitaIdUpdateHidden');
+        $doctor_id      = $request->input('modalDoctorIdUpdateHidden');
+        $patient_id     = $request->input('modalPatientIdUpdateHidden');                                        
+        $fecha          = $request->input('modalFechaStartUpdateHidden');
+        $hora_start     = $request->input('modalHoraStartUpdateHidden');
+
+        //dd( $appointment_id, $doctor_id, $patient_id, $fecha, $hora_start );
+
+    
+
+        // Buscar la cita existente
+        $appointment = Appointment::where('id', $appointment_id)
+        /*
+                        ->where('doctor_id', $doctor_id)
+                        ->where('patient_id', $patient_id)
+                        ->where('date', $fecha)
+                        ->where('start_time', $hora_start)
+                        */
+                        ->first();
+
+        if ($appointment) {
+            $appointment->patient_id = $patient_id;
+            $appointment->status = 1; // Estado "agendada"
+             
+            // Guardar los cambios
+            $appointment->save();
+
+            session()->flash( 'swal' , [
+                'title' => 'Cita Actualizada',
+                'text' => 'La cita ha sido actualizada con éxito.',
+                'icon' => 'success',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+
+            $patients = Patient::all();
+            $especialidades = Speciality::all();
+            $doctors = Doctor::all();   
+            $patients = Patient::all();
+
+            return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
+
+        } else {
+            return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);
+        }
+    }
+
+
 
     public function agendadocfull(){
         $especialidades = Speciality::all();

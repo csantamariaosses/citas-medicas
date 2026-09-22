@@ -8,12 +8,12 @@
     <div align="center"><h3>SHOW CALENDAR - ADMIN</h3></div>
     <div class="row">
 
-        <div class="col-2">
+        <div class="col-1">
            ..
 
         </div>
          
-        <div class="col-8">
+        <div class="col-10">
             
             <input type="hidden" id="doctorName" value="{{ session('doctorName') }}">
             <input type="hidden" id="specialityName" value="{{ session('specialityName') }}">
@@ -33,7 +33,7 @@
               <div x-ref="calendar"> </div> 
           </div>
         </div>
-        <div class="col-2">
+        <div class="col-1">
           <div id="citas"></div>
         </div>
     </div>
@@ -43,13 +43,13 @@
       <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <form action="{{ route('agendadoc.confirmar') }}" method="POST">
           @csrf 
-        <div class="modal-dialog color:blue">
+        <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Confirmación de Hora</h5>
+            <div class="modal-header"  style="background-color: #669999; color: #ffffff;"      >
+              <h5 class="modal-title" id="staticBackdropLabel">Confirmación de Hora---</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body"  style="background-color: #fff;">
                 <table>
                     <tr>
                       <th>Estado Hora:</th><td><span id="modalStatus" name="modalStatus"></td>
@@ -84,7 +84,7 @@
                                  
                 </table>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="background-color: #fff;">
               <input type="hidden" id="status" name="status" value="{{ session('status') }}">
               <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">  
               <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">
@@ -100,11 +100,11 @@
               <input type="hidden" id="end_time" name="end_time">              
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary">Confirmar</button>
-            </div>
-          </div>
-        </div>
+            </div> <!-- modal-footer -->
+          </div>   <!-- modal-content -->
+        </div>     <!-- modal-dialog -->
         </form>
-      </div>
+      </div>       <!-- modal -->
 
 
       <!-- Modal  Agendado-->
@@ -114,11 +114,11 @@
          
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header"  style="background-color: #a58d13; color: #ffffff;" > 
               <h5 class="modal-title" id="staticBackdropLabel">Informacion de la Hora Medica Agendada</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="background-color: #fff;">
                 <table>
                     <tr>
                       <th>Cita Id::</th><td><input type="text" id="modalCitaIdAg" name="modalCitaIdAg" disabled></td>
@@ -148,25 +148,149 @@
                                  
                 </table>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="background-color: #fff;">
                 <input type="hidden" id="modalCitaIdAgHidden" name="modalCitaIdAgHidden">
                 <input type="hidden" id="modalDoctorIdAgHidden" name="modalDoctorIdAgHidden">
                 <input type="hidden" id="modalPatientIdAgHidden" name="modalPatientIdAgHidden">
                 <input type="hidden" id="modalFechaStartAgHidden" name="modalFechaStartAgHidden">
                 <input type="hidden" id="modalFechaHoraStartAgHidden" name="modalFechaHoraStartAgHidden">
-<!--
-              <input type="hidden" id="cita_id" name="cita_id" value="{{ session('cita_id') }}">
-              <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">
-              <input type="hidden" id="patient_name" name="patient_name" value="{{ session('patient_name') }}">
-              <input type="hidden" id="doctor_id" name="doctor_id" value="{{ session('doctor_id') }}"> 
-              <input type="hidden" id="doctorName" name="doctorName" value="{{ session('doctorName') }}">
-              <input type="hidden" id="spetiality" name="spetiality" value="{{ session('spetiality') }}">
-              <input type="hidden" id="specialityName" name="specialityName" value="{{ session('specialityName') }}">
-
-              <input type="hidden" id="end_time" name="end_time">       
--->       
+      
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar Cita</button>
+              <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cancelar Cita</button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmCancelarCitaModal" data-bs-dismiss="modal">
+                CANCELAR CITA
+              </button>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+
+
+      <!-- Confirmación Cancelar Cita -->
+       <div class="modal fade" id="confirmCancelarCitaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route('agendadoc.cancelarCita') }}" method="POST">
+          @csrf 
+         
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color:rgb(225, 126, 126); color:#ffffff;">
+              <h5 class="modal-title" id="staticBackdropLabel">Está Seguro de Cancelar la Cita?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                      <th>Cita Id:::</th><td><input type="text" id="modalCitaIdConfirmCancel" name="modalCitaIdConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdConfirmCancel" name="modalDoctorIdConfirmCancel" disabled></td>
+                    </tr>
+                   <tr>
+                      <th>Médico:</th><td><input type="text" id="modalDoctorNameConfirmCancel" name="modalDoctorNameConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameConfirmCancel" name="modalSpecialityNameConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Id Paciente:</th><td><input type="text" id="modalPatientIdConfirmCancel" name="modalPatientIdConfirmCancel"  disabled></td>
+                    </tr>
+                    <tr>
+                    <tr>
+                      <th>Paciente:</th><td><input type="text" id="modalPatientNameConfirmCancel" name="modalPatientNameConfirmCancel"  disabled></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th><td><input type="text" id="fechaConfirmCancel" name="fechaConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>    
+                        <th>Hora</th><td><input type="text" id="start_timeConfirmCancel" name="start_timeConfirmCancel" disabled></td>
+                    </tr>
+                                 
+                </table>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="modalCitaIdConfirmCancelHidden" name="modalCitaIdConfirmCancelHidden">
+                <input type="hidden" id="modalDoctorIdConfirmCancelHidden" name="modalDoctorIdConfirmCancelHidden">
+                <input type="hidden" id="modalDoctorNameConfirmCancelHidden" name="modalDoctorNameConfirmCancelHidden">
+                <input type="hidden" id="modalSpecialityNameConfirmCancelHidden" name="modalSpecialityNameConfirmCancelHidden">
+                
+                <input type="hidden" id="modalPatientIdConfirmCancelHidden" name="modalPatientIdConfirmCancelHidden">
+                <input type="hidden" id="modalPatientNameConfirmCancelHidden" name="modalPatientNameConfirmCancelHidden">
+                <input type="hidden" id="modalFechaStartConfirmCancelHidden" name="modalFechaStartConfirmCancelHidden">
+                <input type="hidden" id="modalFechaHoraStartConfirmCancelHidden" name="modalFechaHoraStartConfirmCancelHidden">
+                
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-warning" data-bs-dismiss="modal">Confirma Cancelar Cita</button>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+
+
+
+      <!-- modalUpdateAgenda -->
+
+    <div class="modal fade" id="modalUpdateAgenda" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route('agendadoc.updateCita') }}" method="POST">
+          @csrf 
+         
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"  style="background-color:rgb(16, 69, 69); color:#ffffff;">
+              <h5 class="modal-title" id="staticBackdropLabel">Reagendamiento de Hora Medica</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                      <th>Cita Id::</th><td><input type="text" id="modalCitaIdUpdate" name="modalCitaIdUpdate" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdUpdate" name="modalDoctorIdUpdate" disabled></td>
+                    </tr>
+                   <tr>
+                      <th>Médico:</th><td><input type="text" id="modalDoctorNameUpdate" name="modalDoctorNameUpdate" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameUpdate" name="modalSpecialityNameUpdate" value="{{ session('specialityName') }}" disabled></td>
+                    </tr>
+
+
+                    <tr>
+                        <th>Paciente:</th><td>
+                           <select name="modalPatientIdUpdate">
+                             <option value="0">Seleccione un paciente</option>
+                              @foreach($patients as $patient)
+                                  <option value="{{ $patient->id }}">{{ $patient->id }}-{{ $patient->user->name }}</option>
+                             @endforeach
+                           </select>
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th><td><input type="text" id="modalFechaStartUpdate" name="modalFechaStartUpdate" disabled></td>
+                    </tr>
+                    <tr>    
+                        <th>Hora</th><td><input type="text" id="modalHoraStartUpdate" name="modalHoraStartUpdate" disabled></td>
+                    </tr>
+                                 
+                </table>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="modalCitaIdUpdateHidden" name="modalCitaIdUpdateHidden">
+                <input type="hidden" id="modalDoctorIdUpdateHidden" name="modalDoctorIdUpdateHidden">
+                <input type="hidden" id="modalDoctorNameUpdateHidden" name="modalDoctorNameUpdateHidden">
+                
+                <input type="hidden" id="modalPatientIdUpdateHidden" name="modalPatientIdUpdateHidden">
+                <input type="hidden" id="modalPatientNameUpdateHidden" name="modalPatientNameUpdateHidden">
+
+                <input type="hidden" id="modalFechaStartUpdateHidden" name="modalFechaStartUpdateHidden">
+
+                <input type="hidden" id="modalHoraStartUpdateHidden" name="modalHoraStartUpdateHidden">
+      
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Guardar Cita</button>
             </div>
           </div>
         </div>
@@ -248,70 +372,85 @@
                       allDayText: 'Todo el dia',
                       noEventsText: 'No hay eventos para mostrar',
 
-                      slotDuration: '00:15:00',
-                      initialView: 'timeGridWeek',
+                      slotDuration: '00:15:00',   // Duración de cada intervalo de tiempo en la vista de cuadrícula de tiempo (timeGrid)
+                      initialView: 'timeGridWeek',  // Vista Inicial semana en horas
 
-                      slotMinTime: "{{ config('schedules.start_time') }}",
-                      slotMaxTime: "{{ config('schedules.end_time') }}",
+                      slotMinTime: "{{ config('schedules.start_time') }}", // desde el archivo config/schedules.php
+                      slotMaxTime: "{{ config('schedules.end_time') }}",   // desde el archivo config/schedules.php
+
+                       eventTimeFormat: {           // Formato de hora en los eventos
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          meridiem: false,           // Usa formato de 24 horas (true para AM/PM)
+                          omitZeroMinute: false      // Muestra :00 en punto en lugar de ocultarlo
+                      },
                     
 
                       events: [
                                 <?php
-                                use Illuminate\Support\Facades\DB;                                
-                                $sql = " select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Disponible' as estado, '#669999' as color, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , ' ' as doctorName, ' ' as patientName ";
-                                $sql = $sql ." from fechaposdias fecha ";
-                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
-                                $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
-
-                                $sql = $sql ." where sch.doctor_id = ?";
-                                $sql = $sql ." and  ( app.date is null or app.status = 3 ) "; // Disponible o Cancelada
+                                use Illuminate\Support\Facades\DB;       
+                                
+                                // Disponibles
+                                $sql =       "  select app.id, app.patient_id, sch.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date,";
+                                $sql = $sql ." 'Disponible' as estado, '#669999' as color,  concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ."  concat(fecha.fecha,'T', sch.end_time) as fechaend , userdoc.name as doctorName, userpat.name as patientName  ";
+                                $sql = $sql ."  from fechaposdias fecha  ";
+                                $sql = $sql ."  left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ."  left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
+                                $sql = $sql ."  left join doctors doc on ( doc.id = sch.doctor_id )  ";
+                                $sql = $sql ."  left join users userdoc on ( doc.user_id = userdoc.id )  ";
+                                $sql = $sql ."  left join patients patdisp on ( app.patient_id = patdisp.id )  ";
+                                $sql = $sql ."  left join users userpat on ( patdisp.user_id = userpat.id ) ";
+                                $sql = $sql ."  where sch.doctor_id = ? ";
+                                $sql = $sql ."  and  app.date is null  ";
 
                                 $sql = $sql ." union ";
 
-                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Agendado' as estado, '#a58d13' as color, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend,   user1.name as doctorName, user2.name as patientName ";
-                                $sql = $sql ." from fechaposdias fecha ";
-                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
-                                $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
-                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id ) ";
-                                $sql = $sql ." left join users user1 on ( doc.user_id = user1.id ) ";
-                                $sql = $sql ." left join patients pat on ( app.patient_id = pat.id ) ";
-                                $sql = $sql ." left join users user2 on ( pat.user_id = user2.id ) ";
-                                $sql = $sql ." where sch.doctor_id = ?";
-                                $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
-                                $sql = $sql ." and  app.id is not null";
-                                $sql = $sql ." and  sch.id is not null ";
-                                $sql = $sql ." and  app.status = 1 ";
+                                // Agendados
+                                $sql = $sql ."   select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, ";
+                                $sql = $sql ." 'Agendado' as estado, ";
+                                $sql = $sql ." '#a58d13' as color,  concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ."     concat(fecha.fecha,'T', sch.end_time) as fechaend,   ";
+                                $sql = $sql ."     userdoc.name as doctorName, userpat.name as patientName ";  
+                                $sql = $sql ."     from fechaposdias fecha  ";
+                                $sql = $sql ."     left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ."     left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time)  ";
+                                $sql = $sql ."     left join doctors doc on ( doc.id = app.doctor_id )  ";
+                                $sql = $sql ."     left join users userdoc on ( doc.user_id = userdoc.id ) ";  
+                                $sql = $sql ."     left join patients pat on ( app.patient_id = pat.id )  ";
+                                $sql = $sql ."     left join users userpat on ( pat.user_id = userpat.id ) "; 
+                                $sql = $sql ."     where sch.doctor_id =   ? ";
+                                $sql = $sql ."     and  sch.doctor_id = app.doctor_id  ";
+                                $sql = $sql ."     and  app.id is not null ";
+                                $sql = $sql ."     and  sch.id is not null  ";
+                                $sql = $sql ."     and  app.status = 1 ";
 
-/*
                                 $sql = $sql ." union ";
 
-                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, 'Cancelada' as estado, '#13a537' as color, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart, ";
-                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend,   user1.name as doctorName, user2.name as patientName ";
-                                $sql = $sql ." from fechaposdias fecha ";
-                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week ) ";
-                                $sql = $sql ." left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time) ";
-                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id ) ";
-                                $sql = $sql ." left join users user1 on ( doc.user_id = user1.id ) ";
-                                $sql = $sql ." left join patients pat on ( app.patient_id = pat.id ) ";
-                                $sql = $sql ." left join users user2 on ( pat.user_id = user2.id ) ";
-                                $sql = $sql ." where sch.doctor_id = ?";
-                                $sql = $sql ." and  sch.doctor_id = app.doctor_id ";
-                                $sql = $sql ." and  app.id is not null";
-                                $sql = $sql ." and  sch.id is not null ";
-                                $sql = $sql ." and  app.status = 3";
-*/
+                                // Cancelados
+                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date,";
+                                $sql = $sql ." 'Cancelado' as estado, 'rgb(16, 69, 69)' as color,  ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , userdoc.name as doctorName,";
+                                $sql = $sql ." userpat.name as patientName  ";
+                                $sql = $sql ." from fechaposdias fecha  ";
+                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time)  ";
+                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id )  ";
+                                $sql = $sql ." left join users userdoc on ( doc.user_id = userdoc.id )  ";
+                                $sql = $sql ." left join patients patdisp on ( app.patient_id = patdisp.id )  ";
+                                $sql = $sql ." left join users userpat on ( patdisp.user_id = userpat.id )  ";
+                                $sql = $sql ." where sch.doctor_id = ? ";
+                                $sql = $sql ." and  app.date is not null ";  
+                                $sql = $sql ." and  app.status =  3 ";
 
-                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id') ] );             
+                                
+                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id') , session('doctor_id')   ] );             
 
                                 foreach( $registros as $fila) {
                                 ?>
                                         {
-                                            'start': '<?php echo $fila->fechastart ?>',
+                                            'start': '<?php  echo $fila->fechastart;  ?>',
                                             'end': '<?php echo $fila->fechaend ?>',
                                             'title': '<?php echo $fila->estado ?>',
                                             'color': '<?php echo $fila->color ?>',
@@ -342,36 +481,7 @@
                       
                        dateClick: function(info) {
                           console.log("DtaClick");
-                        /*
-                            console.log("dateClicked on:" + info.dateStr  ); // e.g., "2023-10-27"
-                            let now = new Date();
-          
-                            if(  info.date > now  ){ // Evitar que se abra el modal para fechas pasadas
-                                 $("#modal").modal("show"); 
-                              } else {     
-                                alert("La Fecha seleccionada es pasada");                           //alert("No puedes seleccionar una fecha pasada");
-                            }
-
-                            $("#fecha").val(info.dateStr.substring(0, 10));  // 2026-03-30T14:00:00
-
-                            console.log( "Info:" + info.date);
-
-                            let fecha_inicio = new Date(info.dateStr);
-                            let fecha_fin = new Date(info.dateStr);
-                            console.log( "fecha_inicio:" ,fecha_inicio);
-
-                            let  minutosAgregar = 15;
-                            fecha_fin.setMinutes(fecha_inicio.getMinutes() + minutosAgregar);
-                            console.log( "fecha_fin :" ,fecha_fin);
-
-                            console.log("Hora Inicio:" + fecha_inicio.toISOString().slice(11, 19)); // 14:00:00
-                                                     
-                            $("#start_time").val(fecha_inicio.toTimeString({ hour12: false }).substring(0, 8));
-
-                            $("#end_time").val(fecha_fin.toTimeString({ hour12: false }).substring(0, 8)  ); // 14:30:00
-
-                            $("#eventInput").val('Ingresar Evento');
-                            */
+                    
                             
                         },
 
@@ -379,8 +489,7 @@
                         eventClick:function(info){
 
                               console.log("*****evento Click");
-                               var eventId = info.event.id;
-                            console.log('Event ID: ', eventId);
+
                               console.log('Id: ' + info.event.id);
                               console.log('Title: ' + info.event.title);
 
@@ -388,14 +497,16 @@
                               console.log('Start: ' + info.event.start);
                               
                               console.log("Hora:" + info.event.start.toString().split(' ')[4]  ); // 14:00:00
-                              console.log("Medico:" + info.event.extendedProps.doctorName); // 14:00:00
-                              console.log("Paciente:" + info.event.extendedProps.patientName); // 14:00:00
+                              console.log("Medico:" + info.event.extendedProps.doctor_name); // 14:00:00
+                              console.log("Paciente:" + info.event.extendedProps.patient_name); // 14:00:00
 
                               if( info.event.start < now ) {
                                   alert("La Fecha seleccionada es pasada");  
                               } else {
                                     let now = new Date();
-                                    if( info.event.title == 'Disponible'  || info.event.title == 'Cancelada' ) {
+                                    if( info.event.title == 'Disponible' ) {
+                                        console.log("Status::" + info.event.status);
+
                                         $("#modalDoctorName").val( doctorName );
                                         $("#modalSpecialityName").val( specialityName );
                                         $("#modalPatientName").val( patientName );
@@ -406,31 +517,63 @@
                                         $("#fecha").val( info.event.start.toISOString().slice(0, 10));                                        
                                         $("#startTime").val( info.event.start.toString().split(' ')[4]  );
                                         $("#modal").modal("show");      
-                                    } else { 
-                                        if( info.event.title == 'Agendado') {
-                                            console.log( "Agendado");
-                                            console.log( info.event.id);
-                                            $("#modalCitaIdAg").val( info.event.id );
-                                            $("#modalCitaIdAgHidden").val( info.event.id );
-                                            $("#modalDoctorIdAgHidden").val( info.event.extendedProps.doctor_id );
-                                            $("#modalPatientIdAgHidden").val( info.event.extendedProps.patient_id );
-                                            $("#modalFechaStartAgHidden").val( info.event.start.toISOString().slice(0, 10) );
-                                            $("#modalFechaHoraStartAgHidden").val( info.event.start.toString().split(' ')[4] );
+                                    } 
 
-                                            $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
-                                            $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
-                                            $("#modalDoctorIdAg").val( info.event.extendedProps.doctor_id);
-                                            $("#modalDoctorNameAg").val( info.event.extendedProps.doctor_name);
-                                            $("#modalPatientIdAg").val( info.event.extendedProps.patient_id);
-                                            $("#modalPatientNameAg").val( info.event.extendedProps.patient_name);
-                                            $("#modalSpecialityNameAg").val( specialityName);
+                                    if( info.event.title == 'Agendado') {
+                                        console.log( "Agendado");
+                                        console.log( info.event.id);
+                                        $("#modalCitaIdAg").val( info.event.id );
+                                        $("#modalCitaIdAgHidden").val( info.event.id );
+                                        $("#modalDoctorIdAgHidden").val( info.event.extendedProps.doctor_id );
+                                        $("#modalPatientIdAgHidden").val( info.event.extendedProps.patient_id );
+                                        $("#modalFechaStartAgHidden").val( info.event.start.toISOString().slice(0, 10) );
+                                        $("#modalFechaHoraStartAgHidden").val( info.event.start.toString().split(' ')[4] );
 
-                                            $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
-                                            $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
+                                        $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
+                                        $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
+                                        $("#modalDoctorIdAg").val( info.event.extendedProps.doctor_id);
+                                        $("#modalDoctorNameAg").val( info.event.extendedProps.doctor_name);
+                                        $("#modalPatientIdAg").val( info.event.extendedProps.patient_id);
+                                        $("#modalPatientNameAg").val( info.event.extendedProps.patient_name);
+                                        $("#modalSpecialityNameAg").val( specialityName);
 
-                                            $("#modalAgendado").modal("show");
-                                        }        
-                                    }                                                                                       
+                                        $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
+                                        $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
+
+                                        $("#modalCitaIdConfirmCancelHidden").val( info.event.id );
+                                        $("#modalDoctorIdConfirmCancelHidden").val( info.event.extendedProps.doctor_id );
+
+                                        $("#modalAgendado").modal("show");    
+                                    }                                              
+                                    
+                                     if( info.event.title == 'Cancelado') {
+                                        console.log( "Cancelada");
+                                        console.log( info.event.id);
+
+                                        $("#modalCitaIdUpdate").val( info.event.id ); 
+                                        $("#modalCitaIdUpdateHidden").val( info.event.id );
+
+                                        $("#modalDoctorIdUpdateHidden").val( info.event.extendedProps.doctor_id );
+                                        $("#modalDoctorNameUpdateHidden").val( info.event.extendedProps.doctor_name );
+
+                                        $("#modalDoctorIdUpdate").val( info.event.extendedProps.doctor_id );
+                                        $("#modalDoctorIdUpdateHidden").val( info.event.extendedProps.doctor_id );
+
+                                        $("#modalDoctorNameUpdate").val( info.event.extendedProps.doctor_name );
+                                        
+                                        $("#modalPatientIdUpdate").val( info.event.extendedProps.patient_id );
+                                        $("#modalPatientIdUpdateHidden").val( info.event.extendedProps.patient_id );
+
+                                        $("#modalPatientNameUpdateHidden").val( info.event.extendedProps.patient_name );
+
+                                        $("#modalFechaStartUpdate").val( info.event.start.toISOString().slice(0, 10) );
+                                        $("#modalFechaStartUpdateHidden").val( info.event.start.toISOString().slice(0, 10) );
+
+                                        $("#modalHoraStartUpdate").val( info.event.start.toString().split(' ')[4] );
+                                        $("#modalHoraStartUpdateHidden").val( info.event.start.toString().split(' ')[4] );
+
+                                        $("#modalUpdateAgenda").modal("show");    
+                                    }                                              
                               }                                                                                         
                         },
                         hiddenDays: [ 0 ]
@@ -679,13 +822,7 @@
                     for (let sal of salida) {
                             console.log("SALIDA_ID:::" + sal.id);
                         }
-                    //return data;
-                    //salida.push( data );
-                    //console.log(data); // Aquí ya tienes los datos
-                    //console.log( "SALIDA:" + salida);
-                    //var myJsonString = JSON.stringify(salida);
-                    //console.log( myJsonString);
-                    //return salida;
+            
                 })
                 .catch(error => {
                     console.error('*************  Error:', error);
@@ -710,28 +847,6 @@
          }
 
           function  agregaInfoCitas(FechaPosicionHoraInicial, citas) {
-            //console.log("agregaInfoCitas");
-            //console.log( FechaPosicionHoraInicial );
-            /*
-               console.log(" Recorre Schedules - Citas");
-               for(let i=0; i<FechaPosicionHoraInicial.length;i++) {
-                    console.log("SCHEDULES ---->"+ citas.length );
-                    for(let j=0; j<citas.length;j++) {
-                        console.log("CITAS ---->");
-                        console.log( FechaPosicionHoraInicial[i]['fecha'] + ' <=> ' + citas[j]['date']);
-                        if( FechaPosicionHoraInicial[i]['fecha'] == citas[j]['date'] && FechaPosicionHoraInicial[i]['doctor_id'] ==  citas[j]['doctor_id']  && FechaPosicionHoraInicial[i]['horaInicio'] ==  citas[j]['horaInicio']) {
-                            console.log("SCH_CITAS_MATCH");
-                        }                                        
-                    }                      
-               }
-                    */
-
-               //console.log(" Recorre Citas");
-               //console.log( citas );
-               //for(let i=0; i<citas.length;i++) {
-               //    console.log(citas[i]['id'] + ' ' + citas[i]['doctor_id'] + ' ' + citas[i]['date']);                   
-//
-  //             }
 
           }
 

@@ -33,6 +33,11 @@ class Doctor extends Model
         return $this->hasMany(Schedule::class); 
     }
 
+    // Relación uno a muchgos con Schedule
+    public function lockschedules(){
+        return $this->hasMany(Lockschedule::class); 
+    }
+
     public function appointments(){
         return $this->hasMany(Appointment::class); 
     }

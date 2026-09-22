@@ -85,11 +85,13 @@ Route::prefix('admin')->group(function () {
     Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');
     Route::post('agendadoc.confirmar', [AppointmentController::class,'confirmar'] )->name('agendadoc.confirmar')->middleware('admin');
     Route::post('agendadoc.cancelarCita', [AppointmentController::class,'cancelarCita'] )->name('agendadoc.cancelarCita')->middleware('admin');
+    Route::post('agendadoc.updateCita', [AppointmentController::class,'updateCita'] )->name('agendadoc.updateCita')->middleware('admin');
 
     Route::get('agendadocfull', [AppointmentController::class,'agendadocfull'] )->name('agendadocfull')->middleware('admin');
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
+Route::get('doctores/{doctor}/lockschedules', [DoctorController::class, 'lockschedules'])->name('doctores.lockschedules');
 
 Route::get('/prueba', function () {
     $schedule = \App\Models\Schedule::all();    
