@@ -132,11 +132,6 @@ class AppointmentController extends Controller
 
         //dd( $request->all() );
         $doctor_id = $request->input('doctor_id');
-        //$doctor_id = $request->input('doctor');
-        
-
-       //$doctor_id = $request->input('doctor');
-
         $doctor = Doctor::find($doctor_id);
         //dd($doctor);
 

@@ -162,6 +162,27 @@ th {
         </div>
     </div>
 
+    <hr>
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                        AGENDA DOCTORES  LIVEWIRE
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <p>Aqui Componente de la Especialidad</p>
+                            @livewire('Patient.Compouno')
+                            
+                        </div>
+                        <div class="col-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 <!-- Modal -->
 @foreach($appointments as $appointment)

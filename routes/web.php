@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\Appointment2Controller;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserHorasMedicasController;
+use App\Http\Controllers\PatientController as UserPatienController;
 use App\Mail\ContactanosMailable;
 use Illuminate\Support\Facades\Mail;
 
@@ -152,3 +153,7 @@ Route::get('/contactanos', function () {
 
     return "Correo enviado correctamente";
 })->name('contactanos');    
+
+Route::post('agendapatient.showcalendar', [UserPatienController::class,'showcalendar'] )->name('agendapatient.showcalendar')->middleware('auth');
+Route::post('agendapatient.confirmar', [UserPatienController::class,'confirmar'] )->name('agendapatient.confirmar')->middleware('auth');
+Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');

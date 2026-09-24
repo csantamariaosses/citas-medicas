@@ -1,11 +1,11 @@
 @extends('layouts.app') 
 
 @section('menu')
-  @include('menuadmin')
+  @include('menupatient')
 @endsection
 
 @section('content')
-    <div align="center"><h3>SHOW CALENDAR - ADMIN</h3></div>
+    <div align="center"><h3>SHOW CALENDAR - PATIENT</h3></div>
     <div class="row">
 
         <div class="col-1">
@@ -15,16 +15,20 @@
          
         <div class="col-10">
             
+            <input type="hidden" id="doctor_id" value="{{ $doctor_id }}">
+            <input type="hidden" id="patient_id" value="{{ $patient_id }}">
             <input type="hidden" id="doctorName" value="{{ session('doctorName') }}">
             <input type="hidden" id="specialityName" value="{{ session('specialityName') }}">
             <input type="hidden" id="pacienteName" value="{{ session('paciente') }}">
+            <input type="hidden" id="patient_id_session" value="{{ session('patient_id') }}">
+            
             <p>       
                 <table> 
                     <tbody>   
                    <tr><th>doctor_id:</th><td>{{ $doctor_id}}</td></tr>
                    <tr><th>doctorName:</th><td> {{ session('doctorName') }}</td></tr>
-                   <tr><th>Especialidad :</th><td> {{ session('specialityName') }}</td></tr>
-                   <tr><th>Patient_id:</th><td>{{ session('patient_id') }}</td></tr>
+                   <tr><th>Especialidad :</th><td> {{ $speciality_id }}</td></tr>
+                   <tr><th>Patient_id:</th><td>{{ $patient_id  }}</td></tr>
                    <tr><th>PatientName:</th><td>{{ session('patientName') }}</td></tr>
                    </tbody>
                 </table>
@@ -41,7 +45,7 @@
      
    <!-- Modal -->
       <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('agendadoc.confirmar') }}" method="POST">
+        <form action="{{ route('agendapatient.confirmar') }}" method="POST">
           @csrf 
         <div class="modal-dialog">
           <div class="modal-content">
@@ -311,6 +315,8 @@
       //function dataCalendar( schedules, json_schedules, arr_schedules_to_json) {
 
       function dataCalendar() {
+
+            console.log("dataCalendar");
             let salida;
             let citas=[];
             let appoints=[];
@@ -321,12 +327,16 @@
             let doctorName =  $( "#doctorName" ).val();
             
             let specialityName =  $( "#specialityName").val();
+            let patient_id_session = $("#patient_id_session").val();
             //document.getElementById('sesion_id').value
 
+            //console.log("Session doctor_id");
             console.log("Doctor_Id:" + doctor_id);
             console.log("Doctor:" + doctorName);
+            console.log("patient_Id:" + patient_id);
             console.log("Paciente:" + patientName);
             console.log("Especialidad:" + specialityName);
+            console.log("patient_id_session:" + patient_id_session);
 
             $( "#modalDoctorName").val(doctorName);
             $( "#modalPatientName").val( patientName );
@@ -425,6 +435,7 @@
                                 $sql = $sql ."     and  sch.doctor_id = app.doctor_id  ";
                                 $sql = $sql ."     and  app.id is not null ";
                                 $sql = $sql ."     and  sch.id is not null  ";
+                                //$sql = $sql ."     and  app.patient_id = ?  ";
                                 $sql = $sql ."     and  app.status = 1 ";
 
                                 $sql = $sql ." union ";
@@ -502,7 +513,10 @@
                               
                               console.log("Hora:" + info.event.start.toString().split(' ')[4]  ); // 14:00:00
                               console.log("Medico:" + info.event.extendedProps.doctor_name); // 14:00:00
+                              console.log("patient_id (agendado):" + info.event.extendedProps.patient_id);
                               console.log("Paciente:" + info.event.extendedProps.patient_name); // 14:00:00
+                              console.log("Paciente_id (session):" + patient_id_session); // 14:00:00
+
 
                               if( info.event.start < now ) {
                                   alert("La Fecha seleccionada es pasada");  
@@ -524,30 +538,33 @@
                                     } 
 
                                     if( info.event.title == 'Agendado') {
-                                        console.log( "Agendado");
-                                        console.log( info.event.id);
-                                        $("#modalCitaIdAg").val( info.event.id );
-                                        $("#modalCitaIdAgHidden").val( info.event.id );
-                                        $("#modalDoctorIdAgHidden").val( info.event.extendedProps.doctor_id );
-                                        $("#modalPatientIdAgHidden").val( info.event.extendedProps.patient_id );
-                                        $("#modalFechaStartAgHidden").val( info.event.start.toISOString().slice(0, 10) );
-                                        $("#modalFechaHoraStartAgHidden").val( info.event.start.toString().split(' ')[4] );
+                                        if( info.event.extendedProps.patient_id == patient_id_session ) {
+                                            console.log( "Agendado");
+                                            console.log( info.event.id);
+                                            $("#modalCitaIdAg").val( info.event.id );
+                                            $("#modalCitaIdAgHidden").val( info.event.id );
+                                            $("#modalDoctorIdAgHidden").val( info.event.extendedProps.doctor_id );
+                                            $("#modalPatientIdAgHidden").val( info.event.extendedProps.patient_id );
+                                            $("#modalFechaStartAgHidden").val( info.event.start.toISOString().slice(0, 10) );
+                                            $("#modalFechaHoraStartAgHidden").val( info.event.start.toString().split(' ')[4] );
 
-                                        $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
-                                        $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
-                                        $("#modalDoctorIdAg").val( info.event.extendedProps.doctor_id);
-                                        $("#modalDoctorNameAg").val( info.event.extendedProps.doctor_name);
-                                        $("#modalPatientIdAg").val( info.event.extendedProps.patient_id);
-                                        $("#modalPatientNameAg").val( info.event.extendedProps.patient_name);
-                                        $("#modalSpecialityNameAg").val( info.event.extendedProps.specialityName );
+                                            $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
+                                            $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
+                                            $("#modalDoctorIdAg").val( info.event.extendedProps.doctor_id);
+                                            $("#modalDoctorNameAg").val( info.event.extendedProps.doctor_name);
+                                            $("#modalPatientIdAg").val( info.event.extendedProps.patient_id);
+                                            $("#modalPatientNameAg").val( info.event.extendedProps.patient_name);
+                                            $("#modalSpecialityNameAg").val( info.event.extendedProps.specialityName );
 
-                                        $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
-                                        $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
+                                            $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
+                                            $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
 
-                                        $("#modalCitaIdConfirmCancelHidden").val( info.event.id );
-                                        $("#modalDoctorIdConfirmCancelHidden").val( info.event.extendedProps.doctor_id );
+                                            $("#modalCitaIdConfirmCancelHidden").val( info.event.id );
+                                            $("#modalDoctorIdConfirmCancelHidden").val( info.event.extendedProps.doctor_id );
 
-                                        $("#modalAgendado").modal("show");    
+                                            $("#modalAgendado").modal("show");    
+                                        }
+                                        
                                     }                                              
                                     
                                      if( info.event.title == 'Cancelado') {

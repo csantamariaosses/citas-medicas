@@ -91,6 +91,7 @@ class Appointment2Controller extends Controller
     }
 
     public function agendadoc(){
+        
         //Auth::user()->name = "Carlos Santa";
         session(['patient_id' => 0]); // Reemplaza 1 con el ID real del paciente autenticado
         session(['patientName' => 'NN']); // Reemplaza 1 con el ID real del paciente autenticado
@@ -100,6 +101,7 @@ class Appointment2Controller extends Controller
         $doctors = Doctor::all();
         $schedules = Schedule::all();
         $especialidades = Speciality::all();
+        //dd("hacia admin.agendadoc2.index");
         return view("admin.agendadoc2.index", compact("doctors", "especialidades", "schedules"));
 
     }

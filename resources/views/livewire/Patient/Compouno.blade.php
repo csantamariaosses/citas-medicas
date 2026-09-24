@@ -1,8 +1,8 @@
 <div>
-    <h3>COMPO UNO LIVEWIRE DIRECTO</H3>
+    <h3>COMPO UNO Patient</H3>
      <!-- Primer Select -->
 
-      <form action="{{ route('agendadoc.showcalendar') }}" method="POST">
+      <form action="{{ route('agendapatient.showcalendar') }}" method="POST">
                 @csrf
                 @method('POST')
         <table>
