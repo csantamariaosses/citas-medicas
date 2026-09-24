@@ -28,7 +28,9 @@ class UserHorasMedicasController extends Controller
         $patient_id = $user->patient->id;
         //session(['patient_id' => $patient_id]);
 
-        $appointments = Appointment::where('patient_id', $patient_id)->orderBy('date','desc')->get();
+        $appointments = Appointment::where('patient_id', $patient_id)
+                                     ->where('status',1)
+                                     ->orderBy('date','desc')->get();
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
          //dd(  $patient_id );

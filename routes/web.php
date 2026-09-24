@@ -157,3 +157,5 @@ Route::get('/contactanos', function () {
 Route::post('agendapatient.showcalendar', [UserPatienController::class,'showcalendar'] )->name('agendapatient.showcalendar')->middleware('auth');
 Route::post('agendapatient.confirmar', [UserPatienController::class,'confirmar'] )->name('agendapatient.confirmar')->middleware('auth');
 Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');
+Route::post('agendapatient.cancelar', [UserPatienController::class,'cancelar'] )->name('agendapatient.cancelar')->middleware('auth');
+Route::post('agendapatient.cancelarCitaConfirm', [UserPatienController::class,'cancelarCitaConfirm'] )->name('agendapatient.cancelarCitaConfirm')->middleware('auth');

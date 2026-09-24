@@ -15,6 +15,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         //
+        //dd("ñlogin");
         return view('autho.login');
     }
 

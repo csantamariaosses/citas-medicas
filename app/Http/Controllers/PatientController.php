@@ -36,18 +36,19 @@ class PatientController extends Controller
         $doctor = Doctor::findOrfail( $request->doctor_id);
         $doctorName = $doctor->user->name;
         session(['doctorName' =>  $doctorName]);
-        //dd( $doctorName);
-
-        //dd("Patient ShowCalendar");
-        //dd( session('user_id'), session('doctor_id'));
-
 
         $user_id = session('user_id');
         $user = User::find($user_id);        
         $patient_id = $user->patient->id;
 
-
+        // Especialidad
         $speciality_id = $request->input('speciality_id');
+        $speciality = Speciality::findOrFail(  $speciality_id );
+
+        //dd( $speciality->name);
+        session(['specialityId' =>  $speciality->id ]);
+        session(['specialityName' =>  $speciality->name ]);
+
         $doctor_id = $request->input('doctor_id');
         $patients = Patient::all();
         //dd( $request->all());
@@ -149,6 +150,36 @@ class PatientController extends Controller
 
         }
 
+    }
+
+
+    public function cancelarCitaConfirm(Request $request) {
+        $appointment_id = $request->modalCitaIdConfirmCancelHidden;
+        $doctor_id = $request->modalDoctorIdConfirmCancelHidden;
+        $patient_id = $request->modalPatientIdConfirmCancelHidden;
+
+
+
+        $appointment = Appointment::where('id', $appointment_id)
+                                    ->first();
+        if ($appointment) {
+
+            $appointment->status = 3; // Estado "disponible"
+            $appointment->save();
+            
+            session()->flash( 'swal' , [
+                'title' => 'Agendaniento Cancelado',
+                'text' => 'La cita ha sido cancelada con exito !!!!',
+                'icon' => 'success',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+
+            return view('patient.showcalendar', compact( 'doctor_id', 'patient_id'));
+        } else {
+            return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);
+        }
+            
     }
 
 }

@@ -27,7 +27,7 @@
                     <tbody>   
                    <tr><th>doctor_id:</th><td>{{ $doctor_id}}</td></tr>
                    <tr><th>doctorName:</th><td> {{ session('doctorName') }}</td></tr>
-                   <tr><th>Especialidad :</th><td> {{ $speciality_id }}</td></tr>
+                   <tr><th>Especialidad :</th><td> {{ session('specialityName') }}</td></tr>
                    <tr><th>Patient_id:</th><td>{{ $patient_id  }}</td></tr>
                    <tr><th>PatientName:</th><td>{{ session('patientName') }}</td></tr>
                    </tbody>
@@ -113,7 +113,7 @@
 
       <!-- Modal  Agendado-->
       <div class="modal fade" id="modalAgendado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('agendadoc.cancelarCita') }}" method="POST">
+        <form action="{{ route('agendapatient.cancelar') }}" method="POST">
           @csrf 
          
         <div class="modal-dialog">
@@ -173,7 +173,7 @@
 
       <!-- Confirmación Cancelar Cita -->
        <div class="modal fade" id="confirmCancelarCitaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('agendadoc.cancelarCita') }}" method="POST">
+        <form action="{{ route('agendapatient.cancelarCitaConfirm') }}" method="POST">
           @csrf 
          
         <div class="modal-dialog">
@@ -183,39 +183,14 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table>
-                    <tr>
-                      <th>Cita Id:::</th><td><input type="text" id="modalCitaIdConfirmCancel" name="modalCitaIdConfirmCancel" disabled></td>
-                    </tr>
-                    <tr>
-                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdConfirmCancel" name="modalDoctorIdConfirmCancel" disabled></td>
-                    </tr>
-                   <tr>
-                      <th>Médico:</th><td><input type="text" id="modalDoctorNameConfirmCancel" name="modalDoctorNameConfirmCancel" disabled></td>
-                    </tr>
-                    <tr>
-                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameConfirmCancel" name="modalSpecialityNameConfirmCancel" disabled></td>
-                    </tr>
-                    <tr>
-                      <th>Id Paciente:</th><td><input type="text" id="modalPatientIdConfirmCancel" name="modalPatientIdConfirmCancel"  disabled></td>
-                    </tr>
-                    <tr>
-                    <tr>
-                      <th>Paciente:</th><td><input type="text" id="modalPatientNameConfirmCancel" name="modalPatientNameConfirmCancel"  disabled></td>
-                    </tr>
-                    <tr>
-                        <th>Fecha:</th><td><input type="text" id="fechaConfirmCancel" name="fechaConfirmCancel" disabled></td>
-                    </tr>
-                    <tr>    
-                        <th>Hora</th><td><input type="text" id="start_timeConfirmCancel" name="start_timeConfirmCancel" disabled></td>
-                    </tr>
-                                 
-                </table>
+               ...
             </div>
             <div class="modal-footer">
+                                         
                 <input type="hidden" id="modalCitaIdConfirmCancelHidden" name="modalCitaIdConfirmCancelHidden">
                 <input type="hidden" id="modalDoctorIdConfirmCancelHidden" name="modalDoctorIdConfirmCancelHidden">
                 <input type="hidden" id="modalDoctorNameConfirmCancelHidden" name="modalDoctorNameConfirmCancelHidden">
+                <input type="hidden" id="modalSpecialityIdConfirmCancelHidden" name="modalSpecialityIdConfirmCancelHidden">
                 <input type="hidden" id="modalSpecialityNameConfirmCancelHidden" name="modalSpecialityNameConfirmCancelHidden">
                 
                 <input type="hidden" id="modalPatientIdConfirmCancelHidden" name="modalPatientIdConfirmCancelHidden">
@@ -258,19 +233,6 @@
                     </tr>
                     <tr>
                       <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameUpdate" name="modalSpecialityNameUpdate" value="{{ session('specialityName') }}" disabled></td>
-                    </tr>
-
-
-                    <tr>
-                        <th>Paciente:</th><td>
-                           <select name="modalPatientIdUpdate">
-                             <option value="0">Seleccione un paciente</option>
-                              @foreach($patients as $patient)
-                                  <option value="{{ $patient->id }}">{{ $patient->id }}-{{ $patient->user->name }}</option>
-                             @endforeach
-                           </select>
-                        </td>
-                       
                     </tr>
                     <tr>
                         <th>Fecha:</th><td><input type="text" id="modalFechaStartUpdate" name="modalFechaStartUpdate" disabled></td>
@@ -435,14 +397,14 @@
                                 $sql = $sql ."     and  sch.doctor_id = app.doctor_id  ";
                                 $sql = $sql ."     and  app.id is not null ";
                                 $sql = $sql ."     and  sch.id is not null  ";
-                                //$sql = $sql ."     and  app.patient_id = ?  ";
+                                $sql = $sql ."     and  app.patient_id = ?  ";
                                 $sql = $sql ."     and  app.status = 1 ";
 
                                 $sql = $sql ." union ";
 
                                 // Cancelados
                                 $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date,";
-                                $sql = $sql ." 'Cancelado' as estado, 'rgb(16, 69, 69)' as color,  ";
+                                $sql = $sql ." 'Disponible' as estado, '#669999' as color,  ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
                                 $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , userdoc.name as doctorName,";
                                 $sql = $sql ." userpat.name as patientName , spec.name as specialityName ";
@@ -458,8 +420,30 @@
                                 $sql = $sql ." and  app.date is not null ";  
                                 $sql = $sql ." and  app.status =  3 ";
 
+                                 $sql = $sql ." union ";
+
+                                // No Disponibles
+                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date,";
+                                $sql = $sql ." 'No-Disponible' as estado, 'rgb(78, 79, 75)' as color,  ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , userdoc.name as doctorName,";
+                                $sql = $sql ." userpat.name as patientName , spec.name as specialityName ";
+                                $sql = $sql ." from fechaposdias fecha  ";
+                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time)  ";
+                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id )  ";
+                                $sql = $sql ." left join users userdoc on ( doc.user_id = userdoc.id )  ";
+                                $sql = $sql ." left join patients patdisp on ( app.patient_id = patdisp.id )  ";
+                                $sql = $sql ." left join users userpat on ( patdisp.user_id = userpat.id )  ";
+                                $sql = $sql ." left join specialities spec on ( doc.speciality_id = spec.id )  ";
+                                $sql = $sql ." where sch.doctor_id = ? ";
+                                $sql = $sql ." and  app.patient_id <> ? ";                                  
+                                $sql = $sql ." and  app.date is not null ";  
+                                $sql = $sql ." and  app.status =  1 ";
+
+
                                 
-                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id') , session('doctor_id')   ] );             
+                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id') , session('patient_id'), session('doctor_id') , session('doctor_id'), session('patient_id')  ] );             
 
                                 foreach( $registros as $fila) {
                                 ?>
@@ -495,9 +479,7 @@
                       
                       
                        dateClick: function(info) {
-                          console.log("DtaClick");
-                    
-                            
+                          console.log("DtaClick");       
                         },
 
                         
@@ -559,8 +541,15 @@
                                             $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
                                             $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
 
+                                            // Campos ocultos para pantalla de confirmación de cancelacion de cita
                                             $("#modalCitaIdConfirmCancelHidden").val( info.event.id );
                                             $("#modalDoctorIdConfirmCancelHidden").val( info.event.extendedProps.doctor_id );
+                                            $("#modalSpecialityNameConfirmCancelHidden").val( info.event.extendedProps.specialityName );
+                                            $("#modalPatientIdConfirmCancelHidden").val( info.event.extendedProps.patient_id);
+                                            $("#modalFechaStartConfirmCancelHidden").val(  info.event.start.toISOString().slice(0, 10))
+                                            $("#modalFechaHoraStartConfirmCancelHidden").val( info.event.start.toString().split(' ')[4]  )
+
+      
 
                                             $("#modalAgendado").modal("show");    
                                         }
