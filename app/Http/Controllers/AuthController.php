@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
+
 use App\Models\User;
+use App\Models\Doctor;
 
 class AuthController extends Controller
 {
@@ -55,12 +57,15 @@ class AuthController extends Controller
                 //dd("Autenticado - Es paciente");
             }
             if ($user->hasRole('doctor')) {
+
+                $doctor = Doctor::where( 'user_id',$user_id)->first();
+
                 session(['user_id' => $user_id ]);
                 session(['user_name' => Auth::user()->name]);
                 session(['user_email' => Auth::user()->email]);
+                session(['doctor_id' => $doctor->id ]);
                 session(['doctorName' => Auth::user()->name]);
                 session(['role' => 'doctor']);
-
 
                 return redirect()->route('doctor.index');
                 //dd("Autenticado - Es doctor");
@@ -77,7 +82,7 @@ class AuthController extends Controller
 
 
         }   else {
-           //dd("No autenticado");
+           dd("No autenticado");
             return redirect()->back()->withErrors(['email' => 'Credenciales incorrectas.']);
         }
 

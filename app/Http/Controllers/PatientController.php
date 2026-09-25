@@ -110,8 +110,10 @@ class PatientController extends Controller
                         ]); 
                     }
 
+                    $doctor = Doctor::where('id', $doctor_id)->first();
+                    $speciality_id = $doctor->speciality_id;
+                    return view('patient.showcalendar', compact('speciality_id', 'doctor_id', 'patient_id'));
     
-                    return redirect()->back();
                     break;
                 default:
                     dd("Cita en estado desconocido");
@@ -134,6 +136,10 @@ class PatientController extends Controller
             $doctors = Doctor::all();
 
             $doctor_id = $request->input('doctor_id');
+            $doctor = Doctor::where('id', $doctor_id)->first();
+            //dd( $doctor);
+
+            $speciality_id = $doctor->speciality_id;
 
             session()->flash( 'swal' , [
                 'title' => 'Agendaniento Confirmado',
@@ -145,8 +151,9 @@ class PatientController extends Controller
 
             //$patients = Patient::all();
 
+
             //return view('admin.agendapatient.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
-            return view('patient.showcalendar', compact('speciality_id', 'doctor_id', 'patient_id', 'patients'));
+            return view('patient.showcalendar', compact('speciality_id', 'doctor_id', 'patient_id'));
 
         }
 

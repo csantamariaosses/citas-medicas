@@ -15,7 +15,8 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}" autocomplete="off">
                         @csrf
-                        pedro.belmar@gmail.com
+                        pedro.belmar@gmail.com (pac)<br>
+                        oscar.perez@gmail.com  (doc)
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
                             <input type="email" class="form-control" id="email" name="email" required autofocus autocomplete="off">

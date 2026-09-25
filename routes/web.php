@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DoctorAdminController;
 use App\Http\Controllers\Admin\AdminDoctorController;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Admin\AdminController;
@@ -89,6 +90,7 @@ Route::prefix('admin')->group(function () {
     Route::post('agendadoc.updateCita', [AppointmentController::class,'updateCita'] )->name('agendadoc.updateCita')->middleware('admin');
 
     Route::get('agendadocfull', [AppointmentController::class,'agendadocfull'] )->name('agendadocfull')->middleware('admin');
+    Route::post('agendadocfull.adminCitaUpdate', [AppointmentController::class, 'adminCitaUpdate'])->name('agendadocfull.adminCitaUpdate')->middleware('admin');
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');

@@ -349,32 +349,17 @@ class AppointmentController extends Controller
         }
     }
 
-    public function updateCita(Request $request) {
+    public function AdminCitaUpdate(Request $request) {
 
-      //dd( $request->all() );
-        $appointment_id = $request->input('modalCitaIdUpdateHidden');
-        $doctor_id      = $request->input('modalDoctorIdUpdateHidden');
-        $patient_id     = $request->input('modalPatientIdUpdateHidden');                                        
-        $fecha          = $request->input('modalFechaStartUpdateHidden');
-        $hora_start     = $request->input('modalHoraStartUpdateHidden');
-
-        //dd( $appointment_id, $doctor_id, $patient_id, $fecha, $hora_start );
-
+        $status = $request->input('status');
+        $appointment_id = $request->input('cita_id');
     
-
         // Buscar la cita existente
         $appointment = Appointment::where('id', $appointment_id)
-        /*
-                        ->where('doctor_id', $doctor_id)
-                        ->where('patient_id', $patient_id)
-                        ->where('date', $fecha)
-                        ->where('start_time', $hora_start)
-                        */
-                        ->first();
+                         ->first();
 
         if ($appointment) {
-            $appointment->patient_id = $patient_id;
-            $appointment->status = 1; // Estado "agendada"
+            $appointment->status = $status; // 
              
             // Guardar los cambios
             $appointment->save();
@@ -391,8 +376,12 @@ class AppointmentController extends Controller
             $especialidades = Speciality::all();
             $doctors = Doctor::all();   
             $patients = Patient::all();
+            //$appointments = Appointment::all();
 
-            return view('admin.agendadoc.showcalendar' , compact("especialidades", "doctors", "doctor_id", "patients") );
+            $appointments = Appointment::orderBy('date', 'desc')
+                            ->orderBy('start_time', 'desc')->get();
+
+            return view('admin.agendafull.index' , compact("appointments") );
 
         } else {
             return response()->json(['success' => false, 'message' => 'Cita no encontrada.'], 404);

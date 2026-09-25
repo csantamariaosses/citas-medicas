@@ -52,7 +52,12 @@
                         <td>{{ $doctor->user->address }}</td>
                         <td>{{ $doctor->user->phone }}</td>
                        
-                        <td>{{ $doctor->active ? 'Activo' : 'Inactivo' }}</td>
+                        <td>@if ( $doctor->active ) 
+                              <span style="color:green">Activo</span>
+                            @else  
+                              <span style="color:red">Inactivo</span>
+                            @endif
+                        </td>
                         <td>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-{{$doctor->id}}">
                                 Ver Info

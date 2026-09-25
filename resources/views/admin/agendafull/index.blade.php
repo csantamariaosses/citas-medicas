@@ -130,7 +130,7 @@
 
 
 
-        @foreach($appointments as $appointment)
+    @foreach($appointments as $appointment)
     <div class="modal fade" id="miModalModificar-{{ $appointment->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -139,7 +139,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('doctor.cita.update') }}" method="POST">
+            <form action="{{ route('agendadocfull.adminCitaUpdate') }}" method="POST">
                 @csrf
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
                 Cita: {{ $appointment->id }}<br>
@@ -161,32 +161,32 @@
                 
                 <select name="status" class="form-control">
                     @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )
-                        <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}" selected>Agendada</option>
+                        <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}" selected>{{ App\Enums\AppointmentEnum::SCHEDULED }} - Agendada</option>
                     @else 
-                        <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}">Agendada</option>
+                        <option value="{{ App\Enums\AppointmentEnum::SCHEDULED }}">{{ App\Enums\AppointmentEnum::SCHEDULED }} - Agendada</option>
                     @endif
 
                     @if( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
-                        <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" selected>Terminada</option>
+                        <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" selected>{{ App\Enums\AppointmentEnum::COMPLETED }} - Terminada</option>
                     @else
-                        <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" >Terminada</option>
+                        <option value="{{ App\Enums\AppointmentEnum::COMPLETED }}" >{{ App\Enums\AppointmentEnum::COMPLETED }} - Terminada</option>
                     @endif
 
                     @if( $appointment->status == App\Enums\AppointmentEnum::CANCELED )
-                        <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" selected>Cancelada</option>
+                        <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" selected>{{ App\Enums\AppointmentEnum::CANCELED }} - Cancelada</option>
                     @else
-                        <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" >Cancelada</option>
+                        <option value="{{ App\Enums\AppointmentEnum::CANCELED }}" >{{ App\Enums\AppointmentEnum::SCHEDULED }} - Cancelada</option>
                     @endif
 
                     @if( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
-                        <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" selected>En Proceso</option>
+                        <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" selected>{{ App\Enums\AppointmentEnum::EN_PROCESO }} - En Proceso</option>
                     @else
-                        <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" >En Proceso</option>
+                        <option value="{{ App\Enums\AppointmentEnum::EN_PROCESO }}" >{{ App\Enums\AppointmentEnum::EN_PROCESO }} - En Proceso</option>
                     @endif
                     
                 </select><br><br>
                 <input type="hidden" name="id" value="{{ $appointment->id }}">
-                <button type="submit" class="btn btn-primary" disabled>Guardar</button> 
+                <button type="submit" class="btn btn-primary">Guardar</button> 
             </form>
         </div>
         <div class="modal-footer">
