@@ -14,9 +14,6 @@ class Consultation extends Model
         'prescriptions'
     ];
 
-    protected $casts = [
-        'prescriptions' => 'json',
-    ];
 
     public function appointment(){
         return $this->belongsTo(Appointment::class);

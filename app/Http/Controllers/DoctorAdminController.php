@@ -21,5 +21,14 @@ class DoctorAdminController extends Controller
 
     public function updateCita(Request $request ) {
         dd( $request->all());
+        $condultation = new Consultation();
+        $consultation->appointment_id = $request->cita_id;
+        $consultation->diagnostic = $request->diagnostic;
+        $consultation->treatment = $request->treatment;
+        $consultation->prescription = $request->prescription;
+        $consultation->notes = $request->notes;
+        $consultation->save();
+
+        
     }
 }

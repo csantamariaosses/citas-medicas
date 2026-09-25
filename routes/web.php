@@ -138,7 +138,7 @@ Route::delete('doctor/{id}', [DoctorAdminController::class, 'destroy'])->name('d
 Route::get('doctor-cita-index', [DoctorAdminController::class, 'index'])->name('doctor.cita.index');
 Route::get('doctor-cita-dashboard', [DoctorAdminController::class, 'dashboard'])->name('doctor.cita.dashboard');
 Route::get('doctor-cita-gestionar/{id}', [DoctorAdminController::class, 'gestionar'])->name('doctor.cita.gestionar');
-Route::post('doctor-cita-update', [DoctorAdminController::class, 'update'])->name('doctor.cita.update');
+Route::post('doctor-cita-updateCita', [DoctorAdminController::class, 'updateCita'])->name('doctor.cita.updateCita');
 
 
 Route::get('doctor-cita/{id}', [DoctorAdminController::class, 'show'])->name('doctor.cita.show');

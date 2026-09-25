@@ -104,7 +104,7 @@
             @endswitch
             
 
-            <form action="{{ route('doctor.cita.update') }}" method="POST">
+            <form action="{{ route('doctor.cita.updateCita') }}" method="POST">
                 @csrf
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
                 Cita: {{ $appointment->id }}<br>
@@ -165,14 +165,14 @@
      <!-- Estructura del Modal -->
     @foreach($appointments as $appointment)
     <div class="modal fade" id="miModalHistorial-{{ $appointment->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">Historial Paciente</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('doctor.cita.update') }}" method="POST">
+            <form action="{{ route('doctor.cita.updateCita') }}" method="POST">
                 @csrf
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
                 Cita: {{ $appointment->id }}<br>
@@ -186,8 +186,8 @@
                 <hr>
                 Diagnostico: <textarea name="diagnostic" class="form-control">{{ $appointment->consultation ? $appointment->consultation->diagnostic : '' }}</textarea><br>
                 Tratamiento: <textarea name="treatment" class="form-control">{{ $appointment->consultation ? $appointment->consultation->treatment : '' }}</textarea><br>
-                Prescription: <textarea name="prescriptions" class="form-control">{{ $appointment->consultation ? $appointment->consultation->prescriptions : '' }}</textarea><br><br>
-                Notas: <textarea name="notes" class="form-control">{{ $appointment->consultation ? $appointment->consultation->notes : '' }}</textarea><br>
+                Prescription: <textarea name="prescriptions" class="form-control">{{ $appointment->consultation ? $appointment->consultation->prescriptions : 'x' }}</textarea><br><br>
+                Notas: <textarea name="notes" class="form-control">{{ $appointment->consultation ? $appointment->consultation->notes : 'y' }}</textarea><br>
                 Estado de la cita: {{ $appointment->status }}
                
                 
@@ -217,9 +217,21 @@
                     @endif
                     
                 </select><br><br>
+                <hr>
+                <table class="table table-striped">
+                <tr><th>Fecha</th><th>Diagnostico</th><th>Tratamiento</th><th>Prescripcion</th><th>Notas</th></tr>
+                <tr><td><span>{{ $appointment->consultation ? $appointment->consultation->created_at : '' }}</span></td>
+                    <td><textarea name="diagnosticoTbl" cols="10" rows="3">{{ $appointment->consultation ? $appointment->consultation->diagnostic : ''  }}</textarea></td>
+                    <td><textarea name="tratamientoTbl" cols="10" rows="3">{{ $appointment->consultation ? $appointment->consultation->treatment : ''  }}</textarea></td>
+                    <td><textarea name="prescriocionTbl" cols="10" rows="3">{{ $appointment->consultation ? $appointment->consultation->prescriptions : ''  }}</textarea></td>
+                    <td><textarea name="notasTbl" cols="10" rows="3">{{ $appointment->consultation ? $appointment->consultation->notes : ''  }}</textarea></td>
+
+                </table>
+
                 <input type="hidden" name="id" value="{{ $appointment->id }}">
                 <button type="submit" class="btn btn-primary">Guardar</button> 
             </form>
+            
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
