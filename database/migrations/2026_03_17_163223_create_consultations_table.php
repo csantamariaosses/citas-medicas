@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('diagnostic')->nullable();
             $table->text('treatment')->nullable();
             $table->text('notes')->nullable();
-            $table->json('prescriptions')->nullable();
+            $table->text('prescriptions')->nullable();
             $table->timestamps();
         });
     }
