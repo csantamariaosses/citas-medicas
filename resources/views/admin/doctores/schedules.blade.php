@@ -14,7 +14,8 @@
       </div> <!-- row -->
       <div class="row">
         <div class="col-12">  
-            @livewire('admin.schedule-manager', ['doctor' => $doctor])
+            Aqui va el componente Livewire para gestionar los horarios del doctor
+            @livewire('admin.schedule-manager', ['doctor' => $doctor]) 
         </div> <!-- col-md-6 offset-md-3 -->
       </div> <!-- row -->
   </div>  <!-- container --> 

@@ -65,7 +65,7 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modificarModal-{{$doctor->id}}">
                                 Modificar
                             </button>
-                            <a href="{{ route('doctores.schedules', $doctor->id) }}" class="btn btn-info" target="_blank">Ver Horarios</a>
+                            <a href="{{ route('admin.doctores.schedules', $doctor->id) }}" class="btn btn-info" target="_blank">Ver Horarios</a>
                             <a href="{{ route('admin.doctores.lockschedules', $doctor->id) }}" class="btn btn-info" target="_blank">Bloqueos de Horarios</a>
 
                         </td>

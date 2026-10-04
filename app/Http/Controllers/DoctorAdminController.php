@@ -20,9 +20,18 @@ class DoctorAdminController extends Controller
         //dd( session('doctor_id'));
         $appointments = Appointment::where('doctor_id',session('doctor_id'))
                                     ->orderBy('created_at', 'desc')->get();
+        $doctor_id = session('doctor_id');
+        $doctor = Doctor::where('id', $doctor_id)->first();
+        //dd( $appointments, $doctor_id, $doctor);
 
+        return view('doctor.index', compact('appointments', 'doctor_id', 'doctor'));
+    }
 
-        return view('doctor.index', compact('appointments'));
+    public function schedule( $id ) {
+        //dd( $id );
+        
+        $doctor = Doctor::where('id', $id)->first();
+        return view('doctor.schedules', compact('doctor'));
     }
 
     public function updateCita(Request $request ) {

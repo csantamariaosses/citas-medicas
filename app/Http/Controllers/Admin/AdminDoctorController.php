@@ -161,7 +161,7 @@ class AdminDoctorController extends Controller
 
     public function schedules($id)
     {
-        //dd("ggg");
+        //dd("Http/Cpntrollers/Admin/AdminDoctorController.php - schedules");
         $doctor = Doctor::findOrFail($id);
         $schedules = $doctor->schedules; // Obtener los horarios del doctor
         //dd( $doctor);

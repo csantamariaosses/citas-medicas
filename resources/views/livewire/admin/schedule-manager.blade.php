@@ -1,12 +1,9 @@
 <div x-data="tblData()" x-init="inicio()" style="background-color: #e0e0e0; padding: 20px; border-radius: 5px;">
-  <h3> Administrar Horarios - vista componente </h3>
+
   <p>Doctor: {{ $doctor->user->name }}<br>
     Especialidad: {{ $doctor->speciality->name }}</p>
   <hr>
   <div class="overflow-x-auto" style="width: 1200px;">
-    <div>
-        DAY:{{ var_export($this->indexDay) }} - HORA:{{ var_export($this->hour) }} - ESTADO {{ var_export($this->estado)}}
-    </div>
     <div>
         <button wire:click="saveSchedules" class="btn btn-primary">
             Guardar Horarios

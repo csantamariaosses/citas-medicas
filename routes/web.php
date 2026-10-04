@@ -98,12 +98,12 @@ Route::prefix('admin')->group(function () {
 
     Route::get('agendadocfull', [AppointmentController::class,'agendadocfull'] )->name('agendadocfull')->middleware('admin');
     Route::post('agendadocfull.adminCitaUpdate', [AppointmentController::class, 'adminCitaUpdate'])->name('agendadocfull.adminCitaUpdate')->middleware('admin');
-    Route::get("admin/doctores/schedules/{id}", [AdminDoctorController::class, 'schedules'])->name('admin.doctores.schedules')->middleware('admin');
+    Route::get("doctores/schedules/{id}", [AdminDoctorController::class, 'schedules'])->name('admin.doctores.schedules')->middleware('admin');
     Route::get("admin.doctores.lockschedules", [AdminDoctorController::class, 'lockschedules'])->name('admin.doctores.lockschedules')->middleware('admin');
 });
 
-Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
-Route::get('doctores/{doctor}/lockschedules', [DoctorController::class, 'lockschedules'])->name('doctores.lockschedules');
+//Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
+//Route::get('doctores/{doctor}/lockschedules', [DoctorController::class, 'lockschedules'])->name('doctores.lockschedules');
 
 Route::get('/prueba', function () {
     $schedule = \App\Models\Schedule::all();    
@@ -149,6 +149,8 @@ Route::get('doctor-cita-index', [DoctorAdminController::class, 'index'])->name('
 Route::get('doctor-cita-dashboard', [DoctorAdminController::class, 'dashboard'])->name('doctor.cita.dashboard');
 Route::get('doctor-cita-gestionar/{id}', [DoctorAdminController::class, 'gestionar'])->name('doctor.cita.gestionar');
 Route::post('doctor-cita-updateCita', [DoctorAdminController::class, 'updateCita'])->name('doctor.cita.updateCita');
+Route::get('doctor-cita-calendar/{id}', [DoctorAdminController::class, 'calendar'])->name('doctor.cita.calendar');
+Route::get('doctor-cita-schedule/{id}', [DoctorAdminController::class, 'schedule'])->name('doctor.cita.schedule');
 
 
 Route::get('doctor-cita/{id}', [DoctorAdminController::class, 'show'])->name('doctor.cita.show');

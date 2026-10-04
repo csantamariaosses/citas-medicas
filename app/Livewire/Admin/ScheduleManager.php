@@ -34,6 +34,7 @@ class ScheduleManager extends Component
     }
 
     public function mount(Doctor $doctor){
+        // datos desde archivo de configuracion ./config/schedules.php
         $this->days = config('schedules.days');
         $this->apointment_duration = config('schedules.apointment_duration');
 
@@ -157,6 +158,6 @@ class ScheduleManager extends Component
         $doctor = $this->doctor;
         $days = $this->days;
     
-        return view('admin.schedule-manager', compact('doctor','days'));
+        return view('livewire.admin.schedule-manager', compact('doctor','days'));
     }
 }

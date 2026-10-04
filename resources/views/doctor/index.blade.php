@@ -22,60 +22,93 @@
         color: #97660a;
     }
 </style>
-    <div class="row">
-        <div class="col-10 offset-2">  
-          <h3>Listado Citas Médicas</h3>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-10 offset-2">  
+              <h3>Gestión de Citas Médicas</h3>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-10 offset-2">  
-     Nombre:{{ session('doctorName') }} - Role: {{ session('role') }} - Id:{{ session('user_id') }} - Email:{{ session('user_email') }}
+        <HR>
+        <div class="row">
+            <div class="col-10">
+               AQUI COMPONENTE DE TABS
+               <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#home">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#menu1">Schedules</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#menu2">Menu 2</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane container active" id="home">Contenido menu Home
+                       <div>
+                    <div class="row">
+                        <div class="col-8 offset-2">  
+                        <table class="table table-striped">
+                                <thead>
+                                    <th>Id</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Paciente</th>
+                                    <th>Estado Cita</th>
+                                    <th>Acciones</th>
+                                </thead>
+                                @foreach($appointments  as $appointment)
+
+                                <tbody>
+                                    <tr>
+                                    <td>{{ $appointment->id }}</td>
+                                    <td>{{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}</td>
+                                    <td>{{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }}</td>
+                                    <td>{{ $appointment->patient->user->name }}</td>
+                                    <td>    @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )
+                                                <span class="color-green">{{ $appointment->status->label() }}</span></td>
+                                            @elseif( $appointment->status == App\Enums\AppointmentEnum::CANCELED )
+                                                <span class="color-red">{{ $appointment->status->label() }}</span></td>
+                                            @elseif( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
+                                                <span class="color-blue">{{ $appointment->status->label() }}</span></td>
+                                            @elseif( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
+                                                <span class="color-brown">{{ $appointment->status->label() }}</span></td>
+                                            @endif
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal-{{ $appointment->id }}">
+                                            Ver / Gestionar
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModalHistorial-{{ $appointment->id }}">
+                                            Historial
+                                        </button>
+                                    </td>
+                                    <tr>      
+                                </tbody>
+                                @endforeach
+                                            </table>              
+                                        </div> <!-- col-8 offset-2 -->
+                                    </div> <!-- row -->
+                                </div> <!-- div -->
+                    
+                    </div>
+                    <div class="tab-pane container fade" id="menu1">                       
+                      SCHedule
+                      {{ session('doctor_id') }}
+                      {{ $doctor->user->name }}
+                      @livewire('admin.schedule-manager', ['doctor' => $doctor]) 
+
+
+                    </div>
+                    <div class="tab-pane container fade" id="menu2">Contenido menu 2</div>
+                </div>
+            </div>
         </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-8 offset-2">  
-           <table class="table table-striped">
-            <thead>
-                <th>Id</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Paciente</th>
-                <th>Estado Cita</th>
-                <th>Acciones</th>
-            </thead>
-            @foreach($appointments  as $appointment)
-
-            <tbody>
-                <tr>
-                <td>{{ $appointment->id }}</td>
-                <td>{{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}</td>
-                <td>{{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }}</td>
-                <td>{{ $appointment->patient->user->name }}</td>
-                <td>    @if( $appointment->status == App\Enums\AppointmentEnum::SCHEDULED )
-                            <span class="color-green">{{ $appointment->status->label() }}</span></td>
-                        @elseif( $appointment->status == App\Enums\AppointmentEnum::CANCELED )
-                            <span class="color-red">{{ $appointment->status->label() }}</span></td>
-                        @elseif( $appointment->status == App\Enums\AppointmentEnum::COMPLETED )
-                            <span class="color-blue">{{ $appointment->status->label() }}</span></td>
-                        @elseif( $appointment->status == App\Enums\AppointmentEnum::EN_PROCESO )
-                            <span class="color-brown">{{ $appointment->status->label() }}</span></td>
-                        @endif
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal-{{ $appointment->id }}">
-                         Ver / Gestionar
-                    </button>
-                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModalHistorial-{{ $appointment->id }}">
-                         Historial
-                    </button>
-                </td>
-                <tr>      
-            </tbody>
-            @endforeach
-           </table>              
-        </div>
-    </div>
 
     <!-- Estructura del Modal -->
     @foreach($appointments as $appointment)

@@ -147,7 +147,8 @@ class DoctorController extends Controller
     public function schedules( $id )
     {
         //
-        //dd("Ver horarios del doctor con ID: $id");
+        
+        dd("Http/Controllers/Admin/DoctorController.php - schedules");
         $doctor = Doctor::findOrFail( $id );
         return view('admin.doctores.schedule', compact('doctor'));
     }   
