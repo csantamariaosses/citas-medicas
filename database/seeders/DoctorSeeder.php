@@ -15,6 +15,7 @@ class DoctorSeeder extends Seeder
     public function run(): void
     {
         // Doctores
+        /*
         $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Manuel Cardiopata',
                'email' => 'manuel.cardiopata@gmail.com',
@@ -22,7 +23,8 @@ class DoctorSeeder extends Seeder
                'address' => 'Direccion Falsa 410',
                'phone' => '569887744'
         ]);
-
+*/
+        $ultimoId = 7;
         DB::table('doctors')->insert( [
                 'user_id' => $ultimoId,
                 'speciality_id' => 3,    // Cardiologo
@@ -31,21 +33,25 @@ class DoctorSeeder extends Seeder
         ]);
 
         // agrega role
+        /*
         DB::table('model_has_roles')->insert( [
                 'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
-
+*/
         //
+        /*
         $ultimoId = DB::table('users')->insertGetId ( [
-               'name' => 'Oscar Perez',
+               'name' => 'Oscar Perez MG',
                'email' => 'oscar.perez@gmail.com',
                'password' => Hash::make('password'),
                'address' => 'Direccion Falsa Perez 410',
                'phone' => '569887744'
         ]);
+*/
 
+        $ultimoId = 8;
         DB::table('doctors')->insert( [
                 'user_id' => $ultimoId,
                 'speciality_id' => 1,  // Medicina General
@@ -54,22 +60,25 @@ class DoctorSeeder extends Seeder
         ]);
 
         // agrega role
+        /*
         DB::table('model_has_roles')->insert( [
                 'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
-
+*/
 
         //
+        /*
         $ultimoId = DB::table('users')->insertGetId ( [
-               'name' => 'Pedro Opazo',
+               'name' => 'Pedro Opazo Oftin',
                'email' => 'pedro.opazo@gmail.com',
                'password' => Hash::make('password'),
                'address' => 'Direccion Falsa Opazo 410',
                'phone' => '569887744'
         ]);
-
+*/
+        $ultimoId = 9;
         DB::table('doctors')->insert( [
                'user_id' => $ultimoId,
                'speciality_id' => 5,   // Oftalmologia 
@@ -78,14 +87,15 @@ class DoctorSeeder extends Seeder
         ]);
 
         // agrega role
+        /*
         DB::table('model_has_roles')->insert( [
                 'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
+*/
 
-
-
+/*
         $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Juan Gine Cologo',
                'email' => 'juan.gine.cologo@gmail.com',
@@ -93,7 +103,9 @@ class DoctorSeeder extends Seeder
                'address' => 'Direccion Falsa Gine Cologo 410',
                'phone' => '569887744'
         ]);
+*/
 
+        $ultimoId = 10;
         DB::table('doctors')->insert( [
                 'user_id' => $ultimoId,
                 'speciality_id' => 2,   // Ginecología
@@ -102,14 +114,15 @@ class DoctorSeeder extends Seeder
         ]);
 
         // agrega role
+        /*
         DB::table('model_has_roles')->insert( [
                 'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);        
-
+*/
         
-
+/*
         $ultimoId = DB::table('users')->insertGetId ( [
                'name' => 'Mario Obste Tra',
                'email' => 'mario.obste.tra@gmail.com',
@@ -117,7 +130,8 @@ class DoctorSeeder extends Seeder
                'address' => 'Direccion Falsa Obste Tra 410',
                'phone' => '569887744'
         ]);
-
+*/
+        $ultimoId = 11;
         DB::table('doctors')->insert( [
                 'user_id' => $ultimoId,
                 'speciality_id' => 4,   // Obstetra
@@ -126,11 +140,12 @@ class DoctorSeeder extends Seeder
         ]);
 
         // agrega role
+        /*
         DB::table('model_has_roles')->insert( [
                 'role_id' => 3, // 3: Doctor
                 'model_type' => 'App\Models\User',
                 'model_id' => $ultimoId
         ]);     
-
+*/
     }
 }

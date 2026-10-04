@@ -1,13 +1,13 @@
 <div>
     <h3>COMPO UNO Patient</H3>
      <!-- Primer Select -->
-
-      <form action="{{ route('agendapatient.showcalendar') }}" method="POST">
+    <!-- {{ route('agendapatient.showcalendar') }} -->
+      <form action="" method="POST">
                 @csrf
                 @method('POST')
         <table>
             <tr>
-                <td><label>Especialidad:</label></td>
+                <td><label>Especialidad::::</label></td>
                 <td>
                     <select name="speciality_id" wire:model.live="speciality_id">
                         <option value="">Seleccione una especialidad</option>
@@ -33,7 +33,8 @@
                 <td></td>
                 <td> *{{ $speciality_id}} - {{ $doctor_id}}*
                     <input type="hidden" id="specialityName" name="specialityName" value="{{ session('specialityName') }}">
-                    <button id="miBoton" name="miBoton" type="submit" class="btn btn-primary"  @if(empty($doctor_id)) disabled @endif>Buscar</button>
+                    <!-- <button id="miBoton" name="miBoton" type="submit" class="btn btn-primary"  @if(empty($doctor_id)) disabled @endif>Buscar</button> -->
+                    <button type="submit" class="btn btn-primary">Buscar</button>
                 </td>
             </tr>
         </table>    

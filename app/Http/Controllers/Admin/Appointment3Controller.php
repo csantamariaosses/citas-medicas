@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Http;
 use DateTime;
 use Carbon\Carbon;
 
-class Appointment2Controller extends Controller
+class Appointment3Controller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,10 +26,15 @@ class Appointment2Controller extends Controller
     public function index()
     {
     
-        dd("Appointment2Controller::index");
+        //dd("Appointment3Controller::index");
         //$_SESSION['paciente'] = "Carlos Santa";
-        return view('admin.appointments.index');
+        $specialities  = Speciality::all();
+        $doctors = Doctor::all();
+        $schedules = Schedule::all();
+        return view('admin.agendadoc3.index', compact("specialities", "doctors", "schedules"));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -131,7 +136,7 @@ class Appointment2Controller extends Controller
 
     public function showcalendar(Request $request){
 
-        dd("showcalendar");
+        //dd( $request->all());
         $doctor_id = $request->input('doctor');
         $doctor = Doctor::find($doctor_id);
         $doctorName = $doctor->user->name;
@@ -277,7 +282,7 @@ class Appointment2Controller extends Controller
 
     public function agendadoc3(){
         
-        //dd("agendadoc3");
+        dd("agendadoc3");
         //Auth::user()->name = "Carlos Santa";
         session(['patient_id' => 0]); // Reemplaza 1 con el ID real del paciente autenticado
         session(['patientName' => 'NN']); // Reemplaza 1 con el ID real del paciente autenticado

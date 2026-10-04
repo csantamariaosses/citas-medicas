@@ -34,7 +34,8 @@
             <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario</a></li>
             <li><a class="dropdown-item" href="{{ route('calendar.test') }}">Calendario Test</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc</a></li>
-            <li><a class="dropdown-item" href="{{ route('agendadoc2') }}">Agenda Doc 2 </a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc2') }}">Agenda Doc 2 (LiveWire Falla)</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc3.index') }}">Agenda Doc 3 (HTML-JQUERY)</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadocfull') }}">Agenda Doctores Full</a></li>
             <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -62,6 +63,16 @@
         </li>
          <li class="nav-item">
           <a class="nav-link" href="{{ route('register') }}">Register</a>
+        @endauth
+
+        @auth
+        <li class="nav-item">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; margin-top: 8px; border: none; background: none;">Logout</button>                
+            </form>
+            
+       </li>
         @endauth
       </ul>
       <form class="d-flex" role="search">

@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiUsersController;
 use App\Models\Appointment; 
 use App\Models\Schedule; 
 use App\Models\User; 
+use App\Models\Doctor; 
 use App\Models\Fechaposdia; 
 use Carbon\Carbon;
 
@@ -179,3 +180,14 @@ Route::get('buscahorasreservadas', function( Request $request) {
 
         return response()->json( $resultados, 200);
 });
+
+Route::get('/doctores/{id}', function( Request $request) {
+    $doctors = Doctor::where('speciality_id' , $request->id)->get();
+
+    return $doctors->map( function( $var ) {
+        return [
+            'id' => $var->id,
+            'name' => $var->user->name
+        ];
+    });
+})->name('api.doctores');

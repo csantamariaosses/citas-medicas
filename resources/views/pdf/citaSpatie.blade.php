@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Cita</title>
 </head>
 <body>
-  <h4>Doctor Editar</h4>
-  {{ $doctor->user->name}}<br>
-  {{ $doctor->speciality->name}}
+    <h1>Cita Médica</h1>
+
 </body>
 </html>

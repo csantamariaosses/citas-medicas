@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\SpecialityController;
 use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\Appointment2Controller;
+use App\Http\Controllers\Admin\Appointment3Controller;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserHorasMedicasController;
@@ -81,6 +82,12 @@ Route::prefix('admin')->group(function () {
 
     Route::get('agendadoc2', [Appointment2Controller::class,'agendadoc'] )->name('agendadoc2')->middleware('admin');
 
+
+    //
+    Route::get('agendadoc3', [Appointment3Controller::class,'index'] )->name('agendadoc3.index')->middleware('admin');
+    Route::post('agendadoc3.showcalendar', [Appointment3Controller::class,'showcalendar'] )->name('agendadoc3.showcalendar')->middleware('admin');
+  //  Route::get('agendadoc3', [Appointment3Controller::class,'agendadoc3'] )->name('agendadoc3.showcalendar')->middleware('admin');
+
     Route::get('agendadoc', [AppointmentController::class,'agendadoc'] )->name('agendadoc')->middleware('admin');
     Route::post('agendadoc.especialidad', [AppointmentController::class,'especialidad'] )->name('agendadoc.especialidad')->middleware('admin');
     Route::post('agendadoc.doctors', [AppointmentController::class,'doctors'] )->name('agendadoc.doctors')->middleware('admin');
@@ -91,6 +98,8 @@ Route::prefix('admin')->group(function () {
 
     Route::get('agendadocfull', [AppointmentController::class,'agendadocfull'] )->name('agendadocfull')->middleware('admin');
     Route::post('agendadocfull.adminCitaUpdate', [AppointmentController::class, 'adminCitaUpdate'])->name('agendadocfull.adminCitaUpdate')->middleware('admin');
+    Route::get("admin/doctores/schedules/{id}", [AdminDoctorController::class, 'schedules'])->name('admin.doctores.schedules')->middleware('admin');
+    Route::get("admin.doctores.lockschedules", [AdminDoctorController::class, 'lockschedules'])->name('admin.doctores.lockschedules')->middleware('admin');
 });
 
 Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
@@ -135,6 +144,7 @@ Route::put('doctor/{id}', [DoctorAdminController::class, 'update'])->name('docto
 Route::delete('doctor/{id}', [DoctorAdminController::class, 'destroy'])->name('doctor.destroy');
 
 
+
 Route::get('doctor-cita-index', [DoctorAdminController::class, 'index'])->name('doctor.cita.index');
 Route::get('doctor-cita-dashboard', [DoctorAdminController::class, 'dashboard'])->name('doctor.cita.dashboard');
 Route::get('doctor-cita-gestionar/{id}', [DoctorAdminController::class, 'gestionar'])->name('doctor.cita.gestionar');
@@ -147,6 +157,8 @@ Route::put('doctor-cita/{id}', [DoctorAdminController::class, 'update'])->name('
 Route::delete('doctor-cita/{id}', [DoctorAdminController::class, 'destroy'])->name('doctor.cita.destroy');
 
 Route::get('doctor-cita-pdf/{id}', [DoctorAdminController::class, 'consultaPdf'])->name('doctor.cita.pdf');
+//Route::get('doctor-citaSpatie-pdf/{id}', [DoctorAdminController::class, 'cconsultaSpatiePdf'])->name('doctor.citaSpatie.pdf');
+Route::get('doctor-citaSpatie-pdf', [DoctorAdminController::class, 'consultaSpatiePdf'])->name('doctor.citaSpatie.pdf');
 
 
 

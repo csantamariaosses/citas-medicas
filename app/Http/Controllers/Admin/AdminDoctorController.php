@@ -158,5 +158,21 @@ class AdminDoctorController extends Controller
 
     }
 
-   
+
+    public function schedules($id)
+    {
+        //dd("ggg");
+        $doctor = Doctor::findOrFail($id);
+        $schedules = $doctor->schedules; // Obtener los horarios del doctor
+        //dd( $doctor);
+        return view('admin.doctores.schedules', compact('doctor', 'schedules'));
+    }
+
+    public function lockschedules($id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        $lockschedules = $doctor->lockschedules; // Obtener los bloqueos de horarios del doctor
+        return view('admin.doctores.lockschedules', compact('doctor', 'lockschedules'));
+    }
+
 }

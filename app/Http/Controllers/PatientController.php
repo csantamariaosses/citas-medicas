@@ -32,8 +32,10 @@ class PatientController extends Controller
     public function showcalendar(Request $request)
     {
         //dd($request->all());
-        session(['doctor_id' =>  $request->doctor_id + 0]);
-        $doctor = Doctor::findOrfail( $request->doctor_id);
+        $doctor_id = $request->input('doctor');
+        session(['doctor_id' =>  $request->doctor + 0]);
+
+        $doctor = Doctor::findOrfail( $request->doctor);
         $doctorName = $doctor->user->name;
         session(['doctorName' =>  $doctorName]);
 
@@ -42,16 +44,15 @@ class PatientController extends Controller
         $patient_id = $user->patient->id;
 
         // Especialidad
-        $speciality_id = $request->input('speciality_id');
+        $speciality_id = $request->input('speciality');
         $speciality = Speciality::findOrFail(  $speciality_id );
 
         //dd( $speciality->name);
         session(['specialityId' =>  $speciality->id ]);
         session(['specialityName' =>  $speciality->name ]);
 
-        $doctor_id = $request->input('doctor_id');
         $patients = Patient::all();
-        //dd( $request->all());
+        //dd( $doctor_id);
 
         return view('patient.showcalendar', compact('speciality_id', 'doctor_id', 'patient_id', 'patients'));
     }

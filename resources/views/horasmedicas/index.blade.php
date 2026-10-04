@@ -113,67 +113,49 @@ th {
      </div>
  </div>
 <hr>
- <div class="row">
-        <div class="col-8">
-              <div class="card">
-                    <div class="card-header">
-                          AGENDA DOCTORES    - Patient_Id: {{ session('patient_id') }} - PatientName: {{ session('patientName')}}<br><br>
-                          <p style="color:blue;">Para agendar nuevas horas medicas, seleccione la especialidad y luego el doctor. Luego se mostrarán las horas disponibles para agendar su hora médica.</p>
-                    </div>
-                    <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                     <form name="frmEspecialidad" action="{{ route('horasmedicas.doctores') }}" method="POST">
-                                      @csrf
-                                      <select name="especialidad" id="especialidad">
-                                            <option value="0">Seleccione Especialidad</option>
-                                            @foreach($especialidades as $especialidad)
-                                                <option value="{{ $especialidad->id }}">{{ $especialidad->id }}-{{ $especialidad->name }}</option>
-                                            @endforeach
-                                      </select>
-                                      @error('especialidad')
-                                          <div class="alert alert-danger">{{ $message }}</div>
-                                      @enderror
-                                      <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">
-                                      <button id="miBoton" type="submit" class="btn btn-primary" disabled>Buscar</button>
-                                      </form>
-
-                                      <span id="selectedEspecialidad"></span>
-                                </div>
-                                <div class="col-6">
-                                     <form action="">
-                                      @csrf
-                                      <select name="doctor" id="doctor">
-                                            <option value="0">Seleccione Doctor</option>
-                                            @foreach($doctors as $doctor)
-                                                <option value="{{ $doctor->id }}">{{ $doctor->id }} - {{ $doctor->user->name }}</option>
-                                            @endforeach
-                                      </select>
-                                       <button type="submit" class="btn btn-primary" >Buscar</button>
-                                      </form>
-                                </div>
-                            </div>
-                    </div>
-                    <div class="card-footer">
-                          <a href="#" class="btn btn-primary">Go somewhere</a>  
-                    </div>
-
-              </div>
-        </div>
-    </div>
-
-    <hr>
     <div class="row">
         <div class="col-8">
             <div class="card">
                 <div class="card-header">
-                        AGENDA DOCTORES  LIVEWIRE
+                        AGENDA DOCTORES  JQUERY
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-8">
                             <p>Aqui Componente de la Especialidad</p>
-                            @livewire('Patient.Compouno')
+                            <!-- <form name="selectDoctor" action="{{ route('horasmedicas.showcalendar') }}" method="post"> -->
+                            <form name="selectDoctor" action="{{ route('agendapatient.showcalendar') }}" method="post">
+                                @csrf
+                                @method('POST')
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="especialidades">Especialidades:</label>
+                                            <select name="speciality" id="speciality" class="form-control">
+                                                <option value="">Seleccione una especialidad</option>
+                                                @foreach($specialities as $speciality)
+                                                    <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> <!-- Cierre de la fila -->
+                                <div class="row">
+                                <div class="col-6">
+                                        <!-- Select Anidado de Especialidad y Doctores -->
+                                        <div class="form-group">
+                                            <label for="doctor">Doctor:</label>
+                                            <select name="doctor" id="doctor" class="form-control">
+                                                <option value="">Seleccione un doctor</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div> <!-- Cierre de la fila -->
+                                <div class="row">
+                                <div class="col-3 d-grid">
+                                    <button type="submit" class="btn btn-primary btn-l"  disabled>Consultar</button>
+                                </div>
+                            </form>
                             
                         </div>
                         <div class="col-6">
@@ -182,7 +164,8 @@ th {
                 </div>
             </div>
         </div>
-
+    </div>
+    <HR>
 
 <!-- Modal -->
 @foreach($appointments as $appointment)
@@ -245,19 +228,54 @@ th {
   </div>
 @endforeach
 
-   
-    <script>
-        document.getElementById('especialidad').addEventListener('change', function() {
-            const select = document.getElementById('especialidad');
-            const boton = document.getElementById('miBoton');
-            if( select.value > 0 ) {
-                boton.disabled = false;
-            } else {
-                boton.disabled = true;
-            }
-
-        });
-    </script>
+  <!-- Cargar jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.3.slim.min.js"
+    integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+</script>
 
 
-@endsection
+<script>
+$(document).ready(function () {
+    $('#doctor').val(); // Inicializar el valor del select de doctores como vacío
+    console.log('Valor inicial del select de doctores:', $('#doctor').val()); // Verificar el valor inicial del select de doctores
+    $('#speciality').on('change', function () {
+        console.log('Valor seleccionado del select de especialidades:', $(this).val()); // Verificar el valor seleccionado del select de especialidades
+        var specialityId = $(this).val();
+        console.log('Valor de specialityId:', specialityId); // Verificar el valor de specialityId
+        
+        // Vaciar y deshabilitar el segundo select si no hay selección
+        $('#doctor').empty().append('<option value="">Seleccione un doctor</option>');
+        
+        if (specialityId) {
+        console.log('Haciendo solicitud AJAX para la especialidad ID:', specialityId); // Verificar la especialidad seleccionada antes de la solicitud AJAX
+            $.ajax({
+                url: '/api/doctores/' + specialityId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Recorrer los datos recibidos y agregarlos al select
+                    $.each(data, function (key, value) {
+                    console.log('Agregando doctor al select:', value); // Verificar cada doctor agregado al select
+                        $('#doctor').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error al cargar los doctores.');
+                }
+            });
+        }
+    });
+
+    $('#doctor').on('change', function () {
+        var doctorId = $(this).val();
+        console.log('Valor seleccionado del select de doctores:', doctorId); // Verificar el valor seleccionado del select de doctores
+        if (doctorId) {
+            $('button[type="submit"]').prop('disabled', false);
+        } else {
+            $('button[type="submit"]').prop('disabled', true);
+        }
+    });
+});
+
+</script>
+@endsection()

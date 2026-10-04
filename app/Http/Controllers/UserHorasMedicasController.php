@@ -33,8 +33,9 @@ class UserHorasMedicasController extends Controller
                                      ->orderBy('date','desc')->get();
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
+        $specialities = Speciality::all();
          //dd(  $patient_id );
-        return view("horasmedicas.index", compact('especialidades','doctors', 'appointments') );    
+        return view("horasmedicas.index", compact('especialidades','doctors', 'appointments', 'specialities') );    
 
     }
 

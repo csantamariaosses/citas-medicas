@@ -109,6 +109,8 @@
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
                 Cita: {{ $appointment->id }}<br>
                 Paciente: {{ $appointment->patient->user->name }}<br>
+                Fecha Nac.: {{ $appointment->patient->birth_date }}<br>
+                Edad:{{ \Carbon\Carbon::parse($appointment->patient->birth_date)->age }} <br>
                 Fecha: {{ Illuminate\Support\Arr::first( explode( ' ', $appointment->date ) )  }}<br>
                 Hora: {{ Illuminate\Support\Arr::last( explode( ' ', $appointment->start_time ) ) }} <br>
                 <hr>
@@ -151,7 +153,9 @@
                 </select><br><br>
                 <input type="hidden" name="id" value="{{ $appointment->id }}">
                 <button type="submit" class="btn btn-primary">Guardar</button> 
-                <a href="{{ route('doctor.cita.pdf', ['id' => $appointment->id]) }}" class="btn btn-primary" target="_blank">PDF/Imprimir</a>
+                <a href="{{ route('doctor.cita.pdf', ['id' => $appointment->id]) }}" class="btn btn-primary" target="_blank">PDF/Imprimir (DomPDF)</a>
+                <a href="{{ route('doctor.citaSpatie.pdf') }}" class="btn btn-primary" target="_blank">PDF/Imprimir (Spatie)</a>
+               
             </form>
         </div>
         <div class="modal-footer">
@@ -176,6 +180,7 @@
                 @csrf
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
                 Paciente: {{ $appointment->patient->user->name }}<br>
+                Fecha Nac. <span>{{ $appointment->patient->user->name}}</span>
                 <hr>
                 Tipo de Sangre: {{ $appointment->patient->bloodType->name }} <br>
                 Alergias: <textarea name="allergies" class="form-control">{{ $appointment->patient->allergies }}</textarea> <br>
