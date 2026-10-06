@@ -1,0 +1,955 @@
+@extends('layouts.app') 
+
+@section('menu')
+  @include('menuadmin')
+@endsection
+
+@section('content')
+    <div align="center"><h3>SHOW CALENDAR - ADMIN</h3></div>
+    <div class="row">
+
+        <div class="col-1">
+           ..
+
+        </div>
+         
+        <div class="col-10">
+            
+            <input type="hidden" id="doctorName" value="{{ session('doctorName') }}">
+            <input type="hidden" id="specialityName" value="{{ session('specialityName') }}">
+            <input type="hidden" id="pacienteName" value="{{ session('paciente') }}">
+            <p>       
+                <table> 
+                    <tbody>   
+                   <tr><th>doctor_id:</th><td>{{ $doctor_id}}</td></tr>
+                   <tr><th>doctorName:</th><td> {{ session('doctorName') }}</td></tr>
+                   <tr><th>Especialidad :</th><td> {{ session('specialityName') }}</td></tr>
+                   <tr><th>Patient_id:</th><td>{{ session('patient_id') }}</td></tr>
+                   <tr><th>PatientName:</th><td>{{ session('patientName') }}</td></tr>
+                   </tbody>
+                </table>
+            </p>
+          <div x-data="dataCalendar()">
+              <div x-ref="calendar"> </div> 
+          </div>
+        </div>
+        <div class="col-1">
+          <div id="citas"></div>
+        </div>
+    </div>
+
+     
+   <!-- Modal -->
+      <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route('agendadoc.confirmar') }}" method="POST">
+          @csrf 
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"  style="background-color: #669999; color: #ffffff;"      >
+              <h5 class="modal-title" id="staticBackdropLabel">Confirmación de Hora---</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"  style="background-color: #fff;">
+                <table>
+                    <tr>
+                      <th>Estado Hora:</th><td><span id="modalStatus" name="modalStatus"></td>
+                    </tr>
+                   <tr>
+                      <th>Médico:</th><td><input type="text" id="modalDoctorName" name="modalDoctorName" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityName" name="modalSpecialityName"  disabled></td>
+                    </tr>
+                    <tr>
+                        @if( session('patientName') != 'NN')
+                         <th>Paciente:</th><td><input type="text" id="modalPatientName" name="modalPatientName" disabled></td>
+                        @else
+                         <th>Paciente:</th><td>
+                           <select name="selectPatient_id">
+                             <option value="0">Seleccione un paciente</option>
+                              @foreach($patients as $patient)
+                                  <option value="{{ $patient->id }}">{{ $patient->id }}-{{ $patient->user->name }}</option>
+                             @endforeach
+                           </select>
+                        </td>
+                       @endif
+
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th><td><input type="text" id="modalFecha" name="modalFecha" disabled></td>
+                    </tr>
+                    <tr>    
+                        <th>Hora</th><td><input type="text" id="modalStartTime" name="modalStartTime" disabled></td>
+                    </tr>
+                                 
+                </table>
+            </div>
+            <div class="modal-footer" style="background-color: #fff;">
+              <input type="hidden" id="status" name="status" value="{{ session('status') }}">
+              <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">  
+              <input type="hidden" id="patient_id" name="patient_id" value="{{ session('patient_id') }}">
+              <input type="hidden" id="patientName" name="patientName" value="{{ session('patientName') }}">
+              <input type="hidden" id="doctor_id" name="doctor_id" value="{{ session('doctor_id') }}">
+              <input type="hidden" id="doctorName" name="doctorName" value="{{ session('doctorName') }}">
+              <input type="hidden" id="spetiality" name="spetiality" value="{{ session('spetiality') }}">
+              <input type="hidden" id="specialityName" name="specialityName" value="{{ session('specialityName') }}">
+              <input type="hidden" id="fecha" name="fecha">
+              <input type="hidden" id="startTime" name="startTime">
+        
+
+              <input type="hidden" id="end_time" name="end_time">              
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Confirmar</button>
+            </div> <!-- modal-footer -->
+          </div>   <!-- modal-content -->
+        </div>     <!-- modal-dialog -->
+        </form>
+      </div>       <!-- modal -->
+
+
+      <!-- Modal  Agendado-->
+      <div class="modal fade" id="modalAgendado" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route('agendadoc.cancelarCita') }}" method="POST">
+          @csrf 
+         
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"  style="background-color: #a58d13; color: #ffffff;" > 
+              <h5 class="modal-title" id="staticBackdropLabel">Informacion de la Hora Medica Agendada</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: #fff;">
+                <table>
+                    <tr>
+                      <th>Cita Id::</th><td><input type="text" id="modalCitaIdAg" name="modalCitaIdAg" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdAg" name="modalDoctorIdAg" disabled></td>
+                    </tr>
+                   <tr>
+                      <th>Médico:</th><td><input type="text" id="modalDoctorNameAg" name="modalDoctorNameAg" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameAg" name="modalSpecialityNameAg" value="{{ session('specialityName') }}" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Id Paciente:</th><td><input type="text" id="modalPatientIdAg" name="modalPatientIdAg"  disabled></td>
+                    </tr>
+                    <tr>
+                    <tr>
+                      <th>Paciente:</th><td><input type="text" id="modalPatientNameAg" name="modalPatientNameAg"  disabled></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th><td><input type="text" id="fechaAg" name="fechaAg" disabled></td>
+                    </tr>
+                    <tr>    
+                        <th>Hora</th><td><input type="text" id="start_timeAg" name="start_timeAg" disabled></td>
+                    </tr>
+                                 
+                </table>
+            </div>
+            <div class="modal-footer" style="background-color: #fff;">
+                <input type="hidden" id="modalCitaIdAgHidden" name="modalCitaIdAgHidden">
+                <input type="hidden" id="modalDoctorIdAgHidden" name="modalDoctorIdAgHidden">
+                <input type="hidden" id="modalPatientIdAgHidden" name="modalPatientIdAgHidden">
+                <input type="hidden" id="modalFechaStartAgHidden" name="modalFechaStartAgHidden">
+                <input type="hidden" id="modalFechaHoraStartAgHidden" name="modalFechaHoraStartAgHidden">
+      
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cancelar Cita</button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmCancelarCitaModal" data-bs-dismiss="modal">
+                CANCELAR CITA
+              </button>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+
+
+      <!-- Confirmación Cancelar Cita -->
+       <div class="modal fade" id="confirmCancelarCitaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route('agendadoc.cancelarCita') }}" method="POST">
+          @csrf 
+         
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color:rgb(225, 126, 126); color:#ffffff;">
+              <h5 class="modal-title" id="staticBackdropLabel">Está Seguro de Cancelar la Cita?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                      <th>Cita Id:::</th><td><input type="text" id="modalCitaIdConfirmCancel" name="modalCitaIdConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdConfirmCancel" name="modalDoctorIdConfirmCancel" disabled></td>
+                    </tr>
+                   <tr>
+                      <th>Médico:</th><td><input type="text" id="modalDoctorNameConfirmCancel" name="modalDoctorNameConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameConfirmCancel" name="modalSpecialityNameConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Id Paciente:</th><td><input type="text" id="modalPatientIdConfirmCancel" name="modalPatientIdConfirmCancel"  disabled></td>
+                    </tr>
+                    <tr>
+                    <tr>
+                      <th>Paciente:</th><td><input type="text" id="modalPatientNameConfirmCancel" name="modalPatientNameConfirmCancel"  disabled></td>
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th><td><input type="text" id="fechaConfirmCancel" name="fechaConfirmCancel" disabled></td>
+                    </tr>
+                    <tr>    
+                        <th>Hora</th><td><input type="text" id="start_timeConfirmCancel" name="start_timeConfirmCancel" disabled></td>
+                    </tr>
+                                 
+                </table>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="modalCitaIdConfirmCancelHidden" name="modalCitaIdConfirmCancelHidden">
+                <input type="hidden" id="modalDoctorIdConfirmCancelHidden" name="modalDoctorIdConfirmCancelHidden">
+                <input type="hidden" id="modalDoctorNameConfirmCancelHidden" name="modalDoctorNameConfirmCancelHidden">
+                <input type="hidden" id="modalSpecialityNameConfirmCancelHidden" name="modalSpecialityNameConfirmCancelHidden">
+                
+                <input type="hidden" id="modalPatientIdConfirmCancelHidden" name="modalPatientIdConfirmCancelHidden">
+                <input type="hidden" id="modalPatientNameConfirmCancelHidden" name="modalPatientNameConfirmCancelHidden">
+                <input type="hidden" id="modalFechaStartConfirmCancelHidden" name="modalFechaStartConfirmCancelHidden">
+                <input type="hidden" id="modalFechaHoraStartConfirmCancelHidden" name="modalFechaHoraStartConfirmCancelHidden">
+                
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-warning" data-bs-dismiss="modal">Confirma Cancelar Cita</button>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+
+
+
+      <!-- modalUpdateAgenda -->
+
+    <div class="modal fade" id="modalUpdateAgenda" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route('agendadoc.updateCita') }}" method="POST">
+          @csrf 
+         
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"  style="background-color:rgb(16, 69, 69); color:#ffffff;">
+              <h5 class="modal-title" id="staticBackdropLabel">Reagendamiento de Hora Medica</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                      <th>Cita Id::</th><td><input type="text" id="modalCitaIdUpdate" name="modalCitaIdUpdate" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Médico Id:</th><td><input type="text" id="modalDoctorIdUpdate" name="modalDoctorIdUpdate" disabled></td>
+                    </tr>
+                   <tr>
+                      <th>Médico:</th><td><input type="text" id="modalDoctorNameUpdate" name="modalDoctorNameUpdate" disabled></td>
+                    </tr>
+                    <tr>
+                      <th>Especialidad:</th><td><input type="text" id="modalSpecialityNameUpdate" name="modalSpecialityNameUpdate" value="{{ session('specialityName') }}" disabled></td>
+                    </tr>
+
+
+                    <tr>
+                        <th>Paciente:</th><td>
+                           <select name="modalPatientIdUpdate">
+                             <option value="0">Seleccione un paciente</option>
+                              @foreach($patients as $patient)
+                                  <option value="{{ $patient->id }}">{{ $patient->id }}-{{ $patient->user->name }}</option>
+                             @endforeach
+                           </select>
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th><td><input type="text" id="modalFechaStartUpdate" name="modalFechaStartUpdate" disabled></td>
+                    </tr>
+                    <tr>    
+                        <th>Hora</th><td><input type="text" id="modalHoraStartUpdate" name="modalHoraStartUpdate" disabled></td>
+                    </tr>
+                                 
+                </table>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="modalCitaIdUpdateHidden" name="modalCitaIdUpdateHidden">
+                <input type="hidden" id="modalDoctorIdUpdateHidden" name="modalDoctorIdUpdateHidden">
+                <input type="hidden" id="modalDoctorNameUpdateHidden" name="modalDoctorNameUpdateHidden">
+                
+                <input type="hidden" id="modalPatientIdUpdateHidden" name="modalPatientIdUpdateHidden">
+                <input type="hidden" id="modalPatientNameUpdateHidden" name="modalPatientNameUpdateHidden">
+
+                <input type="hidden" id="modalFechaStartUpdateHidden" name="modalFechaStartUpdateHidden">
+
+                <input type="hidden" id="modalHoraStartUpdateHidden" name="modalHoraStartUpdateHidden">
+      
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Guardar Cita</button>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+
+<style>
+#modal .modal-content {
+    background-color: #aee7e7;
+}
+#modalAgendado .modal-content {
+    background-color: #b8c1f4;
+}       
+</style>
+
+      //function dataCalendar( schedules, json_schedules, arr_schedules_to_json) {
+
+      function dataCalendar() {
+            let salida;
+            let citas=[];
+            let appoints=[];
+
+            let patient_id =  $( "#patient_id" ).val();
+            let patientName =  $( "#patientName" ).val();
+            let doctor_id =  $( "#doctor_id" ).val();
+            let doctorName =  $( "#doctorName" ).val();
+            
+            let specialityName =  $( "#specialityName").val();
+            //document.getElementById('sesion_id').value
+
+            console.log("Doctor_Id:" + doctor_id);
+            console.log("Doctor:" + doctorName);
+            console.log("Paciente:" + patientName);
+            console.log("Especialidad:" + specialityName);
+
+            $( "#modalDoctorName").val(doctorName);
+            $( "#modalPatientName").val( patientName );
+            $( "#modalSpecialityName").val( specialityName );
+
+
+            
+            // GENERA TABLA FECHAPOSDIA
+            generaTablaFechaPosDia();
+
+
+            let diasSeleccionados = [1, 3];
+            let now = new Date();
+            let year =  now.getYear() + 1900;
+            let month = now.getMonth(); // Abril (0-indexado, 0 = Enero,
+
+            //buscahorasdiponibles();
+        
+            generaDiasMesEnCurso = generarDiasMes(year, month);
+                                          
+            //let fechasConHoras = generarRangosDiasMes(year, month, schedules);
+
+             return {
+                init(){
+                  var calendarEl = this.$refs.calendar;
+                  var calendar = new FullCalendar.Calendar(calendarEl, {
+                      headerToolbar:{
+                        left:'prev,next today',
+                        center:'title',
+                        right:'dayGridMonth, timeGridWeek, timeGridDay, listWeek'
+                      },
+
+                      locale:'es',
+
+                      buttonText:{
+                        today:'Hoy',
+                        month:'Mes',
+                        week:'Semana',
+                        day:'Dia',
+                        list:'Lista'
+                      },
+
+                      allDayText: 'Todo el dia',
+                      noEventsText: 'No hay eventos para mostrar',
+
+                      slotDuration: '00:15:00',   // Duración de cada intervalo de tiempo en la vista de cuadrícula de tiempo (timeGrid)
+                      initialView: 'timeGridWeek',  // Vista Inicial semana en horas
+
+                      slotMinTime: "{{ config('schedules.start_time') }}", // desde el archivo config/schedules.php
+                      slotMaxTime: "{{ config('schedules.end_time') }}",   // desde el archivo config/schedules.php
+
+                       eventTimeFormat: {           // Formato de hora en los eventos
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          meridiem: false,           // Usa formato de 24 horas (true para AM/PM)
+                          omitZeroMinute: false      // Muestra :00 en punto en lugar de ocultarlo
+                      },
+                    
+
+                      events: [
+                                <?php
+                                use Illuminate\Support\Facades\DB;       
+                                
+                                // Disponibles
+                                $sql =       "  select app.id, app.patient_id, sch.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date,";
+                                $sql = $sql ." 'Disponible' as estado, '#669999' as color,  concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ."  concat(fecha.fecha,'T', sch.end_time) as fechaend , userdoc.name as doctorName, userpat.name as patientName , spec.name as specialityName  ";
+                                $sql = $sql ."  from fechaposdias fecha  ";
+                                $sql = $sql ."  left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ."  left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time) ";
+                                $sql = $sql ."  left join doctors doc on ( doc.id = sch.doctor_id )  ";
+                                $sql = $sql ."  left join users userdoc on ( doc.user_id = userdoc.id )  ";
+                                $sql = $sql ."  left join patients patdisp on ( app.patient_id = patdisp.id )  ";
+                                $sql = $sql ."  left join users userpat on ( patdisp.user_id = userpat.id ) ";
+                                $sql = $sql ."  left join specialities spec on ( doc.speciality_id = spec.id )  ";
+                                $sql = $sql ."  where sch.doctor_id = ? ";
+                                $sql = $sql ."  and  app.date is null  ";
+
+                                $sql = $sql ." union ";
+
+                                // Agendados
+                                $sql = $sql ."   select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date, ";
+                                $sql = $sql ." 'Agendado' as estado, ";
+                                $sql = $sql ." '#a58d13' as color,  concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ."     concat(fecha.fecha,'T', sch.end_time) as fechaend,   ";
+                                $sql = $sql ."     userdoc.name as doctorName, userpat.name as patientName , spec.name as specialityName ";  
+                                $sql = $sql ."     from fechaposdias fecha  ";
+                                $sql = $sql ."     left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ."     left join appointments app on ( fecha.fecha = app.date  and sch.start_time = app.start_time)  ";
+                                $sql = $sql ."     left join doctors doc on ( doc.id = app.doctor_id )  ";
+                                $sql = $sql ."     left join users userdoc on ( doc.user_id = userdoc.id ) ";  
+                                $sql = $sql ."     left join patients pat on ( app.patient_id = pat.id )  ";
+                                $sql = $sql ."     left join users userpat on ( pat.user_id = userpat.id ) "; 
+                                $sql = $sql ."     left join specialities spec on ( doc.speciality_id = spec.id )  ";
+                                $sql = $sql ."     where sch.doctor_id =   ? ";
+                                $sql = $sql ."     and  sch.doctor_id = app.doctor_id  ";
+                                $sql = $sql ."     and  app.id is not null ";
+                                $sql = $sql ."     and  sch.id is not null  ";
+                                $sql = $sql ."     and  app.status = 1 ";
+
+                                $sql = $sql ." union ";
+
+                                // Cancelados
+                                $sql = $sql ." select app.id, app.patient_id, app.doctor_id, fecha.fecha, fecha.day_of_week, sch.start_time, sch.end_time, app.date,";
+                                $sql = $sql ." 'Cancelado' as estado, 'rgb(16, 69, 69)' as color,  ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.start_time) as fechastart,  ";
+                                $sql = $sql ." concat(fecha.fecha,'T', sch.end_time) as fechaend , userdoc.name as doctorName,";
+                                $sql = $sql ." userpat.name as patientName , spec.name as specialityName ";
+                                $sql = $sql ." from fechaposdias fecha  ";
+                                $sql = $sql ." left join schedules sch on ( fecha.day_of_week = sch.day_of_week )  ";
+                                $sql = $sql ." left join appointments app on ( fecha.fecha =  app.date and sch.start_time = app.start_time)  ";
+                                $sql = $sql ." left join doctors doc on ( doc.id = app.doctor_id )  ";
+                                $sql = $sql ." left join users userdoc on ( doc.user_id = userdoc.id )  ";
+                                $sql = $sql ." left join patients patdisp on ( app.patient_id = patdisp.id )  ";
+                                $sql = $sql ." left join users userpat on ( patdisp.user_id = userpat.id )  ";
+                                $sql = $sql ." left join specialities spec on ( doc.speciality_id = spec.id )  ";
+                                $sql = $sql ." where sch.doctor_id = ? ";
+                                $sql = $sql ." and  app.date is not null ";  
+                                $sql = $sql ." and  app.status =  3 ";
+
+                                
+                                $registros = DB::select( $sql, [session('doctor_id'), session('doctor_id') , session('doctor_id')   ] );             
+
+                                foreach( $registros as $fila) {
+                                ?>
+                                        {
+                                            'start': '<?php  echo $fila->fechastart;  ?>',
+                                            'end': '<?php echo $fila->fechaend ?>',
+                                            'title': '<?php echo $fila->estado ?>',
+                                            'color': '<?php echo $fila->color ?>',
+                                            'id': '<?php echo $fila->id ?>',
+                                            extendedProps: {
+                                                doctor_id: '<?php echo $fila->doctor_id ?>',
+                                                doctor_name: '<?php echo $fila->doctorName ?>',
+                                                specialityName: '<?php echo $fila->specialityName ?>',
+                                                patient_id: '<?php echo $fila->patient_id ?>',
+                                                patient_name: '<?php echo $fila->patientName ?>',
+                                                status: '<?php echo $fila->estado ?>'
+                                            }
+                                                
+                                        },
+                                <?php
+                                 }                                 
+                                ?>                                                                              
+                      ] ,
+
+                      
+                
+                        selectAllow: function(selectInfo) {
+                          // Deshabilitar si el día seleccionado es domingo
+                          alert("selectAll:" + selectInfo.start.getDay());
+                          //return selectInfo.start.getDay() !== 0;
+                        },
+
+                      
+                      
+                       dateClick: function(info) {
+                          console.log("DtaClick");
+                    
+                            
+                        },
+
+                        
+                        eventClick:function(info){
+
+                              console.log("*****evento Click");
+
+                              console.log('Id: ' + info.event.id);
+                              console.log('Title: ' + info.event.title);
+
+                              console.log("Fecha:" + info.event.start.toISOString().slice(0, 10)); // 2026-03-30
+                              console.log('Start: ' + info.event.start);
+                              
+                              console.log("Hora:" + info.event.start.toString().split(' ')[4]  ); // 14:00:00
+                              console.log("Medico:" + info.event.extendedProps.doctor_name); // 14:00:00
+                              console.log("Paciente:" + info.event.extendedProps.patient_name); // 14:00:00
+
+                              if( info.event.start < now ) {
+                                  alert("La Fecha seleccionada es pasada");  
+                              } else {
+                                    let now = new Date();
+                                    if( info.event.title == 'Disponible' ) {
+                                        console.log("Status::" + info.event.status);
+
+                                        $("#modalDoctorName").val( doctorName );
+                                        $("#modalSpecialityName").val( info.event.extendedProps.specialityName );
+                                        $("#modalPatientName").val( patientName );
+
+                                        $("#modalFecha").val( info.event.start.toISOString().slice(0, 10));
+                                        $("#modalStartTime").val( info.event.start.toString().split(' ')[4]  );
+
+                                        $("#fecha").val( info.event.start.toISOString().slice(0, 10));                                        
+                                        $("#startTime").val( info.event.start.toString().split(' ')[4]  );
+                                        $("#modal").modal("show");      
+                                    } 
+
+                                    if( info.event.title == 'Agendado') {
+                                        console.log( "Agendado");
+                                        console.log( info.event.id);
+                                        $("#modalCitaIdAg").val( info.event.id );
+                                        $("#modalCitaIdAgHidden").val( info.event.id );
+                                        $("#modalDoctorIdAgHidden").val( info.event.extendedProps.doctor_id );
+                                        $("#modalPatientIdAgHidden").val( info.event.extendedProps.patient_id );
+                                        $("#modalFechaStartAgHidden").val( info.event.start.toISOString().slice(0, 10) );
+                                        $("#modalFechaHoraStartAgHidden").val( info.event.start.toString().split(' ')[4] );
+
+                                        $("#fechaAg").val( info.event.start.toISOString().slice(0, 10));
+                                        $("#start_timeAg").val( info.event.start.toString().split(' ')[4] );
+                                        $("#modalDoctorIdAg").val( info.event.extendedProps.doctor_id);
+                                        $("#modalDoctorNameAg").val( info.event.extendedProps.doctor_name);
+                                        $("#modalPatientIdAg").val( info.event.extendedProps.patient_id);
+                                        $("#modalPatientNameAg").val( info.event.extendedProps.patient_name);
+                                        $("#modalSpecialityNameAg").val( info.event.extendedProps.specialityName );
+
+                                        $("#fechaModal").val( info.event.start.toISOString().slice(0, 10));
+                                        $("#startTimeModal").val( info.event.start.toString().split(' ')[4]  );
+
+                                        $("#modalCitaIdConfirmCancelHidden").val( info.event.id );
+                                        $("#modalDoctorIdConfirmCancelHidden").val( info.event.extendedProps.doctor_id );
+
+                                        $("#modalAgendado").modal("show");    
+                                    }                                              
+                                    
+                                     if( info.event.title == 'Cancelado') {
+                                        console.log( "Cancelada");
+                                        console.log( info.event.id);
+
+                                        $("#modalCitaIdUpdate").val( info.event.id ); 
+                                        $("#modalCitaIdUpdateHidden").val( info.event.id );
+
+                                        $("#modalDoctorIdUpdateHidden").val( info.event.extendedProps.doctor_id );
+                                        $("#modalDoctorNameUpdateHidden").val( info.event.extendedProps.doctor_name );
+
+                                        $("#modalDoctorIdUpdate").val( info.event.extendedProps.doctor_id );
+                                        $("#modalDoctorIdUpdateHidden").val( info.event.extendedProps.doctor_id );
+
+                                        $("#modalDoctorNameUpdate").val( info.event.extendedProps.doctor_name );
+                                        $("#modalSpecialityNameUpdate").val( info.event.extendedProps.specialityName );
+                                        
+                                        $("#modalPatientIdUpdate").val( info.event.extendedProps.patient_id );
+                                        $("#modalPatientIdUpdateHidden").val( info.event.extendedProps.patient_id );
+
+                                        $("#modalPatientNameUpdateHidden").val( info.event.extendedProps.patient_name );
+
+                                        $("#modalFechaStartUpdate").val( info.event.start.toISOString().slice(0, 10) );
+                                        $("#modalFechaStartUpdateHidden").val( info.event.start.toISOString().slice(0, 10) );
+
+                                        $("#modalHoraStartUpdate").val( info.event.start.toString().split(' ')[4] );
+                                        $("#modalHoraStartUpdateHidden").val( info.event.start.toString().split(' ')[4] );
+
+                                        $("#modalUpdateAgenda").modal("show");    
+                                    }                                              
+                              }                                                                                         
+                        },
+                        hiddenDays: [ 0 ]
+                        
+
+                   });
+                   
+                  calendar.render();
+                   // alert("Calendario cargado");
+                  }
+             }
+      }
+
+      function obtenerFechasPorDias(year, month, daysOfWeek, arr_schedules) {
+              let dates = [];
+              let date = new Date(year, month, 1); // Primer día del mes
+
+              console.log("arr_schedules:" + arr_schedules.length);
+              console.log("arr_schedules_NroDia:" + arr_schedules[0].day_of_week);
+              console.log("arr_schedules_HoraInicio:" + arr_schedules[0].start_time);
+              console.log("arr_schedules_HoraFin:" + arr_schedules[0].end_time);
+
+              schedules.forEach( function(schedule) {
+                  //console.log("**** Schedule:" + schedule.day_of_week + ' - ' + schedule.start_time + ' - ' + schedule.end_time);
+              });
+
+
+              
+              // Mientras sigamos en el mismo mes
+              while (date.getMonth() === month) {
+                  // Verificar si el día de la semana actual está en el array
+                  if (daysOfWeek.includes(date.getDay())) {
+                      // Formatear a YYYY-MM-DD
+                      let isoDate = date.toISOString().slice(0, 10);
+                      dates.push(isoDate);
+                  }
+                  // Pasar al siguiente día
+                  date.setDate(date.getDate() + 1);
+              }
+              return dates;
+          }
+
+          function fechaAgregaHoras( fechasDelMes) {
+              let horaInicio = "08:00:00";
+              let horaFin = "17:00:00";
+              let minutosAgregar = 15;
+
+              fechaDelMesMasHora = [];
+
+              console.log("***** CONSIDERAS LOS DIAS DEL SCHEDULE MAS LAS HORAS DE ATENCION DEL DOCTOR PARA CREAR LOS EVENTOS DISPONIBLES EN EL CALENDARIO *****");
+              for (let iDia = 0; iDia < fechasDelMes.length; iDia++) {
+                  fechaDelMesMasHora = fechasDelMes[iDia] + "T" + horaInicio; // "2026-04-01T08:00:00"
+                  console.log( "Fecha y Hora Inicio: " + fechaDelMesMasHora);
+                  nuevaHora = new Date(fechaDelMesMasHora);
+                  for( minuto = 0; minuto < 3; minuto++ ) {                        
+                        nuevaHora.setMinutes(nuevaHora.getMinutes() + minutosAgregar);
+                        console.log("Fecha y Hora Inicio: " + nuevaHora.toString());                           
+                  }
+                  //; hora = sumarMinutos(hora, intervaloMinutos) ) {
+                   //   let fecha_hora_inicio = $fechasDelMes[i] + "T" + hora; // "2026-04-01T08:00:00"
+                   //   console.log("Fecha y Hora Inicio: " + fecha_hora_inicio);
+              }         
+              return fechaDelMesMasHora;                        
+          }
+
+
+          function generarDiasMes(year, month){
+              let dates = [];
+              let date = new Date(year, month, 1); // Primer día del mes
+              //console.log( "Generar dias del mes para el calendario: " + date.toISOString().slice(0, 10) );
+              // Mientras sigamos en el mismo mes
+              while (date.getMonth() === month) {
+                  // Formatear a YYYY-MM-DD
+                  let isoDate = date.toISOString().slice(0, 10);
+                  let diaSemana = date.getDay();
+                  let dia = {
+                      fecha: isoDate,
+                      diaSemana: diaSemana
+                  };
+                  dates.push( dia );                 
+                  // Pasar al siguiente día
+                  date.setDate(date.getDate() + 1); 
+              }
+              return dates;
+          }
+
+          function generarRangosDiasMes(year, month, arr_schedules){
+              let fechasConHoras = [];
+              let date = new Date(year, month, 1); // Primer día del mes
+              console.log( "Generar rangos de dias del mes para el calendario: " + date.toISOString().slice(0, 10) );
+              // Mientras sigamos en el mismo mes
+              while (date.getMonth() === month) {
+                  // Formatear a YYYY-MM-DD
+                  let isoDate = date.toISOString().slice(0, 10);
+                  let diaSemana = date.getDay();
+                  //console.log( ">>>>>>> arr_schedules" + arr_schedules[0]['day_of_wek']);
+
+                  arr_schedules.forEach( function(schedule) {
+                      if( schedule.day_of_week == diaSemana ) {
+                          //const [fecha, hora] = schedule.split('T');
+                          //console.log("**** Schedule:" + fecha, hora );
+                          let fecha_hora_inicio = schedule.start_time; 
+                          let fecha_hora_fin = schedule.end_time; 
+                      }
+                  });
+                  // Pasar al siguiente día
+                  date.setDate(date.getDate() + 1); 
+              }
+              return fechasConHoras;
+          }
+
+          function generaFechaPosicionHoraInicial(generaDiasMesEnCurso, schedules, arr_schedules_to_json, citas) {
+
+                FechaPosicionHoraInicial = [];
+
+                arr_schedules_to_json.forEach( function(x) {
+                      console.log( "SCHS_JSON:" + x.doctor_id + ' ' + x.day_of_week + ' ' + x.start_time + ' ' + x.end_time );
+                });
+
+
+
+                arr_sch = [];
+                schedules.forEach( function(sch) {
+                    let doctor_id = sch.doctor_id;
+                    let num_dia = sch.day_of_week;
+                    let fecha_hora_inicio = sch.start_time; 
+                    let fecha_hora_fin = sch.end_time; 
+
+                   // console.log( "SHCS: " + doctor_id + ' ' + num_dia + ' ' + fecha_hora_inicio.split('T')[1].substring(0,8) + ' ' + fecha_hora_fin.split('T')[1].substring(0,8));
+                    
+                    arr_sch.push( {
+                      'posDia' : num_dia,
+                      'horaInicio' : fecha_hora_inicio.split('T')[1].substring(0,8) ,
+                      'horaFin' : fecha_hora_fin.split('T')[1].substring(0,8) 
+                    });
+                            
+                });
+
+                arr_sch.forEach( function(x) {
+                    //console.log("arr_sch::" + x.posDia + ' ' + x.horaInicio );
+                });  
+
+                for( i=0; i< arr_sch.length; i++) {
+                  //console.log("FOR_ARR_ASCH::" + arr_sch[i].posDia + ' ' + arr_sch[i].horaInicio);
+                }
+
+                for( i=0; i< generaDiasMesEnCurso.length; i++) {
+                  //console.log("MES_POS_FECHA::" + generaDiasMesEnCurso[i].diaSemana + ' ' + generaDiasMesEnCurso[i].fecha );
+                    for( j=0; j< arr_schedules_to_json.length; j++) {
+                        //console.log( "COMPARACION::" + generaDiasMesEnCurso[i].diaSemana + ' '  + arr_schedules_to_json[j].day_of_week);
+                      if( generaDiasMesEnCurso[i].diaSemana == arr_schedules_to_json[j].day_of_week) {
+                        console.log(">>>>> MACH::" + generaDiasMesEnCurso[i].fecha + ' ' + generaDiasMesEnCurso[i].diaSemana + ' ' + arr_schedules_to_json[j].day_of_week + ' ' + arr_schedules_to_json[j].start_time);
+                        FechaPosicionHoraInicial.push (
+                            {
+                                'fecha'  :  generaDiasMesEnCurso[i].fecha,
+                                'doctor_id' :  arr_schedules_to_json[j].doctor_id,
+                                'diaSemana' : generaDiasMesEnCurso[i].diaSemana,
+                                'horaInicio' : arr_schedules_to_json[j].start_time ,
+                                'horaFin' : arr_schedules_to_json[j].end_time 
+                            }
+                        )
+                      }
+                      
+                      
+                    } 
+                }
+                return FechaPosicionHoraInicial;
+          }
+
+
+          /*
+          async function cargarApoointmentsByDoctorId( doctor_id ) {
+                try {
+                    const response = await fetch('https://localhost:8080/api/appointmentsByDoctorId?doctor_id='+ doctor_id,
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        });
+                    const data = await response.json();
+                    console.log(data);
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+                return data;
+            }
+                */
+
+
+      
+
+        async function ABC(doctor_id) {
+            const url = 'api/appointmentsByDoctorId?doctor_id=3';
+            try {
+                const response = await fetch( url );
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Network or Parsing Error:", error);
+            }
+        }
+
+        function ABCD( doctor_id)  {
+
+                let salida =  fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
+                    .then(response => {
+                            if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                            }
+
+                            return response.json(); // Parses JSON body
+                    })
+                    .catch(error => console.error('Fetch error:', error));
+                return salida;
+
+        }
+
+       
+
+
+        function ABCDE( doctor_id)  {
+            let salida=[];
+
+                return fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
+                .then(response => {
+                    // Verificar si la respuesta es correcta
+                    if (!response.ok) {
+                    throw new Error('Error de red');
+                    }
+                    return response.json(); // Convierte la respuesta a JSON
+                })
+                
+                .then(data => {
+                    for(let elem of data ) {
+                        let info = {
+                            'id' :  elem['id'],
+                            'doctor_id': elem['doctor_id'] ,
+                            'date' : elem['date'],
+                            'start_time' :  elem['start_time'],
+                            'end_time' : elem['end_time']
+                        };
+             
+                        console.log( elem['id'] + ' ' + elem['doctor_id'] + ' ' + elem['date'] + ' ' +  elem['start_time']  + ' ' +  elem['end_time']);
+                        salida.push(info );
+                    }
+
+                    for (let sal of salida) {
+                            console.log("SALIDA_ID:::" + sal.id);
+                        }
+            
+                })
+                .catch(error => {
+                    console.error('*************  Error:', error);
+                });
+            
+        }
+
+
+        function csanta( doctor_id) {
+            let salida = [];
+            axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3')
+                .then(function (response) {
+                    console.log(response.data); // Datos del servidor
+                    salida = response.data;
+                    console.log( salida );
+                    return salida;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            
+         }
+
+          function  agregaInfoCitas(FechaPosicionHoraInicial, citas) {
+
+          }
+
+
+          async function obtenerArreglo() {
+                    try {
+                        // La respuesta esperada es un array: [{}, {}, {}]
+                        const response = await axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3');
+                        
+                        // response.data contiene el arreglo JSON
+                        const miArreglo = response.data;
+                        console.log(miArreglo);
+                        return miArreglo;
+                    } catch (error) {
+                        console.error('Error al obtener datos:', error);
+                    }
+            }
+
+
+            function Ahora(){
+                     axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3')
+                        .then(function (response) {   
+                            console.log( response.data);
+                            //return rsponse.data;                                                 
+                        });
+            }
+
+            function AhoraSi() {
+                 fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
+                .then(response => {
+                    // Verificar si la respuesta es correcta
+                    if (!response.ok) {
+                    throw new Error('Error de red');
+                    }
+                    console.log( response.json );
+                    //return response.json(); // Convierte la respuesta a JSON
+                })
+            }
+
+            function ahoraSiQueSi() {
+                fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
+                .then(response => {
+                    // Verificar si la respuesta es correcta
+                    if (!response.ok) {
+                    throw new Error('Error de red');
+                    }
+                    console.log( response.json());
+                    //return response.json(); // Convierte la respuesta a JSON
+                })
+            }
+       
+
+            async function obtenerDatos() {
+                try {
+                    // 1. Esperar la respuesta de la API
+                    const respuesta = await fetch('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3');
+                    
+                    // 2. Verificar si la respuesta es correcta
+                    if (!respuesta.ok) {
+                        throw new Error('Error en la red');
+                    }
+                    
+                    // 3. Convertir la respuesta a JSON
+                    const datos = await respuesta.json();
+                    
+                    // 4. Visualizar los datos
+                    console.log(datos);
+                    const miDiv = document.getElementById("citas");
+                    miDiv.innerHTML = JSON.stringify(datos);
+                    
+                    //salida = JSON.stringify(datos);
+                    // O mostrarlos en el DOM: document.body.innerHTML = JSON.stringify(datos);
+                    
+                } catch (error) {
+                    console.error('Error al obtener datos:', error);
+                }
+            }
+
+            function generaTablaFechaPosDia() {
+                axios.get('http://localhost:8080/api/generatablafechaposdia')
+                        .then(function (response) {   
+                            //console.log( response.data);
+                            //return rsponse.data;                                                 
+                        })
+                        .catch( function( err) {
+                              console.log('Error::', err.message);
+                        });
+            }
+
+            function buscahorasdiponibles(){
+                axios.get('http://localhost:8080/api/buscahorasdiponibles')
+                        .then(  function(response) {   
+                            //console.log( response.data);
+                            //return rsponse.data;                                                 
+                        })
+                        .catch( function( err) {
+                              console.log('Error', err.message);
+                        });
+            }
+
+    </script>     
+
+@endsection

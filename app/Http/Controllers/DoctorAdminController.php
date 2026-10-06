@@ -24,8 +24,17 @@ class DoctorAdminController extends Controller
         $doctor = Doctor::where('id', $doctor_id)->first();
         //dd( $appointments, $doctor_id, $doctor);
 
+        // Parametros para la vista del calendario de citas
+        
+
         return view('doctor.index', compact('appointments', 'doctor_id', 'doctor'));
     }
+
+    public function calendar( $id ) {
+        
+        $doctor = Doctor::where('id', $id)->first();
+        return view('doctor.calendar', compact('doctor'));
+    }   
 
     public function schedule( $id ) {
         //dd( $id );
