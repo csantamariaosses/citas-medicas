@@ -86,6 +86,7 @@ Route::prefix('admin')->group(function () {
     //
     Route::get('agendadoc3', [Appointment3Controller::class,'index'] )->name('agendadoc3.index')->middleware('admin');
     Route::post('agendadoc3.showcalendar', [Appointment3Controller::class,'showcalendar'] )->name('agendadoc3.showcalendar')->middleware('admin');
+    Route::get('agendadoc3.testshowcalendar', [Appointment3Controller::class,'testshowcalendar'] )->name('agendadoc3.testshowcalendar')->middleware('admin');
   //  Route::get('agendadoc3', [Appointment3Controller::class,'agendadoc3'] )->name('agendadoc3.showcalendar')->middleware('admin');
 
     Route::get('agendadoc', [AppointmentController::class,'agendadoc'] )->name('agendadoc')->middleware('admin');

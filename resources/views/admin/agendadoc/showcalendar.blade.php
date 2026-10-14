@@ -18,6 +18,7 @@
             <input type="hidden" id="doctorName" value="{{ session('doctorName') }}">
             <input type="hidden" id="specialityName" value="{{ session('specialityName') }}">
             <input type="hidden" id="pacienteName" value="{{ session('paciente') }}">
+
             <p>       
                 <table> 
                     <tbody>   
@@ -30,7 +31,7 @@
                 </table>
             </p>
           <div x-data="dataCalendar()">
-              <div x-ref="calendar"> </div> 
+              <div x-ref="calendar"></div> 
           </div>
         </div>
         <div class="col-1">
@@ -311,6 +312,7 @@
       //function dataCalendar( schedules, json_schedules, arr_schedules_to_json) {
 
       function dataCalendar() {
+            console.log("entra a dataCalendar");
             let salida;
             let citas=[];
             let appoints=[];
@@ -324,7 +326,7 @@
             //document.getElementById('sesion_id').value
 
             console.log("Doctor_Id:" + doctor_id);
-            console.log("Doctor:" + doctorName);
+            console.log("Doctor Name:" + doctorName);
             console.log("Paciente:" + patientName);
             console.log("Especialidad:" + specialityName);
 
@@ -335,6 +337,7 @@
 
             
             // GENERA TABLA FECHAPOSDIA
+            console.log("Genera Tabla FechaPosDia");
             generaTablaFechaPosDia();
 
 
@@ -749,93 +752,9 @@
           }
 
 
-          /*
-          async function cargarApoointmentsByDoctorId( doctor_id ) {
-                try {
-                    const response = await fetch('https://localhost:8080/api/appointmentsByDoctorId?doctor_id='+ doctor_id,
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        });
-                    const data = await response.json();
-                    console.log(data);
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-                return data;
-            }
-                */
+     
 
-
-      
-
-        async function ABC(doctor_id) {
-            const url = 'api/appointmentsByDoctorId?doctor_id=3';
-            try {
-                const response = await fetch( url );
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error("Network or Parsing Error:", error);
-            }
-        }
-
-        function ABCD( doctor_id)  {
-
-                let salida =  fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
-                    .then(response => {
-                            if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                            }
-
-                            return response.json(); // Parses JSON body
-                    })
-                    .catch(error => console.error('Fetch error:', error));
-                return salida;
-
-        }
-
-       
-
-
-        function ABCDE( doctor_id)  {
-            let salida=[];
-
-                return fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
-                .then(response => {
-                    // Verificar si la respuesta es correcta
-                    if (!response.ok) {
-                    throw new Error('Error de red');
-                    }
-                    return response.json(); // Convierte la respuesta a JSON
-                })
-                
-                .then(data => {
-                    for(let elem of data ) {
-                        let info = {
-                            'id' :  elem['id'],
-                            'doctor_id': elem['doctor_id'] ,
-                            'date' : elem['date'],
-                            'start_time' :  elem['start_time'],
-                            'end_time' : elem['end_time']
-                        };
-             
-                        console.log( elem['id'] + ' ' + elem['doctor_id'] + ' ' + elem['date'] + ' ' +  elem['start_time']  + ' ' +  elem['end_time']);
-                        salida.push(info );
-                    }
-
-                    for (let sal of salida) {
-                            console.log("SALIDA_ID:::" + sal.id);
-                        }
-            
-                })
-                .catch(error => {
-                    console.error('*************  Error:', error);
-                });
-            
-        }
-
-
+    
         function csanta( doctor_id) {
             let salida = [];
             axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3')

@@ -73,6 +73,7 @@ class ScheduleManager extends Component
 
        $this->dispatch('console-log', ['mensaje' => "SCHEDULES INICIALIZADOS"]);
        $this->dispatch('console-log', ['mensaje' => $this->schedules]);
+       //dd("livewire/admin/schedule-manager: SCHEDULES INICIALIZADOS");
        
                 
     }

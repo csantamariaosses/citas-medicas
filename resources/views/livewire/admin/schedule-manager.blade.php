@@ -95,7 +95,7 @@
             days:@entangle('days'),
 
             inicio() {
-                console.log('Componente Livewire schedule inicializado');
+                console.log('livewire/admin/schedule-manager.blade.php inicio() => Componente Livewire schedule inicializado');
             },
 
             toggleHourBlock(indexDay, hourBlock, evenntChecked) {            
