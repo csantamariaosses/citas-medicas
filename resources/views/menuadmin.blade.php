@@ -47,13 +47,7 @@
           <a class="nav-link disabled" aria-disabled="true">Disabled</a>
         </li>
         @auth
-        <li class="nav-item">
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; margin-top: 8px; border: none; background: none;">Logout</button>                
-            </form>
-            
-       </li>
+  
         <li class="nav-item">
            <a class="nav-link"  style="color:#0000ff"  href="#">{{  Auth::user()->name }} - perfil [{{  session('role') }}]</a>
         </li>

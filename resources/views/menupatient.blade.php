@@ -15,11 +15,15 @@
 
         @auth
         <li class="nav-item">
+            <a class="nav-link" style="color:#000000" href="{{ route('horasmedicas.cambiopassword', session('user_id')) }}">Cambio Password</a>
+        </li>
+        <li class="nav-item">
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; margin-top: 8px; border: none; background: none;">Logout</button>               
+                <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; margin-top: 8px; border: none; background: none;">Logout****</button>               
             </form>
         </li>
+       
 
         <li class="nav-item">
             <a class="nav-link" style="color:#0000ff" href="#">Usuario::{{  Auth::user()->name }} -  perfil [{{  session('role') }}]</a>

@@ -134,6 +134,8 @@ Route::post('/horasmedicas.confirmar', [UserHorasMedicasController::class,'confi
 Route::post('/horasmedicas.cancelar', [UserHorasMedicasController::class,'cancelar'] )->name('horasmedicas.cancelar');
 Route::get('/horasmedicas.listar', [UserHorasMedicasController::class, 'listhorasagendadas'])->name('horasmedicas.listar')->middleware('auth');
 Route::get("horasmedicas.imprimir/{id}", [UserHorasMedicasController::class, 'imprimir'])->name('horasmedicas.imprimir')->middleware('auth');
+Route::get("/horasmedicas.cambiopassword/{id}", [UserHorasMedicasController::class, 'cambiopassword'])->name('horasmedicas.cambiopassword')->middleware('auth');
+Route::post("/horasmedicas.cambiopasswordsave", [UserHorasMedicasController::class, 'cambiopasswordsave'])->name('horasmedicas.cambiopasswordsave')->middleware('auth');
 
 
 Route::get('doctor', [DoctorAdminController::class, 'index'])->name('doctor.index');

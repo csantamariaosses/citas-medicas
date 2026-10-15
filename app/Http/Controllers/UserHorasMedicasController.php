@@ -236,4 +236,76 @@ class UserHorasMedicasController extends Controller
         // Opción 2: Visualizar en el navegador
         return $pdf->stream('cita.pdf');
     }
+
+    public function cambiopassword($id) {
+        //dd("Cambio Password", $id);
+        //$this->reset();
+        return view('horasmedicas.cambiopassword', compact('id'));
+    }
+
+    public function cambiopasswordsave(Request $request) {
+        //dd("Cambio Password Save", $request->all());
+        $inputs = [        
+            'new_password' => $request->input('new_password'),
+            'user_id' => $request->input('user_id'),
+        ];
+
+         $rules = [
+            'new_password' => [
+                'required',
+                'string',
+                'min:10',             // must be at least 10 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&]/', // must contain a special character
+            ],
+        ];
+
+        $validation = \Validator::make( $inputs, $rules );
+        if ( $validation->fails() ) {
+            print_r( $validation->errors()->all() );
+        }
+
+        if( $validation->errors() ) {
+           //dd("Cambio Password Save", $request->all(), $validation->errors()->all() );
+            session()->flash( 'swal' , [
+                'title' => 'Cambio de Contraseña',
+                'text' =>  $validation->errors()->all(),
+                'icon' => 'warning',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+            return redirect()->route('horasmedicas.cambiopassword', ['id' => $request->input('user_id')]);
+        }
+
+
+        
+        $user_id = $request->input('user_id');
+        $new_password = $request->input('new_password');
+
+        $user = User::find($user_id);
+        if ($user) {
+            $user->password = bcrypt($new_password);
+            $user->save();
+
+            session()->flash( 'swal' , [
+                'title' => 'Cambio de Contraseña',
+                'text' => 'La contraseña ha sido cambiada con éxito.',
+                'icon' => 'success',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+        } else {
+            session()->flash( 'swal' , [
+                'title' => 'Error',
+                'text' => 'No se encontró el usuario para cambiar la contraseña.',
+                'icon' => 'error',
+                //'timer' => 3000,
+                'showConfirmButton' => 'Ok'
+            ]); 
+        }
+
+        return redirect()->route('horasmedicas.index');
+    }
 }

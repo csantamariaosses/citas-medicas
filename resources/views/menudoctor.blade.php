@@ -13,6 +13,14 @@
           <a class="nav-link active" aria-current="page" href="{{ route('doctor.cita.index') }}">Citas</a>
         </li>
         @auth
+      
+        <li class="nav-item">
+            <a class="nav-link" style="color:#0000ff" href="#">Usuario::{{  Auth::user()->name }} -  perfil [{{  session('role') }}]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" style="color:#0000ff" href="{{ route('doctor.edit', session('doctor_id'))}}">Mis Datos</a>
+        </li>
+
         <li class="nav-item">
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -20,12 +28,6 @@
             </form>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" style="color:#0000ff" href="#">Usuario::{{  Auth::user()->name }} -  perfil [{{  session('role') }}]</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" style="color:#0000ff" href="{{ route('doctor.edit', session('doctor_id'))}}">Mis Datos</a>
-        </li>
         @else
         <li class="nav-item">
           <a class="nav-link" href="{{ route('login') }}">Login</a>

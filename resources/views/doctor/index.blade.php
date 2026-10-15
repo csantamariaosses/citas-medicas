@@ -35,45 +35,49 @@
 
                <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#home">Calendario de Citas</a>
+                    
+                        <a class="nav-link active" data-bs-toggle="tab" href="#home"><span style="color:#202857; font-weight: bold;">Calendario de Citas</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#menu1">Schedules</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#menu1"><span style="color:#0000ff">Schedules</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#menu2">Citas en curso</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#menu2"><span style="color:#045c24">Citas en curso</span></a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
                     <!--- primer tab -->
-                    <div class="tab-pane container active" id="home">Contenido menu Citas
-                      <div class="row">
-                            <div class="col-8 offset-2">  
-                                <span style="color:#ff0000">Solo Consulta</span>
-                                @livewire('show-calendar-component', ['doctor_id' => session('doctor_id')])
-                                
-                            </div> <!-- col-8 offset-2 -->
-                        </div> <!-- row -->
+                    <div class="tab-pane container active" id="home">
+                      <div class="my-3">
+                        <div class="row">
+                                <div class="col-8">  
+                                    <h3><span style="color:#000000">Calendario de Citas</span> - <span style="color:#ff0000">Solo Consulta</span></h3>
+                                    @livewire('show-calendar-component', ['doctor_id' => session('doctor_id')])
+                                    
+                                </div> <!-- col-8 offset-2 -->
+                            </div> <!-- row -->
+                        </div> <!-- my-3 -->
                     </div> <!-- div fin TAB content -->                
 
                     <div class="tab-pane container fade" id="menu1">                       
-                        SCHedule 
-                        {{ session('doctor_id') }}
-                        {{ $doctor->user->name }}
-                        <span style="color:#0000ff"> <h3>Distribución de horarios</span></h3>
-                        @livewire('admin.schedule-manager', ['doctor' => $doctor]) 
+                        <div class="my-3">
+                            <span style="color:#0000ff" class="my-3"> <h3>Distribución de horarios - Schedules</span></h3>   
+                            @livewire('admin.schedule-manager', ['doctor' => $doctor]) 
+                        </div>
 
                     </div>
 
                     <div class="tab-pane container fade" id="menu2">
-                        Aqui componente calendario de reservas<br>
-                        Id_doctor:{{ session('doctor_id') }}<br>
-                        <div class="row">
-                            <div class="col-10">
-                                @livewire('doctor-tabla-citas-component', ['doctor_id' => session('doctor_id')])
+                        <div class="my-3">
+                            <h3><span style="color:#045c24" class="my-3">Citas en Curso</span></h3>
+                            Id_doctor:{{ session('doctor_id') }}<br>
+                            <div class="row">
+                                <div class="col-10">
+                                    @livewire('doctor-tabla-citas-component', ['doctor_id' => session('doctor_id')])
+                                </div>
                             </div>
-                        </div>                        
+                        </div> 
                     </div>
                 </div> <!-- tab-content -->
             </div>   <!-- col-12 -->
