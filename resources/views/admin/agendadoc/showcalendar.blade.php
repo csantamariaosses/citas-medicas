@@ -5,6 +5,12 @@
 @endsection
 
 @section('content')
+<style>
+.texto-verder {
+   color:#11631c;
+}
+</style>
+   
     <div align="center"><h3>SHOW CALENDAR - ADMIN</h3></div>
     <div class="row">
 
@@ -25,8 +31,12 @@
                    <tr><th>doctor_id:</th><td>{{ $doctor_id}}</td></tr>
                    <tr><th>doctorName:</th><td> {{ session('doctorName') }}</td></tr>
                    <tr><th>Especialidad :</th><td> {{ session('specialityName') }}</td></tr>
-                   <tr><th>Patient_id:</th><td>{{ session('patient_id') }}</td></tr>
-                   <tr><th>PatientName:</th><td>{{ session('patientName') }}</td></tr>
+                  
+                   <tr><th>Patient_id:</th><td>{{ session('patient_id') }} <span id="spanIdPatient"></span></td></tr>
+                   <tr><th>PatientName:</th><td><span class="texto-verder">{{ session('patientName') }}</span></td></tr>
+                   <tr><th>miTexto:</th><td><span id="resultado"></span></td></tr>
+
+                   
                    </tbody>
                 </table>
             </p>
@@ -296,7 +306,51 @@
           </div>
         </div>
         </form>
-      </div>
+  </div> <!-- modalUpdateAgenda -->
+
+   <!-- modalBuscarPaciente -->
+  <div class="modal fade" id="modalBuscarPaciente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <form action="{{ route("agendadoc3.selectPatientId") }}" method="POST">
+          @csrf 
+          
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"  style="background-color:rgb(16, 69, 69); color:#ffffff;">
+              <h5 class="modal-title" id="staticBackdropLabel">Busqueda de Paciente</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                      <th>Rut:</th><td><input type="text" id="modalBuscarPacienteRut" name="modalBuscaPacienteRut"></td>
+                    </tr>
+                    <tr>
+                      <th>Nombre:</th><td><input type="text" id="modalBuscarPacienteNombre" name="modalBuscarPacienteNombre"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Paciente:</th><td>
+                           <select name="modalBuscarPacienteSelect" id="modalBuscarPacienteSelect" onChange="patientChange()">
+                             <option value="0">Seleccione un paciente</option>
+                              @foreach($patients as $patient)
+                                  <option value="{{ $patient->id }}">{{ $patient->id }}-{{ $patient->user->name }}</option>
+                             @endforeach
+                           </select>
+                        </td>                       
+                    </tr>              
+                </table>
+            </div>
+            <div class="modal-footer">              
+                <input type="hidden" id="hidden_doctor_id" name="hidden_doctor_id" value="{{ $doctor_id }}">
+          
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal" name="modalSeleccionar" id="modalSeleccionar" onClick="buscarPaciente()">Buscar</button>
+            </div>
+          </div>
+        </div>
+        </form>
+  </div> <!-- modalBuscarPaciente -->
+
 
 <style>
 #modal .modal-content {
@@ -309,9 +363,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
 
-      //function dataCalendar( schedules, json_schedules, arr_schedules_to_json) {
-
-      function dataCalendar() {
+          function dataCalendar() {
             console.log("entra a dataCalendar");
             let salida;
             let citas=[];
@@ -323,7 +375,6 @@
             let doctorName =  $( "#doctorName" ).val();
             
             let specialityName =  $( "#specialityName").val();
-            //document.getElementById('sesion_id').value
 
             console.log("Doctor_Id:" + doctor_id);
             console.log("Doctor Name:" + doctorName);
@@ -593,9 +644,9 @@
                    // alert("Calendario cargado");
                   }
              }
-      }
+          }
 
-      function obtenerFechasPorDias(year, month, daysOfWeek, arr_schedules) {
+          function obtenerFechasPorDias(year, month, daysOfWeek, arr_schedules) {
               let dates = [];
               let date = new Date(year, month, 1); // Primer día del mes
 
@@ -751,126 +802,114 @@
                 return FechaPosicionHoraInicial;
           }
 
-
-     
-
-    
-        function csanta( doctor_id) {
-            let salida = [];
-            axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3')
-                .then(function (response) {
-                    console.log(response.data); // Datos del servidor
-                    salida = response.data;
-                    console.log( salida );
-                    return salida;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            
-         }
-
-          function  agregaInfoCitas(FechaPosicionHoraInicial, citas) {
-
+          async function obtenerArreglo() {
+                  try {
+                      // La respuesta esperada es un array: [{}, {}, {}]
+                      const response = await axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3');
+                      
+                      // response.data contiene el arreglo JSON
+                      const miArreglo = response.data;
+                      console.log(miArreglo);
+                      return miArreglo;
+                  } catch (error) {
+                      console.error('Error al obtener datos:', error);
+                  }
           }
 
 
-          async function obtenerArreglo() {
-                    try {
-                        // La respuesta esperada es un array: [{}, {}, {}]
-                        const response = await axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3');
-                        
-                        // response.data contiene el arreglo JSON
-                        const miArreglo = response.data;
-                        console.log(miArreglo);
-                        return miArreglo;
-                    } catch (error) {
-                        console.error('Error al obtener datos:', error);
-                    }
-            }
+          function Ahora(){
+                    axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3')
+                      .then(function (response) {   
+                          console.log( response.data);
+                          //return rsponse.data;                                                 
+                      });
+          }
 
-
-            function Ahora(){
-                     axios.get('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3')
-                        .then(function (response) {   
-                            console.log( response.data);
-                            //return rsponse.data;                                                 
-                        });
-            }
-
-            function AhoraSi() {
-                 fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
-                .then(response => {
-                    // Verificar si la respuesta es correcta
-                    if (!response.ok) {
-                    throw new Error('Error de red');
-                    }
-                    console.log( response.json );
-                    //return response.json(); // Convierte la respuesta a JSON
-                })
-            }
-
-            function ahoraSiQueSi() {
+          function AhoraSi() {
                 fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
-                .then(response => {
-                    // Verificar si la respuesta es correcta
-                    if (!response.ok) {
-                    throw new Error('Error de red');
-                    }
-                    console.log( response.json());
-                    //return response.json(); // Convierte la respuesta a JSON
-                })
-            }
-       
+              .then(response => {
+                  // Verificar si la respuesta es correcta
+                  if (!response.ok) {
+                  throw new Error('Error de red');
+                  }
+                  console.log( response.json );
+                  //return response.json(); // Convierte la respuesta a JSON
+              })
+          }
 
-            async function obtenerDatos() {
-                try {
-                    // 1. Esperar la respuesta de la API
-                    const respuesta = await fetch('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3');
-                    
-                    // 2. Verificar si la respuesta es correcta
-                    if (!respuesta.ok) {
-                        throw new Error('Error en la red');
-                    }
-                    
-                    // 3. Convertir la respuesta a JSON
-                    const datos = await respuesta.json();
-                    
-                    // 4. Visualizar los datos
-                    console.log(datos);
-                    const miDiv = document.getElementById("citas");
-                    miDiv.innerHTML = JSON.stringify(datos);
-                    
-                    //salida = JSON.stringify(datos);
-                    // O mostrarlos en el DOM: document.body.innerHTML = JSON.stringify(datos);
-                    
-                } catch (error) {
-                    console.error('Error al obtener datos:', error);
-                }
-            }
+          function ahoraSiQueSi() {
+              fetch( 'http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3' )
+              .then(response => {
+                  // Verificar si la respuesta es correcta
+                  if (!response.ok) {
+                  throw new Error('Error de red');
+                  }
+                  console.log( response.json());
+                  //return response.json(); // Convierte la respuesta a JSON
+              })
+          }
+      
 
-            function generaTablaFechaPosDia() {
-                axios.get('http://localhost:8080/api/generatablafechaposdia')
-                        .then(function (response) {   
-                            //console.log( response.data);
-                            //return rsponse.data;                                                 
-                        })
-                        .catch( function( err) {
-                              console.log('Error::', err.message);
-                        });
-            }
+          async function obtenerDatos() {
+              try {
+                  // 1. Esperar la respuesta de la API
+                  const respuesta = await fetch('http://localhost:8080/api/appointmentsByDoctorId?doctor_id=3');
+                  
+                  // 2. Verificar si la respuesta es correcta
+                  if (!respuesta.ok) {
+                      throw new Error('Error en la red');
+                  }
+                  
+                  // 3. Convertir la respuesta a JSON
+                  const datos = await respuesta.json();
+                  
+                  // 4. Visualizar los datos
+                  console.log(datos);
+                  const miDiv = document.getElementById("citas");
+                  miDiv.innerHTML = JSON.stringify(datos);
+                  
+                  //salida = JSON.stringify(datos);
+                  // O mostrarlos en el DOM: document.body.innerHTML = JSON.stringify(datos);
+                  
+              } catch (error) {
+                  console.error('Error al obtener datos:', error);
+              }
+          }
 
-            function buscahorasdiponibles(){
-                axios.get('http://localhost:8080/api/buscahorasdiponibles')
-                        .then(  function(response) {   
-                            //console.log( response.data);
-                            //return rsponse.data;                                                 
-                        })
-                        .catch( function( err) {
-                              console.log('Error', err.message);
-                        });
-            }
+          function generaTablaFechaPosDia() {
+              axios.get('http://localhost:8080/api/generatablafechaposdia')
+                      .then(function (response) {   
+                          //console.log( response.data);
+                          //return rsponse.data;                                                 
+                      })
+                      .catch( function( err) {
+                            console.log('Error::', err.message);
+                      });
+          }
 
-    </script>     
+          function buscahorasdiponibles(){
+              axios.get('http://localhost:8080/api/buscahorasdiponibles')
+                      .then(  function(response) {   
+                          //console.log( response.data);
+                          //return rsponse.data;                                                 
+                      })
+                      .catch( function( err) {
+                            console.log('Error', err.message);
+                      });
+          }
+    </script>  
+    <script>
+        function patientChange() {
+            console.log( document.getElementById("modalBuscarPacienteSelect").value );
+            var hidden_patient_id = document.getElementById("modalBuscarPacienteSelect").value;
+            console.log( hidden_patient_id );
+            //hidden_patient_id.value = document.getElementById("modalBuscarPacienteSelect").value;
 
+        }
+
+        function buscarPaciente(){
+            console.log("Buscar Paciente" + document.getElementById("modalBuscarPacienteSelect").value);
+           
+        }
+    </script>
 @endsection

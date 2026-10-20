@@ -31,6 +31,7 @@
                 <thead>
                     <tr>
                         <th>Id</th>
+                        <th>Rut</th>
                         <th>Name</th>
                         <th>Fecha Nac.</th>
                         <th>Edad</th>
@@ -45,6 +46,7 @@
                     @foreach ($patients as $patient)
                     <tr>
                         <td>{{ $patient->id }}</td>
+                        <td>{{ $patient->user->rut }}</td>
                         <td>{{ $patient->user->name }}</td>
                         <td>{{ $patient->birth_date }}</td>
                         <td>{{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
@@ -95,7 +97,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+        <p><span class="fw-bold">Rut:</span> {{ $patient->user->rut }}</p>
         <p><span class="fw-bold">Nombre:</span> {{ $patient->user->name }}</p>
         <p><span class="fw-bold">Fecha Nac.:</span> {{ $patient->birth_date }}</p>
         <p><span class="fw-bold">Edad:</span> {{ \Carbon\Carbon::parse($patient->birth_date)->age }}</p>
@@ -135,6 +137,7 @@
           @csrf
           @method('PUT')
           <input type="hidden" name="id" value="{{ $patient->id }}"> 
+          <p><span class="fw-bold">Nombre:<input type="text" name="rut" class="form-control" value="{{ $patient->user->rut }}"/></p>
           <p><span class="fw-bold">Nombre:<input type="text" name="name" class="form-control" value="{{ $patient->user->name }}"/></p>
           <p><span class="fw-bold">Fecha Nac.:<input type="date" name="birth_date" class="form-control" value="{{ $patient->birth_date }}"/></p>
           <p><span class="fw-bold">Edad: <input type="text" name="age" class="form-control" value="{{ \Carbon\Carbon::parse($patient->birth_date)->age }}" readonly/></p>
@@ -192,6 +195,10 @@
        
        <form action="{{ route('patients.store') }}" method="POST">
                 @csrf
+                <div class="mb-3">
+                  <label for="name" class="form-label">Rut::</label>
+                  <input type="text" class="form-control" id="rut" name="rut" placeholder="Rut" required>
+                </div>
                 <div class="mb-3">
                   <label for="name" class="form-label">Nombre::</label>
                   <input type="text" class="form-control" id="name" name="name" placeholder="nombre" required>

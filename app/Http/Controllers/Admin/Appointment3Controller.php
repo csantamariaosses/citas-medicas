@@ -145,48 +145,9 @@ class Appointment3Controller extends Controller
         session(['doctor_id' => $doctor_id]);
         session(['doctorName' => $doctorName]);
         session(['specialityName' => $specialityName]);
-
-        $schedules = Schedule::where('doctor_id', $doctor_id)->get();
-        $appointments = Appointment::where('doctor_id', $doctor_id)->get();
-
-        /*
-        $arr_appointments_shrt = [];
-        foreach( $appointments as $appointment ){
-            $arr_appointments_srt[] = [                
-                'doctor_id' => $appointment->doctor_id,
-                'date'      => $appointment->date->format('Y-m-d'),
-                'fechaInicio' => $appointment->date->format('H:i:s'),
-                'fechaFin' => $appointment->date->format('H:i:s')
-            ];
-        }
-             
-        forEach( $arr_appointments_shrt as $app_srt ) {
-             dd("APP_SHRT");
-        }
-        */
         
-        $arr_appointments = [];
-        foreach( $appointments as $appointment ){
-            $arr_appointments[] = [                
-                'fechaInicio' => $appointment->date->format('Y-m-d'). 'T'. $appointment->start_time->format('H:i:s'),
-                'fechaFin' => $appointment->date->format('Y-m-d'). 'T'. $appointment->end_time->format('H:i:s')
-            ];
-        }
-        $arr_schedules = [];
-        foreach( $schedules as $schedule ){
-            $arr_schedules[] = [
-                'doctor_id' => $schedule->doctor_id,
-                'day_of_week' => $schedule->day_of_week,
-                'start_time' => $schedule->start_time->format('H:i:s'),
-                'end_time' => $schedule->end_time->format('H:i:s')
-            ];
-        };
-
         $patients = Patient::all();
-      
-        $json_schedules = json_encode($schedules);
-
-        return view("admin.agendadoc.showcalendar", compact("schedules", "json_schedules","doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules", "patients"));
+        return view("admin.agendadoc.showcalendar", compact("doctor_id","patients"));
     }
 
     public function confirmar(Request $request){
@@ -350,5 +311,18 @@ class Appointment3Controller extends Controller
         };
 
         return view("admin.agendadoc.testshowcalendar", compact("schedules", "doctor_id", "doctor", "appointments", "arr_appointments", "arr_schedules"));
+    }
+
+    public function selectPatientId(Request $request){
+
+        $doctor_id = $request->hidden_doctor_id;
+        $patient_id = $request->modalBuscarPacienteSelect;
+        $patients = Patient::all();
+        $patient  = Patient::where('id', $patient_id)->get();        
+        $patientName = $patient->user->name;
+        //dd( $request->modalBuscarPacienteSelect);
+        session(['doctor_id' => $request->hidden_doctor_id]);
+        session(['patient_id' => $request->modalBuscarPacienteSelect]);
+        return view("admin.agendadoc.showcalendar", compact("doctor_id", "patient_id", "patients"));
     }
 }

@@ -5,7 +5,11 @@
 @endsection
 
 @section('content')
-
+<style>
+.text-red-500 {
+    color: red;
+}
+</style>
     <div class="container">
   
         <div class="row">
@@ -13,9 +17,13 @@
              <div class="card">
                 <div class="card-header">Login</div>
                 <div class="card-body">
+                    @error('email')
+                        <span class="text-red-500">{{ $message }}</span>
+                    @enderror
                     <form method="POST" action="{{ route('login') }}" autocomplete="off">
                         @csrf
                         pedro.belmar@gmail.com (pac)<br>
+                        juan.pablo.escobar@gmail.com (pac) <br>
                         oscar.perez@gmail.com  (doc)
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>

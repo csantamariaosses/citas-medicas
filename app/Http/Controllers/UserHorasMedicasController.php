@@ -263,12 +263,9 @@ class UserHorasMedicasController extends Controller
         ];
 
         $validation = \Validator::make( $inputs, $rules );
-        if ( $validation->fails() ) {
-            print_r( $validation->errors()->all() );
-        }
 
+        
         if( $validation->errors() ) {
-           //dd("Cambio Password Save", $request->all(), $validation->errors()->all() );
             session()->flash( 'swal' , [
                 'title' => 'Cambio de Contraseña',
                 'text' =>  $validation->errors()->all(),

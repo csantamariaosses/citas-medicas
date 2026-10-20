@@ -62,6 +62,7 @@ th {
                     <tr>
                         <th>Cita ID</th>
                         <th>patient_id</th>
+                        <th>Rut</th>
                         <th>Fecha</th>
                         <th>Hora</th>
                         <th>Doctor</th>
@@ -76,6 +77,7 @@ th {
                         <tr>
                             <td>{{ $appointment->id }}</td>
                             <td>{{ $appointment->patient_id }}</td>
+                            <td>{{ $appointment->patient->user->rut }}</td>
                             <td>{{ $appointment->date->format('Y-m-d') }}</td>
                             <td>{{ $appointment->start_time->format('H:i') }}</td>
                             <td>{{ $appointment->doctor->user->name }}</td>

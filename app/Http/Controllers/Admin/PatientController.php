@@ -47,6 +47,7 @@ class PatientController extends Controller
         //return "Store Patient";
         
         $user = new User();
+        $user->rut = $request->input('rut');
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->address = $request->input('address');

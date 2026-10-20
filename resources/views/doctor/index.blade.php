@@ -34,8 +34,7 @@
             <div class="col-12">
 
                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                    
+                    <li class="nav-item">                   
                         <a class="nav-link active" data-bs-toggle="tab" href="#home"><span style="color:#202857; font-weight: bold;">Calendario de Citas</span></a>
                     </li>
                     <li class="nav-item">
@@ -49,8 +48,8 @@
                 <div class="tab-content">
                     <!--- primer tab -->
                     <div class="tab-pane container active" id="home">
-                      <div class="my-3">
-                        <div class="row">
+                        <div class="my-3">
+                            <div class="row">
                                 <div class="col-8">  
                                     <h3><span style="color:#000000">Calendario de Citas</span> - <span style="color:#ff0000">Solo Consulta</span></h3>
                                     @livewire('show-calendar-component', ['doctor_id' => session('doctor_id')])
@@ -65,7 +64,6 @@
                             <span style="color:#0000ff" class="my-3"> <h3>Distribución de horarios - Schedules</span></h3>   
                             @livewire('admin.schedule-manager', ['doctor' => $doctor]) 
                         </div>
-
                     </div>
 
                     <div class="tab-pane container fade" id="menu2">

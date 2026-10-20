@@ -35,7 +35,8 @@
             <li><a class="dropdown-item" href="{{ route('calendar.test') }}">Calendario Test</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadoc2') }}">Agenda Doc 2 (LiveWire Falla)</a></li>
-            <li><a class="dropdown-item" href="{{ route('agendadoc3.index') }}">Agenda Doc 3 (HTML-JQUERY)</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendasolodoc.index') }}">Agenda Solo Doc(HTML-JQUERY)</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadocpcte.index') }}">Agenda Doc Paciente(HTML-JQUERY)</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadoc3.testshowcalendar', ['doctor_id' => 2]) }}">ShowCalDirecto (HTML-JQUERY)</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadocfull') }}">Agenda Doctores Full</a></li>
             <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
