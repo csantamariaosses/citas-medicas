@@ -13,7 +13,7 @@
 
     <div class="row">
         <div class="col-10 offset-2">  
-          <h3>Pacientes::</h3>
+          <h3>Pacientes</h3>
           <!--https://datatables-net.translate.goog/extensions/buttons/examples/initialisation/export.html?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc -->
         </div>
     </div>
@@ -46,7 +46,7 @@
                     @foreach ($patients as $patient)
                     <tr>
                         <td>{{ $patient->id }}</td>
-                        <td>{{ $patient->user->rut }}</td>
+                        <td align="right">{{ $patient->user->rut }}</td>
                         <td>{{ $patient->user->name }}</td>
                         <td>{{ $patient->birth_date }}</td>
                         <td>{{ \Carbon\Carbon::parse($patient->birth_date)->age }}</td>
@@ -137,7 +137,7 @@
           @csrf
           @method('PUT')
           <input type="hidden" name="id" value="{{ $patient->id }}"> 
-          <p><span class="fw-bold">Nombre:<input type="text" name="rut" class="form-control" value="{{ $patient->user->rut }}"/></p>
+          <p><span class="fw-bold">Rut:<input type="text" name="rut" class="form-control" value="{{ $patient->user->rut }}"/></p>
           <p><span class="fw-bold">Nombre:<input type="text" name="name" class="form-control" value="{{ $patient->user->name }}"/></p>
           <p><span class="fw-bold">Fecha Nac.:<input type="date" name="birth_date" class="form-control" value="{{ $patient->birth_date }}"/></p>
           <p><span class="fw-bold">Edad: <input type="text" name="age" class="form-control" value="{{ \Carbon\Carbon::parse($patient->birth_date)->age }}" readonly/></p>
@@ -277,7 +277,6 @@
                 <div class="mb-3">
                   <label for="observations" class="form-label">Observaciones:</label>
                   <textarea rows="3" name="observations" class="form-control" id="observations" placeholder="Observaciones"></textarea>
-
                 </div>                                       
                 
                 <div class="mb-3">

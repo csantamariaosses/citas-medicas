@@ -37,5 +37,14 @@
                 <tr>      
             </tbody>
         @endforeach
-    </table>              
+    </table>     
+
+    @if(  empty($appointments) )
+        <h3>Arreglo Vacio </h3>
+    @endif
+
+    @if( count( $appointments) === 0 )
+        <h3>No existen citas que mostrar </h3>
+    @endif
+
 </div>

@@ -10,10 +10,6 @@
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('productos.index') }}">Productos</a>
-        </li>
-
-        <li class="nav-item">
           <a class="nav-link" href="{{ route('users.index') }}">Usuarios</a>
         </li>
 
@@ -30,16 +26,18 @@
             <li><a class="dropdown-item" href="{{ route('bloodTypes.index') }}">Tipos de Sangre</a></li>
             <li><a class="dropdown-item" href="{{ route('doctores.index') }}">Doctores</a></li>
             <li><a class="dropdown-item" href="{{ route('specialities.index') }}">Especialidades</a></li>
-            <li><a class="dropdown-item" href="{{ route('appointments.index') }}">Citas</a></li>
-            <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario</a></li>
+            <li><a class="dropdown-item" href="{{ route('appointments.index') }}">Citas Eliminar</a></li>
+            <li><a class="dropdown-item" href="{{ route('calendar.index') }}">Calendario Eliminar</a></li>
             <li><a class="dropdown-item" href="{{ route('calendar.test') }}">Calendario Test</a></li>
-            <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc</a></li>
-            <li><a class="dropdown-item" href="{{ route('agendadoc2') }}">Agenda Doc 2 (LiveWire Falla)</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc') }}">Agenda Doc Eliminar</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc2') }}">Agenda Doc 2 (LiveWire Falla) Eliminar</a></li>
             <li><a class="dropdown-item" href="{{ route('agendasolodoc.index') }}">Agenda Solo Doc(HTML-JQUERY)</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadocpcte.index') }}">Agenda Doc Paciente(HTML-JQUERY)</a></li>
-            <li><a class="dropdown-item" href="{{ route('agendadoc3.testshowcalendar', ['doctor_id' => 2]) }}">ShowCalDirecto (HTML-JQUERY)</a></li>
+            <li><a class="dropdown-item" href="{{ route('agendadoc3.testshowcalendar', ['doctor_id' => 2]) }}">ShowCalDirecto (HTML-JQUERY) doctor_id(2)</a></li>
             <li><a class="dropdown-item" href="{{ route('agendadocfull') }}">Agenda Doctores Full</a></li>
             <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('registrousuarios') }}">Registro de Usuarios</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ route('change-password') }}">Cambio Password</a></li>
           </ul>

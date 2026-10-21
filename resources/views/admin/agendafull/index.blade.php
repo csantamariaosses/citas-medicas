@@ -23,6 +23,7 @@
                                                 <th>Date</th>
                                                 <th>Start Time</th>
                                                 <th>Doctor</th>
+                                                <th>Rut</th>
                                                 <th>Patient</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
@@ -36,6 +37,7 @@
                                             <td>{{ substr($appointment->date, 0, 10) }}</td>
                                             <td>{{ substr($appointment->start_time, 12, 8) }}</td>
                                             <td>{{ $appointment->doctor->user->name }}</td>
+                                            <td>{{ $appointment->patient->user->rut }}</td> 
                                             <td>{{ $appointment->patient->user->name }}</td>
                                             <td>{{ $appointment->status->label() }}</td>
                                             <td>
@@ -70,7 +72,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('doctor.cita.update') }}" method="POST">
+            <form action="{{ route('doctor.cita.updateCita') }}" method="POST">
                 @csrf
                 <input type="hidden" name="cita_id" value="{{ $appointment->id }}">
                 Cita: {{ $appointment->id }}<br>

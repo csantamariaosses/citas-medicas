@@ -391,6 +391,8 @@ class AppointmentController extends Controller
 
 
     public function agendadocfull(){
+        //dd("agendadocfull");
+
         $especialidades = Speciality::all();
         $doctors = Doctor::all();
         $patients = Patient::all();

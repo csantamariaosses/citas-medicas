@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
@@ -44,5 +45,33 @@ class AdminController extends Controller
     public function changePasswordOk()
     {
         return view('admin.change-password-ok');
+    }
+
+
+    public function registrousuarios(){
+        $roles = Role::all();
+        return view("autho.register", compact('roles' ));
+    }
+
+    public function registrar( Request $request){
+        dd("registrar", $request->all(), '*****');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+
+        /*
+        $roles = Role::all();
+        return view("autho.register", compact('roles' ));
+        */
+    }
+
+    public function register(){
+        //dd("registro usuarios");
+
+        $roles = Role::all();
+        return view("autho.register", compact('roles' ));
     }
 }

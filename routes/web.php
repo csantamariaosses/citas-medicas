@@ -110,6 +110,9 @@ Route::prefix('admin')->group(function () {
     Route::get("doctores/schedules/{id}", [AdminDoctorController::class, 'schedules'])->name('admin.doctores.schedules')->middleware('admin');
     Route::get("admin.doctores.lockschedules", [AdminDoctorController::class, 'lockschedules'])->name('admin.doctores.lockschedules')->middleware('admin');
 
+    Route::get("registrousuarios", [AdminController::class, "registrousuarios"])->name('registrousuarios')->middleware('admin');
+    Route::post("registrousuarios.registrar", [AdminController::class, "registrar"])->name('registrousuarios.registrar')->middleware('admin');
+
 });
 
 //Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
