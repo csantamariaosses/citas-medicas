@@ -10,6 +10,7 @@ use App\Models\Doctor;
 use App\Models\Fechaposdia; 
 use Carbon\Carbon;
 
+
 Route::get('/prueba', function (Request $request) {
     // en el navegador http://localhost:8000/api/prueba?param1=valor1&param2=valor2
 
@@ -191,3 +192,7 @@ Route::get('/doctores/{id}', function( Request $request) {
         ];
     });
 })->name('api.doctores');
+
+Route::post('login',  [ApiUsersController::class, 'login']);
+Route::post('infouser', [ApiUsersController::class, 'infouser'])->middleware('auth:sanctum');
+

@@ -1,7 +1,7 @@
 @extends('layouts.app') 
 
 @section('menu')
-  @include('menuadmin')
+  @include('menu')
 @endsection
 
 @section('content')
@@ -13,11 +13,15 @@
              <div class="card">
                 <div class="card-header">Registro</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('registrousuarios.registrar') }}">
+                    <form method="POST" action="{{ route('saveregister') }}">
                         @csrf
                         <div class="mb-3">
+                            <label for="name" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="name" name="name" required autofocus value="name">
+                        </div>
+                        <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" name="email" required autofocus value="email">
+                            <input type="email" class="form-control" id="email" name="email" required value="email">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>

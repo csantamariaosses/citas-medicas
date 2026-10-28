@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
 
 class ApiUsersController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    use HasApiTokens;
+
     public function index()
     {
         $data = [
@@ -86,5 +92,36 @@ class ApiUsersController extends Controller
         ];
 
         return response()->json($data, 200);
+    }
+
+    public function login(Request $request) {
+        
+        $credentials = $request->only('email', 'password');
+        if( Auth::attempt($credentials) ) {
+            $user_id = Auth::id();
+            $user = Auth::user();   
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json( [
+                'access_token' => $token,
+                'token_type' => 'Bearer'
+
+            ], 200);
+        } else {
+            return response()->json( [
+                'message' => 'Invalid Login'
+            ], 401);
+        }
+    }
+
+    public function infouser(Request $request ){
+        $user = User::where('email', $request->input('email'))->first();
+        return response()->json( [
+            'id'   => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'address' => $user->address
+        ], 200);
+    
     }
 }

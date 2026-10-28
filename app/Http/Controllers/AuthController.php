@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
-
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use App\Models\Doctor;
 
@@ -100,13 +100,20 @@ class AuthController extends Controller
     }
 
 
-    public function register(Request $request)
+    public function showregister(Request $request)
     {
 
         //dd( $request->all());
 
+        if ($request->isMethod('get')) {
+            $roles = Role::all();
+            return view('autho.register', compact('roles'));
+        }
+    }
+
+    public function saveregister(Request $request) {
         if ($request->isMethod('post')) {
-            dd( "por validar");
+            //dd( "por validar");
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
@@ -122,11 +129,6 @@ class AuthController extends Controller
             Auth::login($user);
             return redirect()->route('dashboard');
         }
-
-        if ($request->isMethod('get')) {
-            return view('autho.register');
-        }
-
     }   
 
 

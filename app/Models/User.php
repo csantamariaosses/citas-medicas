@@ -9,12 +9,14 @@ use Illuminate\Notifications\Notifiable;
 //use Spatie\laravel-permission\src\Traits\HasRoles;
 //use Spatie\laravelPermission\src\Traits\HasRoles;
 use Spatie\Permission\Traits\HasRoles; // Import the HasRoles trait
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     use HasRoles;
+    use HasApiTokens;
 
 
     /**

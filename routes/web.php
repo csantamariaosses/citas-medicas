@@ -49,18 +49,10 @@ Route::get('/home', function () {
 
 Route::resource('productos', ProductoController::class);
 
+
 //Administración de usuarios
 Route::get('admin.index', [AdminController::class, "index"])->name("admin.index");
 
-/*
-Route::middleware(['admin'])->group(function () {
-    Route::resource('roles', RoleController::class);
-    //Route::get('/admin/dashboard', [AdminController::class, 'index']);
-    // Otras rutas protegidas para administradores...
-});
-*/
-
-//Route::resource('roles', RoleController::class);
 
 Route::prefix('admin')->group(function () {
 
@@ -70,7 +62,6 @@ Route::prefix('admin')->group(function () {
     Route::resource('roles', RoleController::class)->middleware('admin');
     Route::resource('permissions', PermissionController::class)->middleware('admin');
     Route::resource('users', UsersController::class)->middleware('admin');
-    //Route::resource('users', [UsersController::class, 'index'])->name('admin.users.index');
     Route::resource('patients', PatientController::class)->only(['index', 'show', 'edit', 'update','create', 'store','destroy'])->middleware('admin');
     Route::resource('bloodTypes', BloodTypeController::class)->middleware('admin');
     Route::resource('specialities', SpecialityController::class)->middleware('admin');
@@ -83,9 +74,12 @@ Route::prefix('admin')->group(function () {
     Route::get('calendartest', [CalendarController::class, 'test'])->name('calendar.test');
 
     Route::get('agendadoc2', [Appointment2Controller::class,'agendadoc'] )->name('agendadoc2')->middleware('admin');
+
+    // Agenda Doctor -Paciente
     Route::get('agendadocpcte',[AppointmentDocPcteController::class,'index'])->name('agendadocpcte.index')->middleware('admin');
     Route::post('agendadocpcte',[AppointmentDocPcteController::class,'showcalendar'])->name('agendadocpcte.showcalendar')->middleware('admin');
 
+    // Agenda Solo Doctor
     Route::get('agendasolodoc',[AppointmentSoloDocController::class,'index'])->name('agendasolodoc.index')->middleware('admin');    
     Route::post('agendasolodoc',[AppointmentSoloDocController::class,'showcalendar'])->name('agendasolodoc.showcalendar')->middleware('admin');    
 
@@ -115,23 +109,22 @@ Route::prefix('admin')->group(function () {
 
 });
 
-//Route::get('doctores/{doctor}/schedules', [DoctorController::class, 'schedules'])->name('doctores.schedules');
-//Route::get('doctores/{doctor}/lockschedules', [DoctorController::class, 'lockschedules'])->name('doctores.lockschedules');
 
+// Prueba GET-POST
 Route::get('/prueba', function () {
     $schedule = \App\Models\Schedule::all();    
 });
-
 Route::post("prueba.testSave", [AppointmentController::class, 'testSave'])->name('prueba.testSave');
 
 
 #include auth routes
 //require __DIR__.'/auth.php';
+// Rutas Login - Regsiter
 Route::get('login', [AuthController::class, "showLoginForm"])->name("login");
 Route::post('login', [AuthController::class, "login"]);
 Route::post('logout', [AuthController::class, "logout"])->name("logout");
-Route::get('register', [AuthController::class, "register"])->name("register");
-Route::post('register', [AuthController::class, "register"])->name("register");
+Route::get('register', [AuthController::class, "showregister"])->name("showregister");
+Route::post('register', [AuthController::class, "saveregister"])->name("saveregister");
 
 
 Route::get('/dashboard', function () {
@@ -139,6 +132,7 @@ Route::get('/dashboard', function () {
 })->name('dashboard')->middleware('auth');  
 
 
+// Horas Medicas para los Pacientes
 Route::get('/horasmedicas', [UserHorasMedicasController::class, 'index'])->name('horasmedicas.index')->middleware('auth');
 Route::post('/horasmedicas.doctores', [UserHorasMedicasController::class, 'doctores'])->name('horasmedicas.doctores')->middleware('auth');
 Route::post('/horasmedicas.showcalendar', [UserHorasMedicasController::class, 'showcalendar'])->name('horasmedicas.showcalendar')->middleware('auth');
@@ -150,6 +144,7 @@ Route::get("/horasmedicas.cambiopassword/{id}", [UserHorasMedicasController::cla
 Route::post("/horasmedicas.cambiopasswordsave", [UserHorasMedicasController::class, 'cambiopasswordsave'])->name('horasmedicas.cambiopasswordsave')->middleware('auth');
 
 
+// Doctor -Admin - Controlador
 Route::get('doctor', [DoctorAdminController::class, 'index'])->name('doctor.index');
 Route::get('doctor/create', [DoctorAdminController::class, 'create'])->name('doctor.create');
 Route::post('doctor', [DoctorAdminController::class, 'store'])->name('doctor.store');
@@ -185,8 +180,11 @@ Route::get('/contactanos', function () {
     return "Correo enviado correctamente";
 })->name('contactanos');    
 
+
+// Rutas Agendamiento Menu Pacientes
 Route::post('agendapatient.showcalendar', [UserPatienController::class,'showcalendar'] )->name('agendapatient.showcalendar')->middleware('auth');
 Route::post('agendapatient.confirmar', [UserPatienController::class,'confirmar'] )->name('agendapatient.confirmar')->middleware('auth');
+Route::post('agendapatient.showcalendar', [UserPatienController::class,'showcalendar'] )->name('agendapatient.showcalendar')->middleware('auth');
 Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');
 Route::post('agendapatient.cancelar', [UserPatienController::class,'cancelar'] )->name('agendapatient.cancelar')->middleware('auth');
 Route::post('agendapatient.cancelarCitaConfirm', [UserPatienController::class,'cancelarCitaConfirm'] )->name('agendapatient.cancelarCitaConfirm')->middleware('auth');
