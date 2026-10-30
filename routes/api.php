@@ -193,6 +193,7 @@ Route::get('/doctores/{id}', function( Request $request) {
     });
 })->name('api.doctores');
 
-Route::post('login',  [ApiUsersController::class, 'login']);
+Route::post('login',  [ApiUsersController::class, 'login'])->name("api.login");
 Route::post('infouser', [ApiUsersController::class, 'infouser'])->middleware('auth:sanctum');
+Route::get('infouser', [ApiUsersController::class, 'infouser'])->middleware('auth:sanctum');
 

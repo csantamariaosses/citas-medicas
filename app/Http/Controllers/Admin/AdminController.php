@@ -74,4 +74,5 @@ class AdminController extends Controller
         $roles = Role::all();
         return view("autho.register", compact('roles' ));
     }
+    
 }

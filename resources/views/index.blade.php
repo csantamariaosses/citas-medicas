@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-6 offset-md-3">  
             <p>Bienvenido al sistema de Citas Médicas.</p>
-            <h3><span style="color:red">Reordenar Por Admin - Doctor - Paciente</span></h3>
+            <h3><span style="color:red">Testear API de Usuarios</span></h3>
 
             <img src="{{ asset('images/imagen_citas_medicas.jpg') }}" alt="Description of the image" class="img-fluid">
         </div>

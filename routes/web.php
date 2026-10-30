@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Appointment3Controller;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\AppointmentDocPcteController;
 use App\Http\Controllers\Admin\AppointmentSoloDocController;
+use App\Http\Controllers\Admin\ApiTestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserHorasMedicasController;
 use App\Http\Controllers\PatientController as UserPatienController;
@@ -106,6 +107,9 @@ Route::prefix('admin')->group(function () {
 
     Route::get("registrousuarios", [AdminController::class, "registrousuarios"])->name('registrousuarios')->middleware('admin');
     Route::post("registrousuarios.registrar", [AdminController::class, "registrar"])->name('registrousuarios.registrar')->middleware('admin');
+    Route::get("apitest", [ApiTestController::class, 'apitest'])->name("apitest");
+//    Route::get("apitestlogin", [ApiTestController::class, 'apitestlogin'])->name("apitestlogin");
+//    Route::post("apiteststart", [ApiTestController::class, 'apiteststart'])->name("apiteststart");
 
 });
 
@@ -123,6 +127,7 @@ Route::post("prueba.testSave", [AppointmentController::class, 'testSave'])->name
 Route::get('login', [AuthController::class, "showLoginForm"])->name("login");
 Route::post('login', [AuthController::class, "login"]);
 Route::post('logout', [AuthController::class, "logout"])->name("logout");
+Route::get('logout' , [AuthController::class, "logout"])->name("logout");
 Route::get('register', [AuthController::class, "showregister"])->name("showregister");
 Route::post('register', [AuthController::class, "saveregister"])->name("saveregister");
 
@@ -188,3 +193,6 @@ Route::post('agendapatient.showcalendar', [UserPatienController::class,'showcale
 Route::post('agendadoc.showcalendar', [AppointmentController::class,'showcalendar'] )->name('agendadoc.showcalendar')->middleware('admin');
 Route::post('agendapatient.cancelar', [UserPatienController::class,'cancelar'] )->name('agendapatient.cancelar')->middleware('auth');
 Route::post('agendapatient.cancelarCitaConfirm', [UserPatienController::class,'cancelarCitaConfirm'] )->name('agendapatient.cancelarCitaConfirm')->middleware('auth');
+
+
+

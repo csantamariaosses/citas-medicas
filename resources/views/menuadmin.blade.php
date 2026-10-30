@@ -10,6 +10,9 @@
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{{ route("apitest") }}">API Test</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{{ route('users.index') }}">Usuarios</a>
         </li>
 
